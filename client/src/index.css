@@ -1,0 +1,70 @@
+:root {
+  --cream: #f5f0e8;
+  --warm-white: #faf7f2;
+  --ink: #1a1410;
+  --ink-soft: #3d2e22;
+  --brick: #b84c2b;
+  --brick-dark: #8f3820;
+  --brass: #c8922a;
+  --sage: #6b7c5e;
+  --stone: #9e9080;
+  --stone-light: #d4cdc4;
+  --border: #d8cfc4;
+  --shadow: rgba(26, 20, 16, 0.12);
+  --font-display: "Playfair Display", Georgia, serif;
+  --font-body: "Source Serif 4", Georgia, serif;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--cream);
+  color: var(--ink);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  cursor: pointer;
+  font-family: inherit;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--cream); }
+::-webkit-scrollbar-thumb { background: var(--stone-light); border-radius: 3px; }
+
+/* Animations */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -600px 0; }
+  100% { background-position: 600px 0; }
+}
+
+.animate-in {
+  animation: fadeUp 0.5s ease both;
+}
