@@ -14,7 +14,7 @@ export default function App() {
   return (
     <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
       <Header lastUpdated={lastUpdated} />
-      <Hero eventCount={events.length} loading={loading} />
+      <Hero />
       <CategoryBar
         categories={categories}
         activeCategory={activeCategory}
