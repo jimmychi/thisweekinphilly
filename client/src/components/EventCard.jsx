@@ -135,9 +135,9 @@ export default function EventCard({ event, style }) {
             {CATEGORY_EMOJI[event.category] || "📅"}
           </div>
         )}
-        <span style={styles.categoryPill(event.category)}>
+        
           {event.category || "event"}
-        </span>
+        
       </div>
 
       <div style={styles.body}>
@@ -145,22 +145,22 @@ export default function EventCard({ event, style }) {
         <div style={styles.meta}>
           {event.time && (
             <div style={styles.metaRow}>
-              <span style={styles.icon}>🕐</span>
-              <span>{formatTime(event.time)}</span>
+              <span style={styles.icon}>🕐
+              <span>{formatTime(event.time)}
             </div>
           )}
           {event.venue && (
             <div style={styles.metaRow}>
-              <span style={styles.icon}>📍</span>
+              <span style={styles.icon}>📍
               <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                 {event.venue}
-              </span>
+              
             </div>
           )}
         </div>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginTop: "auto", paddingTop: 8 }}>
-          {event.price && <span style={styles.price}>{event.price}</span>}
-          <span style={styles.source}>{event.source}</span>
+          {event.price && <span style={styles.price}>{event.price}}
+          <span style={styles.source}>{event.source}
         </div>
       </div>
     </a>
