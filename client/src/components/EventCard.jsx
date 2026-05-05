@@ -99,7 +99,7 @@ export default function EventCard({ event, style }) {
   const [imgErr, setImgErr] = useState(false);
 
   return (
-    
+    <a 
       href={event.url}
       target="_blank"
       rel="noopener noreferrer"
