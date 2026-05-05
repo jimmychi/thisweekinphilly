@@ -21,6 +21,31 @@ const styles = {
     transition: "transform 0.2s ease, box-shadow 0.2s ease",
     cursor: "pointer",
     display: "flex",
+    flexDirec
+cat > ~/Projects/thisweekinphilly/client/src/components/EventCard.jsx << 'EOF'
+import React, { useState } from "react";
+import { formatTime } from "../utils/dates.js";
+
+const CATEGORY_COLORS = {
+  concerts: "#b84c2b",
+  sports: "#2b6cb0",
+  arts: "#6b46c1",
+  food: "#c8922a",
+  family: "#2f855a",
+  nightlife: "#1a1410",
+  community: "#6b7c5e",
+  other: "#9e9080",
+};
+
+const styles = {
+  card: {
+    background: "var(--warm-white)",
+    border: "1px solid var(--border)",
+    borderRadius: 8,
+    overflow: "hidden",
+    transition: "transform 0.2s ease, box-shadow 0.2s ease",
+    cursor: "pointer",
+    display: "flex",
     flexDirection: "column",
   },
   imgWrap: {
@@ -44,20 +69,6 @@ const styles = {
     justifyContent: "center",
     fontSize: "2.5rem",
     opacity: 0.85,
-  }),
-  categoryPill: (category) => ({
-    position: "absolute",
-    top: 10,
-    left: 10,
-    background: CATEGORY_COLORS[category] || "#9e9080",
-    color: "#fff",
-    fontSize: "0.65rem",
-    fontFamily: "var(--font-body)",
-    fontWeight: 600,
-    letterSpacing: "0.1em",
-    textTransform: "uppercase",
-    padding: "3px 9px",
-    borderRadius: 20,
   }),
   body: {
     padding: "14px 16px 16px",
@@ -113,7 +124,7 @@ export default function EventCard({ event, style }) {
   const [imgErr, setImgErr] = useState(false);
 
   return (
-    <a
+    
       href={event.url}
       target="_blank"
       rel="noopener noreferrer"
@@ -135,9 +146,6 @@ export default function EventCard({ event, style }) {
             {CATEGORY_EMOJI[event.category] || "📅"}
           </div>
         )}
-        
-          {event.category || "event"}
-        
       </div>
 
       <div style={styles.body}>
@@ -145,22 +153,22 @@ export default function EventCard({ event, style }) {
         <div style={styles.meta}>
           {event.time && (
             <div style={styles.metaRow}>
-              <span style={styles.icon}>🕐
-              <span>{formatTime(event.time)}
+              <span style={styles.icon}>🕐</span>
+              <span>{formatTime(event.time)}</span>
             </div>
           )}
           {event.venue && (
             <div style={styles.metaRow}>
-              <span style={styles.icon}>📍
+              <span style={styles.icon}>📍</span>
               <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                 {event.venue}
-              
+              </span>
             </div>
           )}
         </div>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginTop: "auto", paddingTop: 8 }}>
-          {event.price && <span style={styles.price}>{event.price}}
-          <span style={styles.source}>{event.source}
+          {event.price && <span style={styles.price}>{event.price}</span>}
+          <span style={styles.source}>{event.source}</span>
         </div>
       </div>
     </a>
