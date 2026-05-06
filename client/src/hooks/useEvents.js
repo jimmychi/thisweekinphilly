@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 
-const API_BASE = import.meta.env.VITE_API_URL || "/api";
+const API_BASE = import.meta.env.VITE_API_URL || "https://thisweekinphilly-api.onrender.com";
 
 export function useEvents(category, days = 7) {
   const [events, setEvents] = useState([]);
