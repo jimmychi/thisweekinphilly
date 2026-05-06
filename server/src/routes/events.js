@@ -3,6 +3,7 @@ const NodeCache = require("node-cache");
 const { getTicketmasterEvents, getTicketmasterEventById } = require("../services/ticketmaster");
 const { getEventbriteEvents } = require("../services/eventbrite");
 const { getPredicthqEvents } = require("../services/predicthq");
+const { submitEvent, getApprovedEvents } = require("../services/airtable");
 const { generateEventDescription } = require("../services/claude");
 
 const router = express.Router();
@@ -105,6 +106,17 @@ router.get("/:id", async (req, res) => {
     console.error("Event detail error:", err);
     res.status(500).json({ error: "Failed to fetch event" });
   }
+});
+
+// POST /api/events/submit
+router.post("/submit", async (req, res) => {
+  const { title, date, time, venue, description, url, email } = req.body;
+  if (!title || !date) {
+    return res.status(400).json({ error: "Event name and date are required" });
+  }
+  const result = await submitEvent({ title, date, time, venue, description, url, email });
+  if (!result) return res.status(500).json({ error: "Failed to submit event" });
+  res.json({ success: true, message: "Event submitted for review!" });
 });
 
 module.exports = router;

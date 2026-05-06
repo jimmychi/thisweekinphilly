@@ -6,6 +6,7 @@ import CategoryBar from "./components/CategoryBar.jsx";
 import EventGrid from "./components/EventGrid.jsx";
 import Footer from "./components/Footer.jsx";
 import EventDetail from "./pages/EventDetail.jsx";
+import SubmitEvent from "./pages/SubmitEvent.jsx";
 import { useEvents, useCategories } from "./hooks/useEvents.js";
 
 function HomePage() {
@@ -36,6 +37,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/event/:id" element={<EventDetail />} />
+        <Route path="/submit" element={<SubmitEvent />} />
       </Routes>
     </BrowserRouter>
   );
