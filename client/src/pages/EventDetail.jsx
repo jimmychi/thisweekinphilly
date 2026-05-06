@@ -13,8 +13,8 @@ const styles = {
   back: {
     display: "inline-flex",
     alignItems: "center",
-    gap: 8,
-    padding: "6px 12px",
+    gap: 6,
+    padding: "0 24px",
     fontFamily: "var(--font-body)",
     fontSize: "0.8rem",
     color: "rgba(255,255,255,0.7)",
@@ -22,8 +22,10 @@ const styles = {
     background: "none",
     border: "none",
     position: "absolute",
-    bottom: 10,
-    left: 16,
+    top: "50%",
+    left: 0,
+    transform: "translateY(-50%)",
+    zIndex: 10,
   },
   hero: {
     width: "100%",
