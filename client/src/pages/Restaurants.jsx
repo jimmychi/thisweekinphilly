@@ -133,7 +133,7 @@ export default function Restaurants() {
   useEffect(() => {
     setLoading(true);
     const n = neighborhood === "All" ? "" : `?neighborhood=${encodeURIComponent(neighborhood)}`;
-    fetch(`${API_BASE}/api/restaurants${n}`)
+    fetch(`${API_BASE}/restaurants${n}`)
       .then(r => r.json())
       .then(data => {
         setRestaurants(data.restaurants || []);
