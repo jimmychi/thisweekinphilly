@@ -1,7 +1,6 @@
 const express = require("express");
 const NodeCache = require("node-cache");
 const { getTicketmasterEvents, getTicketmasterEventById } = require("../services/ticketmaster");
-const { getEventbriteEvents } = require("../services/eventbrite");
 const { getPredicthqEvents } = require("../services/predicthq");
 const { submitEvent, getApprovedEvents } = require("../services/airtable");
 const { generateEventDescription } = require("../services/claude");
@@ -27,15 +26,12 @@ router.get("/", async (req, res) => {
   }
 
   try {
-    const [tmEvents, ebEvents, phqEvents] = await Promise.allSettled([
       getTicketmasterEvents(category, days),
-      getEventbriteEvents(category, days),
       getPredicthqEvents(category, days),
     ]);
 
     const all = [
       ...(tmEvents.status === "fulfilled" ? tmEvents.value : []),
-      ...(ebEvents.status === "fulfilled" ? ebEvents.value : []),
       ...(phqEvents.status === "fulfilled" ? phqEvents.value : []),
     ];
 
