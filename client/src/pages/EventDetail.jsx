@@ -216,7 +216,7 @@ export default function EventDetail() {
         )}
 
         <div style={styles.ctaWrap}>
-          
+          <a
             href={event.url}
             target="_blank"
             rel="noopener noreferrer"
