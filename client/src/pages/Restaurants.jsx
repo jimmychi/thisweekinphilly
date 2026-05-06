@@ -13,7 +13,7 @@ const styles = {
   header: {
     background: "var(--ink)",
     backgroundImage: `radial-gradient(ellipse at 20% 50%, rgba(184,76,43,0.15) 0%, transparent 60%)`,
-    padding: "48px 24px 40px",
+    padding: "24px 24px 20px",
     borderBottom: "1px solid rgba(255,255,255,0.06)",
   },
   headerInner: { maxWidth: 1200, margin: "0 auto" },

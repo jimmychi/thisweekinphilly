@@ -7,7 +7,7 @@ const styles = {
       radial-gradient(ellipse at 20% 50%, rgba(184,76,43,0.15) 0%, transparent 60%),
       radial-gradient(ellipse at 80% 20%, rgba(200,146,42,0.1) 0%, transparent 50%)
     `,
-    padding: "48px 24px 40px",
+    padding: "24px 24px 20px",
     borderBottom: "1px solid rgba(255,255,255,0.06)",
   },
   inner: {
