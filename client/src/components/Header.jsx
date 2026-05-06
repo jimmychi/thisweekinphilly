@@ -77,7 +77,7 @@ export default function Header({ lastUpdated }) {
             + Submit Event
           </button>
           
-          <div style={styles.dot} title={lastUpdated ? `Updated ${lastUpdated.toLocaleTimeString()}` : "Live"} />
+          
         </div>
       </div>
     </header>
