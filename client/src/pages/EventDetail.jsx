@@ -65,8 +65,8 @@ const styles = {
     background: "var(--warm-white)",
     border: "1px solid var(--border)",
     borderRadius: 8,
-    padding: 24,
-    marginBottom: 32,
+    padding: 16,
+    marginBottom: 24,
   },
   infoItem: {
     display: "flex",
@@ -196,14 +196,11 @@ export default function EventDetail() {
               <span style={styles.infoLabel}>Venue</span>
               <span style={styles.infoValue}>{event.venue}</span>
               {event.address && <span style={{fontSize: "0.8rem", color: "var(--stone)", marginTop: 2}}>{event.address}</span>}
+              {event.phone && <span style={{fontSize: "0.8rem", color: "var(--stone)", marginTop: 2}}>{event.phone}</span>}
+              {event.phone && <span style={{fontSize: "0.8rem", color: "var(--stone)", marginTop: 2}}>{event.phone}</span>}
             </div>
           )}
-          {event.phone && (
-            <div style={styles.infoItem}>
-              <span style={styles.infoLabel}>Phone</span>
-              <span style={styles.infoValue}>{event.phone}</span>
-            </div>
-          )}
+
 
           {event.price && (
             <div style={styles.infoItem}>
