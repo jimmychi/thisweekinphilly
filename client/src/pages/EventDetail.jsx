@@ -228,7 +228,7 @@ export default function EventDetail() {
             rel="noopener noreferrer"
             style={styles.cta}
           >
-            Get Tickets on Ticketmaster
+            {event.source === "predicthq" ? "Find Tickets & Info" : "Get Tickets on Ticketmaster"}
           </a>
         </div>
       </div>
