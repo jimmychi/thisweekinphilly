@@ -70,8 +70,8 @@ export default function Header({ lastUpdated }) {
       <style>{`@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }`}</style>
       <div style={styles.inner}>
         <div style={styles.logoWrap}>
-          <span style={styles.logoMain}>This Week in Philly</span>
-          <span style={styles.logoSub}>Philadelphia's Event Guide</span>
+          <span style={{...styles.logoMain, cursor: "pointer"}} onClick={() => navigate("/")}>This Week in Philly</span>
+          <span style={{...styles.logoSub, cursor: "pointer"}} onClick={() => navigate("/")}>Philadelphia's Event Guide</span>
         </div>
         <div style={styles.meta}>
           <button onClick={() => location !== "/" && navigate("/")} style={{ background: location === "/" ? "rgba(255,255,255,0.15)" : "transparent", color: "var(--cream)", fontFamily: "var(--font-body)", fontSize: "0.8rem", fontWeight: 600, padding: "6px 16px", borderRadius: 20, border: "1px solid rgba(255,255,255,0.3)", cursor: location === "/" ? "default" : "pointer", marginRight: 8 }}>📅 Events</button>
