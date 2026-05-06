@@ -12,7 +12,7 @@ import { useEvents, useCategories } from "./hooks/useEvents.js";
 function HomePage() {
   const [activeCategory, setActiveCategory] = useState("all");
   const categories = useCategories();
-  const { events, loading, error, lastUpdated } = useEvents(activeCategory, 7);
+  const { events, loading, error, lastUpdated } = useEvents(activeCategory, 10);
 
   return (
     <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
