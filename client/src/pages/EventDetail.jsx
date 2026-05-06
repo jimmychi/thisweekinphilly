@@ -155,13 +155,15 @@ export default function EventDetail() {
     fetchEvent();
   }, [id]);
 
-  if (loading) return <div style={styles.loading}>Loading event...</div>;
+  if (loading) return (
+    <div style={styles.loading}>Loading event...</div>
+  );
   if (!event) return null;
 
   return (
     <div style={styles.page}>
       <button style={styles.back} onClick={() => navigate("/")}>
-        ← Back to all events
+        Back to all events
       </button>
 
       {event.image ? (
@@ -179,31 +181,31 @@ export default function EventDetail() {
         <div style={styles.infoGrid}>
           {event.date && (
             <div style={styles.infoItem}>
-              <span style={styles.infoLabel}>📅 Date</span>
+              <span style={styles.infoLabel}>Date</span>
               <span style={styles.infoValue}>{formatDate(event.date)}</span>
             </div>
           )}
           {event.time && (
             <div style={styles.infoItem}>
-              <span style={styles.infoLabel}>🕐 Time</span>
+              <span style={styles.infoLabel}>Time</span>
               <span style={styles.infoValue}>{formatTime(event.time)}</span>
             </div>
           )}
           {event.venue && (
             <div style={styles.infoItem}>
-              <span style={styles.infoLabel}>📍 Venue</span>
+              <span style={styles.infoLabel}>Venue</span>
               <span style={styles.infoValue}>{event.venue}</span>
             </div>
           )}
           {event.address && (
             <div style={styles.infoItem}>
-              <span style={styles.infoLabel}>🗺️ Address</span>
+              <span style={styles.infoLabel}>Address</span>
               <span style={styles.infoValue}>{event.address}</span>
             </div>
           )}
           {event.price && (
             <div style={styles.infoItem}>
-              <span style={styles.infoLabel}>🎟️ Price</span>
+              <span style={styles.infoLabel}>Price</span>
               <span style={styles.infoValue}>{event.price}</span>
             </div>
           )}
@@ -219,16 +221,8 @@ export default function EventDetail() {
             target="_blank"
             rel="noopener noreferrer"
             style={styles.cta}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = "translateY(-2px)";
-              e.currentTarget.style.boxShadow = "0 8px 30px rgba(184,76,43,0.5)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = "translateY(0)";
-              e.currentTarget.style.boxShadow = "0 4px 20px rgba(184,76,43,0.4)";
-            }}
           >
-            🎟️ Get Tickets on Ticketmaster
+            Get Tickets on Ticketmaster
           </a>
         </div>
       </div>
