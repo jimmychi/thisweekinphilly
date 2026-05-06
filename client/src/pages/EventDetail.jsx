@@ -197,7 +197,6 @@ export default function EventDetail() {
               <span style={styles.infoValue}>{event.venue}</span>
               {event.address && <span style={{fontSize: "0.8rem", color: "var(--stone)", marginTop: 2}}>{event.address}</span>}
               {event.phone && <span style={{fontSize: "0.8rem", color: "var(--stone)", marginTop: 2}}>{event.phone}</span>}
-              {event.phone && <span style={{fontSize: "0.8rem", color: "var(--stone)", marginTop: 2}}>{event.phone}</span>}
             </div>
           )}
 
