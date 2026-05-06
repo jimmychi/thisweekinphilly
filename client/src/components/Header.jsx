@@ -76,7 +76,7 @@ export default function Header({ lastUpdated }) {
           <button onClick={() => navigate("/submit")} style={{ background: "var(--brick)", color: "#fff", fontFamily: "var(--font-body)", fontSize: "0.8rem", fontWeight: 600, padding: "6px 16px", borderRadius: 20, border: "none", cursor: "pointer" }}>
             + Submit Event
           </button>
-          <span style={styles.date}>{today}</span>
+          
           <div style={styles.dot} title={lastUpdated ? `Updated ${lastUpdated.toLocaleTimeString()}` : "Live"} />
         </div>
       </div>
