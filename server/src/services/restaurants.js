@@ -12,25 +12,19 @@ const PHILLY_NEIGHBORHOODS = [
 ];
 
 async function getPhillyRestaurants(neighborhood, cuisine) {
-  if (!API_KEY) {
-    console.warn("GOOGLE_PLACES_API_KEY not set");
-    return [];
-  }
+  if (!API_KEY) return [];
 
   try {
-    const location = neighborhood 
+    const location = neighborhood
       ? PHILLY_NEIGHBORHOODS.find(n => n.name === neighborhood)?.location || "39.9526,-75.1652"
       : "39.9526,-75.1652";
 
-    const [lat, lng] = location.split(",");
-
     const params = {
-      location: location,
+      location,
       radius: 1500,
       type: "restaurant",
       key: API_KEY,
     };
-
     if (cuisine) params.keyword = cuisine;
 
     const res = await axios.get(
@@ -39,10 +33,9 @@ async function getPhillyRestaurants(neighborhood, cuisine) {
     );
 
     const places = res.data.results || [];
-
-    return places.map(function(p) {
+    return places.map(p => {
       const photoRef = p.photos && p.photos[0] && p.photos[0].photo_reference;
-      const photoUrl = photoRef 
+      const photoUrl = photoRef
         ? `https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photoreference=${photoRef}&key=${API_KEY}`
         : null;
 
@@ -66,4 +59,57 @@ async function getPhillyRestaurants(neighborhood, cuisine) {
   }
 }
 
-module.exports = { getPhillyRestaurants, PHILLY_NEIGHBORHOODS };
+async function getRestaurantDetails(placeId) {
+  if (!API_KEY) return null;
+
+  try {
+    const res = await axios.get(
+      "https://maps.googleapis.com/maps/api/place/details/json",
+      {
+        params: {
+          place_id: placeId,
+          fields: "name,rating,user_ratings_total,price_level,formatted_address,formatted_phone_number,website,opening_hours,photos,editorial_summary,reviews,types,url",
+          key: API_KEY,
+        }
+      }
+    );
+
+    const p = res.data.result;
+    if (!p) return null;
+
+    const photos = (p.photos || []).slice(0, 6).map(photo =>
+      `https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photoreference=${photo.photo_reference}&key=${API_KEY}`
+    );
+
+    const reviews = (p.reviews || []).slice(0, 3).map(r => ({
+      author: r.author_name,
+      rating: r.rating,
+      text: r.text,
+      time: r.relative_time_description,
+      avatar: r.profile_photo_url,
+    }));
+
+    return {
+      id: placeId,
+      name: p.name,
+      rating: p.rating || null,
+      reviewCount: p.user_ratings_total || 0,
+      priceLevel: p.price_level || null,
+      address: p.formatted_address || "Philadelphia, PA",
+      phone: p.formatted_phone_number || null,
+      website: p.website || null,
+      description: p.editorial_summary?.overview || null,
+      hours: p.opening_hours?.weekday_text || null,
+      openNow: p.opening_hours?.open_now,
+      photos,
+      reviews,
+      types: p.types || [],
+      googleMapsUrl: p.url || `https://www.google.com/maps/place/?q=place_id:${placeId}`,
+    };
+  } catch (err) {
+    console.error("Google Place Details error:", err.message);
+    return null;
+  }
+}
+
+module.exports = { getPhillyRestaurants, getRestaurantDetails, PHILLY_NEIGHBORHOODS };

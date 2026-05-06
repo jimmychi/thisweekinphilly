@@ -1,15 +1,13 @@
 const express = require("express");
 const NodeCache = require("node-cache");
-const { getPhillyRestaurants, PHILLY_NEIGHBORHOODS } = require("../services/restaurants");
+const { getPhillyRestaurants, getRestaurantDetails, PHILLY_NEIGHBORHOODS } = require("../services/restaurants");
 
 const router = express.Router();
-const cache = new NodeCache({ stdTTL: 3600 }); // Cache 1 hour
+const cache = new NodeCache({ stdTTL: 3600 });
 
-// GET /api/restaurants
 router.get("/", async (req, res) => {
   const neighborhood = req.query.neighborhood || null;
   const cuisine = req.query.cuisine || null;
-
   const cacheKey = `restaurants-${neighborhood || "all"}-${cuisine || "all"}`;
   const cached = cache.get(cacheKey);
   if (cached) return res.json({ restaurants: cached, cached: true });
@@ -24,9 +22,24 @@ router.get("/", async (req, res) => {
   }
 });
 
-// GET /api/restaurants/neighborhoods
 router.get("/neighborhoods", (req, res) => {
   res.json({ neighborhoods: PHILLY_NEIGHBORHOODS.map(n => n.name) });
+});
+
+router.get("/:id", async (req, res) => {
+  const placeId = req.params.id;
+  const cacheKey = `restaurant-detail-${placeId}`;
+  const cached = cache.get(cacheKey);
+  if (cached) return res.json({ restaurant: cached, cached: true });
+
+  try {
+    const restaurant = await getRestaurantDetails(placeId);
+    if (!restaurant) return res.status(404).json({ error: "Restaurant not found" });
+    cache.set(cacheKey, restaurant);
+    res.json({ restaurant });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch restaurant details" });
+  }
 });
 
 module.exports = router;

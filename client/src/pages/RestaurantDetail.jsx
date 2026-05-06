@@ -1,34 +1,45 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import Header from "../components/Header.jsx";
 
 const API_BASE = import.meta.env.VITE_API_URL || "https://thisweekinphilly-api.onrender.com/api";
-
 const PRICE = { 1: "$", 2: "$$", 3: "$$$", 4: "$$$$" };
 const PRICE_LABEL = { 1: "Inexpensive", 2: "Moderate", 3: "Pricey", 4: "Fine Dining" };
+const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
 const styles = {
   page: { minHeight: "100vh", background: "var(--cream)" },
-  back: {
-    display: "inline-flex", alignItems: "center", gap: 6,
-    padding: "10px 20px", margin: "24px",
-    background: "var(--ink)", color: "var(--cream)",
-    borderRadius: 999, border: "none", cursor: "pointer",
-    fontFamily: "var(--font-body)", fontSize: "0.85rem",
-    textDecoration: "none",
+  photoGrid: {
+    display: "grid",
+    gridTemplateColumns: "2fr 1fr 1fr",
+    gridTemplateRows: "200px 200px",
+    gap: 4,
+    maxHeight: 404,
+    overflow: "hidden",
   },
-  hero: {
-    width: "100%", height: 320,
+  photoMain: {
+    gridRow: "1 / 3",
+    width: "100%", height: "100%",
     objectFit: "cover",
-    display: "block",
   },
-  heroPlaceholder: {
+  photoThumb: {
+    width: "100%", height: "100%",
+    objectFit: "cover",
+  },
+  photoPlaceholder: {
     width: "100%", height: 320,
     background: "var(--parchment)",
     display: "flex", alignItems: "center",
     justifyContent: "center", fontSize: "4rem",
   },
   content: {
-    maxWidth: 800, margin: "0 auto", padding: "32px 24px",
+    maxWidth: 900, margin: "0 auto", padding: "32px 24px",
+    display: "grid",
+    gridTemplateColumns: "1fr 320px",
+    gap: 32,
+  },
+  contentMobile: {
+    maxWidth: 900, margin: "0 auto", padding: "32px 24px",
   },
   name: {
     fontFamily: "var(--font-display)",
@@ -37,57 +48,127 @@ const styles = {
     marginBottom: 12,
   },
   metaRow: {
-    display: "flex", gap: 12, alignItems: "center",
-    flexWrap: "wrap", marginBottom: 20,
+    display: "flex", gap: 10, alignItems: "center",
+    flexWrap: "wrap", marginBottom: 16,
   },
   rating: {
     background: "var(--brass)", color: "#fff",
     borderRadius: 6, padding: "4px 10px",
     fontSize: "0.9rem", fontWeight: 700,
   },
-  price: {
-    color: "var(--brick)", fontWeight: 700, fontSize: "1rem",
+  price: { color: "var(--brick)", fontWeight: 700, fontSize: "1rem" },
+  openNow: { color: "#2e7d32", fontWeight: 600, fontSize: "0.9rem" },
+  closed: { color: "#c62828", fontWeight: 600, fontSize: "0.9rem" },
+  reviews: { color: "var(--stone-dark)", fontSize: "0.85rem" },
+  description: {
+    fontFamily: "var(--font-body)",
+    fontSize: "1rem", lineHeight: 1.7,
+    color: "var(--ink)", marginBottom: 24,
+    fontStyle: "italic",
+    borderLeft: "3px solid var(--brick)",
+    paddingLeft: 16,
   },
-  openNow: {
-    color: "#2e7d32", fontWeight: 600, fontSize: "0.9rem",
-  },
-  closed: {
-    color: "#c62828", fontWeight: 600, fontSize: "0.9rem",
-  },
-  reviews: {
-    color: "var(--stone-dark)", fontSize: "0.85rem",
+  sectionTitle: {
+    fontFamily: "var(--font-display)",
+    fontSize: "1.2rem", fontWeight: 700,
+    color: "var(--ink)", marginBottom: 12,
+    marginTop: 24,
   },
   infoBox: {
     background: "var(--parchment)",
-    borderRadius: 12, padding: "20px 24px",
-    marginBottom: 24,
+    borderRadius: 12, padding: "20px",
+    marginBottom: 16,
   },
   infoRow: {
     display: "flex", gap: 12,
-    padding: "10px 0",
+    padding: "8px 0",
     borderBottom: "1px solid var(--stone)",
     alignItems: "flex-start",
   },
   infoLabel: {
     fontFamily: "var(--font-body)",
     fontWeight: 700, color: "var(--stone-dark)",
-    fontSize: "0.85rem", minWidth: 80,
+    fontSize: "0.82rem", minWidth: 24,
   },
   infoValue: {
     fontFamily: "var(--font-body)",
-    color: "var(--ink)", fontSize: "0.95rem",
+    color: "var(--ink)", fontSize: "0.9rem",
   },
+  hoursGrid: {
+    display: "grid", gridTemplateColumns: "1fr",
+    gap: 4,
+  },
+  hourRow: {
+    display: "flex", justifyContent: "space-between",
+    fontFamily: "var(--font-body)", fontSize: "0.85rem",
+    padding: "4px 0",
+    borderBottom: "1px solid rgba(0,0,0,0.05)",
+  },
+  reviewCard: {
+    background: "#fff",
+    borderRadius: 10, padding: "16px",
+    marginBottom: 12,
+    boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
+  },
+  reviewHeader: {
+    display: "flex", alignItems: "center", gap: 10, marginBottom: 8,
+  },
+  reviewAvatar: {
+    width: 36, height: 36, borderRadius: "50%",
+    objectFit: "cover",
+  },
+  reviewAuthor: {
+    fontFamily: "var(--font-body)", fontWeight: 700,
+    fontSize: "0.9rem", color: "var(--ink)",
+  },
+  reviewTime: {
+    fontFamily: "var(--font-body)", fontSize: "0.75rem",
+    color: "var(--stone-dark)",
+  },
+  reviewText: {
+    fontFamily: "var(--font-body)", fontSize: "0.88rem",
+    color: "var(--ink)", lineHeight: 1.6,
+  },
+  stars: { color: "var(--brass)", fontSize: "0.85rem" },
   cta: {
     display: "block", width: "100%",
-    padding: "16px", borderRadius: 12,
+    padding: "14px", borderRadius: 10,
     background: "var(--brick)", color: "#fff",
     fontFamily: "var(--font-display)",
-    fontSize: "1rem", fontWeight: 700,
+    fontSize: "0.95rem", fontWeight: 700,
     border: "none", cursor: "pointer",
     textAlign: "center", textDecoration: "none",
-    marginTop: 8,
+    marginBottom: 10,
+  },
+  ctaSecondary: {
+    display: "block", width: "100%",
+    padding: "14px", borderRadius: 10,
+    background: "transparent",
+    color: "var(--ink)",
+    fontFamily: "var(--font-display)",
+    fontSize: "0.95rem", fontWeight: 700,
+    border: "2px solid var(--stone)",
+    cursor: "pointer",
+    textAlign: "center", textDecoration: "none",
+    marginBottom: 10,
+  },
+  loading: {
+    textAlign: "center", padding: "80px 24px",
+    fontFamily: "var(--font-body)", color: "var(--stone-dark)",
+    fontSize: "1.1rem",
   },
 };
+
+function StarRating({ rating }) {
+  const full = Math.floor(rating);
+  const half = rating % 1 >= 0.5;
+  return (
+    <span style={styles.stars}>
+      {"★".repeat(full)}{half ? "½" : ""}{"☆".repeat(5 - full - (half ? 1 : 0))}
+      {" "}{rating}
+    </span>
+  );
+}
 
 export default function RestaurantDetail() {
   const { id } = useParams();
@@ -96,66 +177,148 @@ export default function RestaurantDetail() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Fetch all restaurants and find the one with matching id
-    fetch(`${API_BASE}/restaurants`)
+    fetch(`${API_BASE}/restaurants/${encodeURIComponent(id)}`)
       .then(r => r.json())
       .then(data => {
-        const found = (data.restaurants || []).find(r => r.id === id);
-        setRestaurant(found || null);
+        setRestaurant(data.restaurant || null);
         setLoading(false);
       })
       .catch(() => setLoading(false));
   }, [id]);
 
-  if (loading) return <div style={{ padding: 48, textAlign: "center", fontFamily: "var(--font-body)" }}>Loading...</div>;
-  if (!restaurant) return <div style={{ padding: 48, textAlign: "center", fontFamily: "var(--font-body)" }}>Restaurant not found.</div>;
+  if (loading) return (
+    <div style={styles.page}>
+      <Header />
+      <div style={styles.loading}>Loading restaurant details...</div>
+    </div>
+  );
+
+  if (!restaurant) return (
+    <div style={styles.page}>
+      <Header />
+      <div style={styles.loading}>Restaurant not found. <button onClick={() => navigate("/restaurants")}>Go back</button></div>
+    </div>
+  );
+
+  const today = new Date().toLocaleDateString("en-US", { weekday: "long" });
 
   return (
     <div style={styles.page}>
-      <button style={styles.back} onClick={() => navigate("/restaurants")}>← Back to Restaurants</button>
+      <Header />
 
-      {restaurant.image ? (
-        <img src={restaurant.image} alt={restaurant.name} style={styles.hero} />
+      {/* Photo Grid */}
+      {restaurant.photos && restaurant.photos.length > 0 ? (
+        <div style={styles.photoGrid}>
+          <img src={restaurant.photos[0]} alt={restaurant.name} style={styles.photoMain} />
+          {restaurant.photos.slice(1, 5).map((p, i) => (
+            <img key={i} src={p} alt="" style={styles.photoThumb} />
+          ))}
+        </div>
       ) : (
-        <div style={styles.heroPlaceholder}>🍽️</div>
+        <div style={styles.photoPlaceholder}>🍽️</div>
       )}
 
       <div style={styles.content}>
-        <h1 style={styles.name}>{restaurant.name}</h1>
+        {/* Left Column */}
+        <div>
+          <h1 style={styles.name}>{restaurant.name}</h1>
 
-        <div style={styles.metaRow}>
-          {restaurant.rating && <span style={styles.rating}>⭐ {restaurant.rating}</span>}
-          {restaurant.priceLevel && <span style={styles.price}>{PRICE[restaurant.priceLevel]} · {PRICE_LABEL[restaurant.priceLevel]}</span>}
-          {restaurant.openNow !== undefined && (
-            <span style={restaurant.openNow ? styles.openNow : styles.closed}>
-              {restaurant.openNow ? "● Open Now" : "● Closed"}
-            </span>
+          <div style={styles.metaRow}>
+            {restaurant.rating && <StarRating rating={restaurant.rating} />}
+            {restaurant.reviewCount > 0 && <span style={styles.reviews}>({restaurant.reviewCount.toLocaleString()} reviews)</span>}
+            {restaurant.priceLevel && <span style={styles.price}>{PRICE[restaurant.priceLevel]} · {PRICE_LABEL[restaurant.priceLevel]}</span>}
+            {restaurant.openNow !== undefined && (
+              <span style={restaurant.openNow ? styles.openNow : styles.closed}>
+                {restaurant.openNow ? "● Open Now" : "● Closed"}
+              </span>
+            )}
+          </div>
+
+          {restaurant.description && (
+            <p style={styles.description}>{restaurant.description}</p>
           )}
-          {restaurant.reviewCount > 0 && (
-            <span style={styles.reviews}>{restaurant.reviewCount.toLocaleString()} reviews</span>
+
+          {/* Hours */}
+          {restaurant.hours && (
+            <>
+              <div style={styles.sectionTitle}>Hours</div>
+              <div style={styles.infoBox}>
+                <div style={styles.hoursGrid}>
+                  {restaurant.hours.map((h, i) => {
+                    const isToday = h.startsWith(today);
+                    return (
+                      <div key={i} style={{ ...styles.hourRow, fontWeight: isToday ? 700 : 400, color: isToday ? "var(--brick)" : "var(--ink)" }}>
+                        <span>{h.split(": ")[0]}</span>
+                        <span>{h.split(": ")[1]}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </>
+          )}
+
+          {/* Reviews */}
+          {restaurant.reviews && restaurant.reviews.length > 0 && (
+            <>
+              <div style={styles.sectionTitle}>What People Are Saying</div>
+              {restaurant.reviews.map((r, i) => (
+                <div key={i} style={styles.reviewCard}>
+                  <div style={styles.reviewHeader}>
+                    {r.avatar && <img src={r.avatar} alt={r.author} style={styles.reviewAvatar} />}
+                    <div>
+                      <div style={styles.reviewAuthor}>{r.author}</div>
+                      <div style={styles.reviewTime}>{r.time} · {"★".repeat(r.rating)}</div>
+                    </div>
+                  </div>
+                  <p style={styles.reviewText}>{r.text}</p>
+                </div>
+              ))}
+            </>
           )}
         </div>
 
-        <div style={styles.infoBox}>
-          <div style={styles.infoRow}>
-            <span style={styles.infoLabel}>📍 Address</span>
-            <span style={styles.infoValue}>{restaurant.address}</span>
+        {/* Right Column */}
+        <div>
+          <div style={styles.infoBox}>
+            {restaurant.address && (
+              <div style={styles.infoRow}>
+                <span style={styles.infoLabel}>📍</span>
+                <span style={styles.infoValue}>{restaurant.address}</span>
+              </div>
+            )}
+            {restaurant.phone && (
+              <div style={styles.infoRow}>
+                <span style={styles.infoLabel}>📞</span>
+                <span style={styles.infoValue}><a href={`tel:${restaurant.phone}`} style={{ color: "var(--brick)", textDecoration: "none" }}>{restaurant.phone}</a></span>
+              </div>
+            )}
+            {restaurant.website && (
+              <div style={styles.infoRow}>
+                <span style={styles.infoLabel}>🌐</span>
+                <span style={styles.infoValue}>
+                  <a href={restaurant.website} target="_blank" rel="noopener noreferrer" style={{ color: "var(--brick)", textDecoration: "none" }}>
+                    {restaurant.website.replace(/^https?:\/\//, "").replace(/\/$/, "")}
+                  </a>
+                </span>
+              </div>
+            )}
           </div>
-          <div style={styles.infoRow}>
-            <span style={styles.infoLabel}>🏘️ Area</span>
-            <span style={styles.infoValue}>{restaurant.neighborhood}</span>
-          </div>
-          {restaurant.priceLevel && (
-            <div style={styles.infoRow}>
-              <span style={styles.infoLabel}>💰 Price</span>
-              <span style={styles.infoValue}>{PRICE[restaurant.priceLevel]} — {PRICE_LABEL[restaurant.priceLevel]}</span>
-            </div>
-          )}
-        </div>
 
-        <a href={restaurant.googleMapsUrl} target="_blank" rel="noopener noreferrer" style={styles.cta}>
-          View on Google Maps & Get Directions
-        </a>
+          <a href={restaurant.googleMapsUrl} target="_blank" rel="noopener noreferrer" style={styles.cta}>
+            🗺️ Get Directions
+          </a>
+
+          {restaurant.website && (
+            <a href={restaurant.website} target="_blank" rel="noopener noreferrer" style={styles.ctaSecondary}>
+              🌐 Visit Website
+            </a>
+          )}
+
+          <button onClick={() => navigate("/restaurants")} style={{ ...styles.ctaSecondary, cursor: "pointer", border: "none", color: "var(--stone-dark)", fontSize: "0.85rem" }}>
+            ← Back to Restaurants
+          </button>
+        </div>
       </div>
     </div>
   );
