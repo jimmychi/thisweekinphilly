@@ -186,6 +186,7 @@ export default function Restaurants() {
                   {r.openNow && <span style={styles.openNow}>● Open Now</span>}
                 </div>
                 <div style={styles.address}>{r.address}</div>
+                <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(r.name + " " + r.address)}`} target="_blank" rel="noopener noreferrer" style={{ fontSize: "0.78rem", color: "var(--brick)", textDecoration: "none", fontFamily: "var(--font-body)", fontWeight: 600 }} onClick={e => e.stopPropagation()}>Get Directions →</a>
               </div>
             </div>
           ))}
