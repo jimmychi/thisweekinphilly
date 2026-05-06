@@ -6,7 +6,7 @@ const styles = {
     padding: "64px 24px 48px",
     borderBottom: "1px solid rgba(255,255,255,0.06)",
     overflow: "hidden",
-    backgroundImage: "url(https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=1600&q=80)",
+    backgroundImage: "url(https://images.unsplash.com/photo-1619468129361-605ebea04b44?w=1600&q=80)",
     backgroundSize: "cover",
     backgroundPosition: "center 60%",
   },
