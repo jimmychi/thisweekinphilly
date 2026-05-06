@@ -66,7 +66,7 @@ async function getPredicthqEvents(category, daysAhead) {
         image: null,
         url: "https://www.google.com/search?q=" + encodeURIComponent(e.title + " Philadelphia"),
         price: null,
-        description: e.description || null,
+        description: e.description ? e.description.replace("Sourced from predicthq.com - ", "").replace("Sourced from predicthq.com", "").trim() || null : null,
       };
     });
   } catch (err) {
