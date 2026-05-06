@@ -32,9 +32,7 @@ export default function Footer({ lastUpdated }) {
       <div style={styles.inner}>
         <div style={styles.name}>This Week in Philly</div>
         <div style={styles.tagline}>
-          Events sourced from Ticketmaster & Eventbrite ·{" "}
-          <span style={styles.brass}>Auto-updated every 15 minutes</span>
-          {lastUpdated && ` · Last refresh: ${lastUpdated.toLocaleTimeString()}`}
+          <span style={styles.brass}>Philadelphia's Weekly Event Guide</span>
         </div>
       </div>
     </footer>
