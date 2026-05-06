@@ -26,16 +26,16 @@ const styles = {
   logoMain: {
     fontFamily: "var(--font-display)",
     fontWeight: 900,
-    fontSize: "clamp(1.1rem, 4.5vw, 1.5rem)",
+    fontSize: "clamp(1.2rem, 5vw, 1.5rem)",
     color: "var(--cream)",
     letterSpacing: "-0.5px",
-    paddingBottom: 4,
+    paddingBottom: 6,
   },
   logoSub: {
     fontFamily: "var(--font-body)",
-    fontSize: "0.65rem",
+    fontSize: "clamp(0.45rem, 1.5vw, 0.65rem)",
     color: "var(--brass)",
-    letterSpacing: "0.2em",
+    letterSpacing: "0.15em",
     textTransform: "uppercase",
     marginTop: 2,
     paddingBottom: 4,
@@ -43,7 +43,9 @@ const styles = {
   meta: {
     display: "flex",
     alignItems: "center",
-    gap: 16,
+    gap: 8,
+    marginLeft: "auto",
+    paddingLeft: 8,
   },
   date: {
     fontFamily: "var(--font-body)",
