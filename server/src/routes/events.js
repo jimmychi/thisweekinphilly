@@ -79,8 +79,7 @@ router.get("/categories", (req, res) => {
 router.get("/:id", async (req, res) => {
   const { id } = req.params;
   const cacheKey = `event-${id}`;
-  const cached = cache.get(cacheKey);
-  if (cached) return res.json({ event: cached });
+  // cache disabled for event detail to ensure fresh phone data
 
   try {
     let event = null;
