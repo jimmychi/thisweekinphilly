@@ -170,13 +170,11 @@ export default function EventCard({ event, style }) {
         <div style={styles.meta}>
           {event.time && (
             <div style={styles.metaRow}>
-              <span style={styles.icon}>🕐</span>
               <span>{formatTime(event.time)}</span>
             </div>
           )}
           {event.venue && (
             <div style={styles.metaRow}>
-              <span style={styles.icon}>📍</span>
               <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                 {event.venue}
               </span>
