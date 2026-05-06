@@ -46,7 +46,7 @@ export default function Hero() {
   return (
     <div style={styles.hero}>
       <div style={styles.inner}>
-        <div style={styles.eyebrow}>Philadelphia, PA</div>
+        
         <h1 style={styles.headline}>
           What's Happening<br />
           <span style={styles.accent}>This Week</span>
