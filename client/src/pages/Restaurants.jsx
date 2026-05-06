@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const API_BASE = import.meta.env.VITE_API_URL || "https://thisweekinphilly-api.onrender.com/api";
 
@@ -126,6 +127,7 @@ const styles = {
 };
 
 export default function Restaurants() {
+  const navigate = useNavigate();
   const [restaurants, setRestaurants] = useState([]);
   const [loading, setLoading] = useState(true);
   const [neighborhood, setNeighborhood] = useState("All");
@@ -166,7 +168,7 @@ export default function Restaurants() {
       ) : (
         <div style={styles.grid}>
           {restaurants.map(r => (
-            <a key={r.id} href={r.googleMapsUrl} target="_blank" rel="noopener noreferrer" style={styles.card}>
+            <div key={r.id} style={{...styles.card, cursor: "pointer"}} onClick={() => navigate(`/restaurants/${encodeURIComponent(r.id)}`)}>  
               {r.image ? (
                 <img src={r.image} alt={r.name} style={styles.cardImg} />
               ) : (
@@ -181,7 +183,7 @@ export default function Restaurants() {
                 </div>
                 <div style={styles.address}>{r.address}</div>
               </div>
-            </a>
+            </div>
           ))}
         </div>
       )}
