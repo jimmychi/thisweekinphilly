@@ -50,7 +50,11 @@ async function getPredicthqEvents(category, daysAhead) {
 
     const filtered = rawEvents.filter(function(e) {
       const title = e.title ? e.title.toLowerCase() : "";
-      return !title.includes("erie") && !title.includes("pittsburgh") && !title.includes("allentown");
+      // Filter out non-Philly cities
+      if (title.includes("erie") || title.includes("pittsburgh") || title.includes("allentown")) return false;
+      // Filter out events with no real venue
+      const hasVenue = e.entities && e.entities[0] && e.entities[0].name && e.entities[0].name !== "Philadelphia, PA";
+      return hasVenue;
     });
     return filtered.map(function(e) {
       const start = e.start ? e.start.split("T") : [];
