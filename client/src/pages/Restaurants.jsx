@@ -181,7 +181,7 @@ export default function Restaurants() {
               <div style={styles.cardBody}>
                 <div style={styles.cardName}>{r.name}</div>
                 <div style={styles.cardMeta}>
-                  {r.rating && <span style={styles.rating}>⭐ {r.rating}</span>}
+        
                   {r.priceLevel && <span style={styles.price}>{PRICE[r.priceLevel]}</span>}
                   {r.openNow && <span style={styles.openNow}>● Open Now</span>}
                 </div>
