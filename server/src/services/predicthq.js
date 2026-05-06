@@ -48,7 +48,11 @@ async function getPredicthqEvents(category, daysAhead) {
 
     const rawEvents = (res.data && res.data.results) || [];
 
-    return rawEvents.map(function(e) {
+    const filtered = rawEvents.filter(function(e) {
+      const title = e.title ? e.title.toLowerCase() : "";
+      return !title.includes("erie") && !title.includes("pittsburgh") && !title.includes("allentown");
+    });
+    return filtered.map(function(e) {
       const start = e.start ? e.start.split("T") : [];
       return {
         id: "phq-" + e.id,
