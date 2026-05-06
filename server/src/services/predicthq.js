@@ -14,6 +14,16 @@ async function getPredicthqEvents(category, daysAhead) {
   const end = new Date();
   end.setDate(end.getDate() + daysAhead);
 
+  const params = {
+    "place.scope": "5188843",
+    "start.gte": now.toISOString().split("T")[0],
+    "start.lte": end.toISOString().split("T")[0],
+    "state": "active",
+    limit: 50,
+    sort: "start",
+    country: "US",
+  };
+
   const CATEGORY_MAP = {
     concerts: "concerts",
     sports: "sports",
@@ -22,15 +32,6 @@ async function getPredicthqEvents(category, daysAhead) {
     family: "community",
     nightlife: "concerts",
     community: "community",
-  };
-
-  const params = {
-    "location_around.origin": "39.9526,-75.1652",
-    "location_around.offset": "10mi",
-    "active.gte": now.toISOString().split("T")[0],
-    "active.lte": end.toISOString().split("T")[0],
-    limit: 50,
-    sort: "start",
   };
 
   if (category && CATEGORY_MAP[category]) {
