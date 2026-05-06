@@ -26,7 +26,7 @@ const styles = {
   logoMain: {
     fontFamily: "var(--font-display)",
     fontWeight: 900,
-    fontSize: "1.5rem",
+    fontSize: "clamp(1rem, 4vw, 1.5rem)",
     color: "var(--cream)",
     letterSpacing: "-0.5px",
   },
@@ -37,6 +37,7 @@ const styles = {
     letterSpacing: "0.2em",
     textTransform: "uppercase",
     marginTop: 2,
+    paddingBottom: 4,
   },
   meta: {
     display: "flex",
