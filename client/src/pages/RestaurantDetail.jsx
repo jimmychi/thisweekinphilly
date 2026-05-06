@@ -17,6 +17,11 @@ const styles = {
     maxHeight: 404,
     overflow: "hidden",
   },
+  photoGridMobile: {
+    width: "100%",
+    height: 220,
+    overflow: "hidden",
+  },
   photoMain: {
     gridRow: "1 / 3",
     width: "100%", height: "100%",
@@ -175,6 +180,7 @@ export default function RestaurantDetail() {
   const navigate = useNavigate();
   const [restaurant, setRestaurant] = useState(null);
   const [loading, setLoading] = useState(true);
+  const isMobile = window.innerWidth < 768;
 
   useEffect(() => {
     fetch(`${API_BASE}/restaurants/${encodeURIComponent(id)}`)
@@ -208,9 +214,9 @@ export default function RestaurantDetail() {
 
       {/* Photo Grid */}
       {restaurant.photos && restaurant.photos.length > 0 ? (
-        <div style={styles.photoGrid}>
+        <div style={isMobile ? styles.photoGridMobile : styles.photoGrid}>
           <img src={restaurant.photos[0]} alt={restaurant.name} style={styles.photoMain} />
-          {restaurant.photos.slice(1, 5).map((p, i) => (
+          {!isMobile && restaurant.photos.slice(1, 5).map((p, i) => (
             <img key={i} src={p} alt="" style={styles.photoThumb} />
           ))}
         </div>
@@ -218,7 +224,7 @@ export default function RestaurantDetail() {
         <div style={styles.photoPlaceholder}>🍽️</div>
       )}
 
-      <div style={styles.content}>
+      <div style={{ maxWidth: 900, margin: "0 auto", padding: "32px 24px", display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 320px", gap: 32 }}>
         {/* Left Column */}
         <div>
           <h1 style={styles.name}>{restaurant.name}</h1>
