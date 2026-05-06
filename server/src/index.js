@@ -17,6 +17,9 @@ app.get("/health", (req, res) => res.json({ status: "ok", time: new Date() }));
 // Routes
 app.use("/api/events", eventsRouter);
 
+const restaurantsRouter = require("./routes/restaurants");
+app.use("/api/restaurants", restaurantsRouter);
+
 app.listen(PORT, () => {
   console.log(`🏙️  This Week in Philly server running on port ${PORT}`);
 });
