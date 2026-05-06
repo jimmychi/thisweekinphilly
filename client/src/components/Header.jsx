@@ -26,9 +26,10 @@ const styles = {
   logoMain: {
     fontFamily: "var(--font-display)",
     fontWeight: 900,
-    fontSize: "clamp(1rem, 4vw, 1.5rem)",
+    fontSize: "clamp(1.1rem, 4.5vw, 1.5rem)",
     color: "var(--cream)",
     letterSpacing: "-0.5px",
+    paddingBottom: 4,
   },
   logoSub: {
     fontFamily: "var(--font-body)",
