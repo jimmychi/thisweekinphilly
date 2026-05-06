@@ -5,7 +5,7 @@ async function getPhillyGovEvents(daysAhead) {
 
   try {
     const res = await axios.get(
-      "https://www.phila.gov/api/v1/calendars/",
+      "https://api.phila.gov/phila/calendars/v1",
       { timeout: 8000 }
     );
 
