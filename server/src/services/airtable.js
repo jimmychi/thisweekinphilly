@@ -23,6 +23,7 @@ async function submitEvent(eventData) {
           "URL": eventData.url,
           "Email": eventData.email,
           "Approved": false,
+          "Image URL": eventData.image || null,
         },
       },
       {
