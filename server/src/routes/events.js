@@ -9,7 +9,7 @@ const { generateEventDescription } = require("../services/claude");
 const router = express.Router();
 const cache = new NodeCache({ stdTTL: 900 });
 
-const VALID_CATEGORIES = ["concerts", "sports", "arts", "food", "family", "nightlife", "community"];
+const VALID_CATEGORIES = ["concerts", "sports", "arts", "family", "nightlife", "community"];
 
 // GET /api/events?category=concerts&days=7
 router.get("/", async (req, res) => {
@@ -69,7 +69,6 @@ router.get("/categories", (req, res) => {
       { id: "concerts", label: "Concerts", emoji: "🎵" },
       { id: "sports", label: "Sports", emoji: "🏈" },
       { id: "arts", label: "Arts & Culture", emoji: "🎨" },
-      { id: "food", label: "Food & Drink", emoji: "🍻" },
       { id: "family", label: "Family", emoji: "👨‍👩‍👧" },
       { id: "nightlife", label: "Nightlife", emoji: "🌙" },
       { id: "community", label: "Community", emoji: "🤝" },
