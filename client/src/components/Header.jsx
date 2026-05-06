@@ -26,19 +26,21 @@ const styles = {
   logoMain: {
     fontFamily: "var(--font-display)",
     fontWeight: 900,
-    fontSize: "clamp(1.2rem, 5vw, 1.5rem)",
+    fontSize: "clamp(1.1rem, 4vw, 1.5rem)",
     color: "var(--cream)",
     letterSpacing: "-0.5px",
     paddingBottom: 6,
+    whiteSpace: "nowrap",
   },
   logoSub: {
     fontFamily: "var(--font-body)",
-    fontSize: "clamp(0.45rem, 1.5vw, 0.65rem)",
+    fontSize: "clamp(0.55rem, 1.8vw, 0.65rem)",
     color: "var(--brass)",
     letterSpacing: "0.15em",
     textTransform: "uppercase",
     marginTop: 2,
     paddingBottom: 4,
+    whiteSpace: "nowrap",
   },
   meta: {
     display: "flex",
