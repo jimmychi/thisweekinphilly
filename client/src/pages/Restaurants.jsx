@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Header from "../components/Header.jsx";
 import { useNavigate } from "react-router-dom";
 
 const API_BASE = import.meta.env.VITE_API_URL || "https://thisweekinphilly-api.onrender.com/api";
@@ -146,6 +147,7 @@ export default function Restaurants() {
 
   return (
     <div style={styles.page}>
+      <Header />
       <div style={styles.header}>
         <div style={styles.headerInner}>
           <h1 style={styles.headline}>
