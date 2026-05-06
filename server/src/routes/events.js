@@ -26,6 +26,7 @@ router.get("/", async (req, res) => {
   }
 
   try {
+const [tmEvents, phqEvents] = await Promise.allSettled([
       getTicketmasterEvents(category, days),
       getPredicthqEvents(category, days),
     ]);
