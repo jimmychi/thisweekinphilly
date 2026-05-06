@@ -71,7 +71,7 @@ const styles = {
     alignItems: "center",
     gap: 6,
     fontSize: "0.8rem",
-    color: "var(--stone)",
+    color: "var(--ink)",
   },
   icon: { fontSize: "0.85rem", flexShrink: 0 },
   price: {
