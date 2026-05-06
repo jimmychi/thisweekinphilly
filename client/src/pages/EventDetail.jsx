@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import Header from "../components/Header.jsx";
 import { formatDate, formatTime } from "../utils/dates.js";
 
 const API_BASE = import.meta.env.VITE_API_URL || "/api";
@@ -162,6 +163,7 @@ export default function EventDetail() {
 
   return (
     <div style={styles.page}>
+      <Header />
       <button style={styles.back} onClick={() => navigate("/")}>
         Back to all events
       </button>
