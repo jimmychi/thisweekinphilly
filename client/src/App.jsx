@@ -8,6 +8,7 @@ import Footer from "./components/Footer.jsx";
 import EventDetail from "./pages/EventDetail.jsx";
 import SubmitEvent from "./pages/SubmitEvent.jsx";
 import { useEvents, useCategories } from "./hooks/useEvents.js";
+import Restaurants from "./pages/Restaurants.jsx";
 
 function HomePage() {
   const [activeCategory, setActiveCategory] = useState("all");
