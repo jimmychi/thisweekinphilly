@@ -61,6 +61,7 @@ const styles = {
 export default function Header({ lastUpdated }) {
   const navigate = useNavigate();
   const location = window.location.pathname;
+  const isMobile = window.innerWidth < 640;
   const today = new Date().toLocaleDateString("en-US", {
     weekday: "long", month: "long", day: "numeric", year: "numeric",
   });
@@ -74,10 +75,10 @@ export default function Header({ lastUpdated }) {
           <span style={{...styles.logoSub, cursor: "pointer"}} onClick={() => navigate("/")}>Philadelphia's Event Guide</span>
         </div>
         <div style={styles.meta}>
-          <button onClick={() => location !== "/" && navigate("/")} style={{ background: location === "/" ? "rgba(255,255,255,0.15)" : "transparent", color: "var(--cream)", fontFamily: "var(--font-body)", fontSize: "0.8rem", fontWeight: 600, padding: "6px 16px", borderRadius: 20, border: "1px solid rgba(255,255,255,0.3)", cursor: location === "/" ? "default" : "pointer", marginRight: 8 }}>📅 Events</button>
-          <button onClick={() => !location.startsWith("/restaurants") && navigate("/restaurants")} style={{ background: location.startsWith("/restaurants") ? "rgba(255,255,255,0.15)" : "transparent", color: "var(--cream)", fontFamily: "var(--font-body)", fontSize: "0.8rem", fontWeight: 600, padding: "6px 16px", borderRadius: 20, border: "1px solid rgba(255,255,255,0.3)", cursor: location.startsWith("/restaurants") ? "default" : "pointer", marginRight: 8 }}>🍽️ Restaurants</button>
-          <button onClick={() => navigate("/submit")} style={{ background: "var(--brick)", color: "#fff", fontFamily: "var(--font-body)", fontSize: "0.8rem", fontWeight: 600, padding: "6px 16px", borderRadius: 20, border: "none", cursor: "pointer" }}>
-            + Submit Event
+          <button onClick={() => location !== "/" && navigate("/")} style={{ background: location === "/" ? "rgba(255,255,255,0.15)" : "transparent", color: "var(--cream)", fontFamily: "var(--font-body)", fontSize: isMobile ? "0.7rem" : "0.8rem", fontWeight: 600, padding: isMobile ? "4px 8px" : "6px 16px", borderRadius: 20, border: "1px solid rgba(255,255,255,0.3)", cursor: location === "/" ? "default" : "pointer", marginRight: isMobile ? 4 : 8 }}>📅 Events</button>
+          <button onClick={() => !location.startsWith("/restaurants") && navigate("/restaurants")} style={{ background: location.startsWith("/restaurants") ? "rgba(255,255,255,0.15)" : "transparent", color: "var(--cream)", fontFamily: "var(--font-body)", fontSize: isMobile ? "0.7rem" : "0.8rem", fontWeight: 600, padding: isMobile ? "4px 8px" : "6px 16px", borderRadius: 20, border: "1px solid rgba(255,255,255,0.3)", cursor: location.startsWith("/restaurants") ? "default" : "pointer", marginRight: isMobile ? 4 : 8 }}>🍽️ Restaurants</button>
+          <button onClick={() => navigate("/submit")} style={{ background: "var(--brick)", color: "#fff", fontFamily: "var(--font-body)", fontSize: isMobile ? "0.7rem" : "0.8rem", fontWeight: 600, padding: isMobile ? "4px 8px" : "6px 16px", borderRadius: 20, border: "none", cursor: "pointer" }}>
+            {isMobile ? "+" : "+ Submit Event"}
           </button>
           
           
