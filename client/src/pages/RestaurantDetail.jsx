@@ -231,7 +231,7 @@ export default function RestaurantDetail() {
 
           <div style={styles.metaRow}>
             {restaurant.rating && <StarRating rating={restaurant.rating} />}
-            {restaurant.reviewCount > 0 && <span style={styles.reviews}>({restaurant.reviewCount.toLocaleString()} reviews)</span>}
+  
             {restaurant.priceLevel && <span style={styles.price}>{PRICE[restaurant.priceLevel]} · {PRICE_LABEL[restaurant.priceLevel]}</span>}
             {restaurant.openNow !== undefined && (
               <span style={restaurant.openNow ? styles.openNow : styles.closed}>
@@ -264,24 +264,7 @@ export default function RestaurantDetail() {
             </>
           )}
 
-          {/* Reviews */}
-          {restaurant.reviews && restaurant.reviews.length > 0 && (
-            <>
-              <div style={styles.sectionTitle}>What People Are Saying</div>
-              {restaurant.reviews.map((r, i) => (
-                <div key={i} style={styles.reviewCard}>
-                  <div style={styles.reviewHeader}>
-                    {r.avatar && <img src={r.avatar} alt={r.author} style={styles.reviewAvatar} />}
-                    <div>
-                      <div style={styles.reviewAuthor}>{r.author}</div>
-                      <div style={styles.reviewTime}>{r.time} · {"★".repeat(r.rating)}</div>
-                    </div>
-                  </div>
-                  <p style={styles.reviewText}>{r.text}</p>
-                </div>
-              ))}
-            </>
-          )}
+
         </div>
 
         {/* Right Column */}
