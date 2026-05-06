@@ -52,7 +52,7 @@ export default function Hero() {
           <span style={styles.accent}>This Week</span>
         </h1>
         <p style={styles.sub}>
-          Concerts, food, arts, sports & community events — all in one place.
+          Philly concerts, food, arts, sports & community events.
         </p>
       </div>
     </div>
