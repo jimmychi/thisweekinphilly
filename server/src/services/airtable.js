@@ -60,11 +60,11 @@ async function getApprovedEvents() {
       time: r.fields["Time"],
       venue: r.fields["Venue"] || "Philadelphia, PA",
       address: "Philadelphia, PA",
-      image: null,
+      image: r.fields["Image URL"] || null,
       url: r.fields["URL"] || null,
       price: null,
       description: r.fields["Description"] || null,
-      category: "community",
+      category: r.fields["Category"] || "community",
     }));
   } catch (err) {
     console.error("Airtable fetch error:", err.message);
