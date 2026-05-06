@@ -60,6 +60,7 @@ const styles = {
 
 export default function Header({ lastUpdated }) {
   const navigate = useNavigate();
+  const location = window.location.pathname;
   const today = new Date().toLocaleDateString("en-US", {
     weekday: "long", month: "long", day: "numeric", year: "numeric",
   });
@@ -73,7 +74,7 @@ export default function Header({ lastUpdated }) {
           <span style={styles.logoSub}>Philadelphia's Event Guide</span>
         </div>
         <div style={styles.meta}>
-          <button onClick={() => navigate("/")} style={{ background: "transparent", color: "var(--cream)", fontFamily: "var(--font-body)", fontSize: "0.8rem", fontWeight: 600, padding: "6px 16px", borderRadius: 20, border: "1px solid rgba(255,255,255,0.3)", cursor: "pointer", marginRight: 8 }}>📅 Events</button>
+          {location !== "/" && <button onClick={() => navigate("/")} style={{ background: "transparent", color: "var(--cream)", fontFamily: "var(--font-body)", fontSize: "0.8rem", fontWeight: 600, padding: "6px 16px", borderRadius: 20, border: "1px solid rgba(255,255,255,0.3)", cursor: "pointer", marginRight: 8 }}>📅 Events</button>}
           <button onClick={() => navigate("/restaurants")} style={{ background: "transparent", color: "var(--cream)", fontFamily: "var(--font-body)", fontSize: "0.8rem", fontWeight: 600, padding: "6px 16px", borderRadius: 20, border: "1px solid rgba(255,255,255,0.3)", cursor: "pointer", marginRight: 8 }}>🍽️ Restaurants</button>
           <button onClick={() => navigate("/submit")} style={{ background: "var(--brick)", color: "#fff", fontFamily: "var(--font-body)", fontSize: "0.8rem", fontWeight: 600, padding: "6px 16px", borderRadius: 20, border: "none", cursor: "pointer" }}>
             + Submit Event
