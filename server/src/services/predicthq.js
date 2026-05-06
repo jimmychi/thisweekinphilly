@@ -62,7 +62,12 @@ async function getPredicthqEvents(category, daysAhead) {
         id: "phq-" + e.id,
         source: "predicthq",
         title: e.title,
-        category: mapPHQCategory(e.category),
+        category: (function() {
+          var cat = mapPHQCategory(e.category);
+          var t = (e.title || "").toLowerCase();
+          if (cat === "concerts" && (t.includes("philharmonic") || t.includes("orchestra") || t.includes("symphony") || t.includes("classical") || t.includes("ballet") || t.includes("opera") || t.includes("chamber"))) return "arts";
+          return cat;
+        })(),
         date: start[0] || null,
         time: start[1] ? start[1].slice(0, 5) : null,
         venue: e.entities && e.entities[0] && e.entities[0].name || "Philadelphia, PA",
@@ -82,6 +87,7 @@ async function getPredicthqEvents(category, daysAhead) {
 function mapPHQCategory(category) {
   if (!category) return "other";
   if (category === "concerts") return "concerts";
+  if (category === "classical") return "arts";
   if (category === "sports") return "sports";
   if (category === "performing-arts") return "arts";
   if (category === "festivals") return "food";
