@@ -1,10 +1,9 @@
 const express = require("express");
 const NodeCache = require("node-cache");
-const { getTicketmasterEvents } = require("../services/ticketmaster");
+const { getTicketmasterEvents, getTicketmasterEventById } = require("../services/ticketmaster");
 const { getEventbriteEvents } = require("../services/eventbrite");
 
 const router = express.Router();
-// Cache for 15 minutes
 const cache = new NodeCache({ stdTTL: 900 });
 
 const VALID_CATEGORIES = ["concerts", "sports", "arts", "food", "family", "nightlife", "community"];
@@ -25,7 +24,6 @@ router.get("/", async (req, res) => {
   }
 
   try {
-    // Fetch from both sources in parallel
     const [tmEvents, ebEvents] = await Promise.allSettled([
       getTicketmasterEvents(category, days),
       getEventbriteEvents(category, days),
@@ -36,7 +34,6 @@ router.get("/", async (req, res) => {
       ...(ebEvents.status === "fulfilled" ? ebEvents.value : []),
     ];
 
-    // Deduplicate by normalized title+date
     const seen = new Set();
     const deduped = all.filter((e) => {
       const key = `${e.title?.toLowerCase().trim()}-${e.date}`;
@@ -45,7 +42,6 @@ router.get("/", async (req, res) => {
       return true;
     });
 
-    // Sort by date
     deduped.sort((a, b) => {
       if (!a.date) return 1;
       if (!b.date) return -1;
@@ -74,6 +70,32 @@ router.get("/categories", (req, res) => {
       { id: "community", label: "Community", emoji: "🤝" },
     ],
   });
+});
+
+// GET /api/events/:id
+router.get("/:id", async (req, res) => {
+  const { id } = req.params;
+  const cacheKey = `event-${id}`;
+  const cached = cache.get(cacheKey);
+  if (cached) return res.json({ event: cached });
+
+  try {
+    let event = null;
+    if (id.startsWith("tm-")) {
+      const tmId = id.replace("tm-", "");
+      event = await getTicketmasterEventById(tmId);
+    } else {
+      const allCached = cache.get("events-all-7") || [];
+      event = allCached.find((e) => e.id === id) || null;
+    }
+
+    if (!event) return res.status(404).json({ error: "Event not found" });
+    cache.set(cacheKey, event);
+    res.json({ event });
+  } catch (err) {
+    console.error("Event detail error:", err);
+    res.status(500).json({ error: "Failed to fetch event" });
+  }
 });
 
 module.exports = router;

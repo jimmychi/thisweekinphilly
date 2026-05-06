@@ -1,12 +1,14 @@
 import React, { useState } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Header from "./components/Header.jsx";
 import Hero from "./components/Hero.jsx";
 import CategoryBar from "./components/CategoryBar.jsx";
 import EventGrid from "./components/EventGrid.jsx";
 import Footer from "./components/Footer.jsx";
+import EventDetail from "./pages/EventDetail.jsx";
 import { useEvents, useCategories } from "./hooks/useEvents.js";
 
-export default function App() {
+function HomePage() {
   const [activeCategory, setActiveCategory] = useState("all");
   const categories = useCategories();
   const { events, loading, error, lastUpdated } = useEvents(activeCategory, 7);
@@ -25,5 +27,16 @@ export default function App() {
       </div>
       <Footer lastUpdated={lastUpdated} />
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/event/:id" element={<EventDetail />} />
+      </Routes>
+    </BrowserRouter>
   );
 }

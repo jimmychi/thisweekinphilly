@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { formatTime } from "../utils/dates.js";
 
 const CATEGORY_COLORS = {
@@ -97,13 +98,12 @@ const CATEGORY_EMOJI = {
 
 export default function EventCard({ event, style }) {
   const [imgErr, setImgErr] = useState(false);
+  const navigate = useNavigate();
 
   return (
-    <a 
-      href={event.url}
-      target="_blank"
-      rel="noopener noreferrer"
+    <div
       style={{ ...styles.card, ...style }}
+      onClick={() => navigate(`/event/${event.id}`)}
       onMouseEnter={(e) => {
         e.currentTarget.style.transform = "translateY(-3px)";
         e.currentTarget.style.boxShadow = "0 8px 24px var(--shadow)";
@@ -145,6 +145,6 @@ export default function EventCard({ event, style }) {
           <span style={styles.source}>{event.source}</span>
         </div>
       </div>
-    </a>
+    </div>
   );
 }
