@@ -147,7 +147,7 @@ export default function Restaurants() {
       <div style={styles.header}>
         <div style={styles.headerInner}>
           <h1 style={styles.headline}>
-            Philly's Best <span style={styles.accent}>Restaurants</span>
+            Philly <span style={styles.accent}>Restaurants</span>
           </h1>
           <p style={styles.sub}>Top-rated dining across Philadelphia neighborhoods</p>
         </div>
