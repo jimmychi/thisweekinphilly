@@ -3,6 +3,7 @@ const NodeCache = require("node-cache");
 const { getTicketmasterEvents, getTicketmasterEventById } = require("../services/ticketmaster");
 const { getEventbriteEvents } = require("../services/eventbrite");
 const { getPredicthqEvents } = require("../services/predicthq");
+const { generateEventDescription } = require("../services/claude");
 
 const router = express.Router();
 const cache = new NodeCache({ stdTTL: 900 });
@@ -92,6 +93,12 @@ router.get("/:id", async (req, res) => {
     }
 
     if (!event) return res.status(404).json({ error: "Event not found" });
+
+    // Auto-generate description if missing
+    if (!event.description) {
+      const aiDesc = await generateEventDescription(event.title, event.category, event.venue, event.date);
+      if (aiDesc) event.description = aiDesc;
+    }
     cache.set(cacheKey, event);
     res.json({ event });
   } catch (err) {
