@@ -123,6 +123,7 @@ function formatTMEvent(e) {
     price: formatTMPrice(e.priceRanges),
     description: e.info || e.pleaseNote || null,
     seatmap: e.seatmap && e.seatmap.staticUrl || null,
+    phone: e._embedded && e._embedded.venues && e._embedded.venues[0] && e._embedded.venues[0].boxOfficeInfo && e._embedded.venues[0].boxOfficeInfo.phoneNumberDetail || null,
   };
 }
 

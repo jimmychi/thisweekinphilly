@@ -197,6 +197,12 @@ export default function EventDetail() {
               <span style={styles.infoValue}>{event.venue}</span>
             </div>
           )}
+          {event.phone && (
+            <div style={styles.infoItem}>
+              <span style={styles.infoLabel}>Phone</span>
+              <span style={styles.infoValue}>{event.phone}</span>
+            </div>
+          )}
           {event.address && (
             <div style={styles.infoItem}>
               <span style={styles.infoLabel}>Address</span>
