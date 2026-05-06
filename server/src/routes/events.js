@@ -26,14 +26,16 @@ router.get("/", async (req, res) => {
   }
 
   try {
-const [tmEvents, phqEvents] = await Promise.allSettled([
+const [tmEvents, phqEvents, atEvents] = await Promise.allSettled([
       getTicketmasterEvents(category, days),
       getPredicthqEvents(category, days),
+      getApprovedEvents(),
     ]);
 
     const all = [
       ...(tmEvents.status === "fulfilled" ? tmEvents.value : []),
       ...(phqEvents.status === "fulfilled" ? phqEvents.value : []),
+      ...(atEvents.status === "fulfilled" ? atEvents.value : []),
     ];
 
     const seen = new Set();
