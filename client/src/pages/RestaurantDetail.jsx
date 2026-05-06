@@ -230,7 +230,7 @@ export default function RestaurantDetail() {
           <h1 style={styles.name}>{restaurant.name}</h1>
 
           <div style={styles.metaRow}>
-            {restaurant.rating && <StarRating rating={restaurant.rating} />}
+  
   
             {restaurant.priceLevel && <span style={styles.price}>{PRICE[restaurant.priceLevel]} · {PRICE_LABEL[restaurant.priceLevel]}</span>}
             {restaurant.openNow !== undefined && (

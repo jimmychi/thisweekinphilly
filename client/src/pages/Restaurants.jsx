@@ -172,7 +172,9 @@ export default function Restaurants() {
           {restaurants.map(r => (
             <div key={r.id} style={{...styles.card, cursor: "pointer"}} onClick={() => navigate(`/restaurants/${encodeURIComponent(r.id)}`)}>  
               {r.image ? (
-                <img src={r.image} alt={r.name} style={styles.cardImg} />
+                <div style={{ display: "flex", overflowX: "auto", scrollSnapType: "x mandatory", WebkitOverflowScrolling: "touch" }}>
+                  <img src={r.image} alt={r.name} style={{ ...styles.cardImg, flexShrink: 0, width: "100%", scrollSnapAlign: "start" }} />
+                </div>
               ) : (
                 <div style={styles.cardImgPlaceholder}>🍽️</div>
               )}
