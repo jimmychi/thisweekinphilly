@@ -9,7 +9,7 @@ export function formatTime(timeStr) {
   const [h, m] = timeStr.split(":").map(Number);
   const period = h >= 12 ? "PM" : "AM";
   const hour = h % 12 || 12;
-  return String(hour) + ":" + String(m).padStart(2, "0") + " " + period;
+  return String(hour) + ":" + String(m).padStart(2, "0") + " " + period + " ET";
 }
 
 export function isToday(dateStr) {

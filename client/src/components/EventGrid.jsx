@@ -18,10 +18,10 @@ const styles = {
     marginBottom: 18,
   },
   dayLabel: {
-    fontFamily: "var(--font-display)",
-    fontStyle: "italic",
-    fontSize: "1.6rem",
-    fontWeight: 700,
+    fontFamily: "var(--font-body)",
+    fontStyle: "normal",
+    fontSize: "1.4rem",
+    fontWeight: 600,
     color: "var(--ink)",
   },
   dayLine: {
