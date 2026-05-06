@@ -228,4 +228,4 @@ export default function EventDetail() {
       </div>
     </div>
   );
-}
+}// Tue May  5 20:36:15 EDT 2026
