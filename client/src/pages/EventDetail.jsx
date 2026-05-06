@@ -14,15 +14,16 @@ const styles = {
     display: "inline-flex",
     alignItems: "center",
     gap: 8,
-    padding: "10px 24px",
+    padding: "6px 12px",
     fontFamily: "var(--font-body)",
-    fontSize: "0.82rem",
-    color: "rgba(255,255,255,0.75)",
+    fontSize: "0.8rem",
+    color: "rgba(255,255,255,0.7)",
     cursor: "pointer",
-    background: "var(--ink)",
+    background: "none",
     border: "none",
-    width: "100%",
-    textAlign: "left",
+    position: "absolute",
+    bottom: 10,
+    left: 16,
   },
   hero: {
     width: "100%",
@@ -164,10 +165,10 @@ export default function EventDetail() {
 
   return (
     <div style={styles.page}>
-      <Header />
-      <button style={styles.back} onClick={() => navigate("/")}>
-        Back to all events
-      </button>
+      <div style={{ position: "relative" }}>
+        <Header />
+        <button style={styles.back} onClick={() => navigate("/")}>← Back to Events</button>
+      </div>
 
       {event.image ? (
         <img src={event.image} alt={event.title} style={styles.hero} />
