@@ -25,7 +25,7 @@ const styles = {
 
 export default function SubmitEvent() {
   const navigate = useNavigate();
-  const [form, setForm] = useState({ title: "", date: "", time: "", venue: "", description: "", url: "", email: "" });
+  const [form, setForm] = useState({ title: "", date: "", time: "", venue: "", description: "", url: "", email: "", image: "", image: "" });
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(null);
@@ -96,6 +96,14 @@ export default function SubmitEvent() {
             <div style={styles.field}>
               <label style={styles.label}>Event URL</label>
               <input style={styles.input} name="url" type="url" value={form.url} onChange={handleChange} placeholder="https://..." />
+            </div>
+            <div style={styles.field}>
+              <label style={styles.label}>Image URL</label>
+              <input style={styles.input} name="image" value={form.image} onChange={handleChange} placeholder="https://yoursite.com/photo.jpg (optional)" />
+            </div>
+            <div style={styles.field}>
+              <label style={styles.label}>Image URL</label>
+              <input style={styles.input} name="image" value={form.image} onChange={handleChange} placeholder="https://yoursite.com/photo.jpg (optional)" />
             </div>
             <div style={styles.field}>
               <label style={styles.label}>Your Email</label>
