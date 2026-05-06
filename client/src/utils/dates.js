@@ -1,7 +1,7 @@
 export function formatDate(dateStr) {
   if (!dateStr) return "";
-  const d = new Date(dateStr + "T12:00:00"); // prevent tz shift
-  return d.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
+  const d = new Date(dateStr + "T12:00:00");
+  return d.toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" });
 }
 
 export function formatTime(timeStr) {
@@ -9,7 +9,7 @@ export function formatTime(timeStr) {
   const [h, m] = timeStr.split(":").map(Number);
   const period = h >= 12 ? "PM" : "AM";
   const hour = h % 12 || 12;
-  return `${hour}:${m.toString().padStart(2, "0")} ${period}`;
+  return String(hour) + ":" + String(m).padStart(2, "0") + " " + period;
 }
 
 export function isToday(dateStr) {
@@ -26,9 +26,9 @@ export function isTomorrow(dateStr) {
 }
 
 export function getDayLabel(dateStr) {
-  if (isToday(dateStr)) return "Today";
-  if (isTomorrow(dateStr)) return "Tomorrow";
-  return formatDate(dateStr);
+  if (!dateStr) return "";
+  const d = new Date(dateStr + "T12:00:00");
+  return d.toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" });
 }
 
 export function groupEventsByDate(events) {
