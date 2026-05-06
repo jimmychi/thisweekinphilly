@@ -151,4 +151,34 @@ function formatTMPrice(priceRanges) {
   return "$" + range.min + "-$" + range.max;
 }
 
+function getVenuePhone(venueName) {
+  if (!venueName) return null;
+  const name = venueName.toLowerCase();
+  const phones = {
+    "citizens bank park": "(215) 463-1000",
+    "xfinity mobile arena": "(215) 336-3600",
+    "wells fargo center": "(215) 336-3600",
+    "the met presented by highmark": "(215) 928-1234",
+    "union transfer": "(215) 232-2100",
+    "theatre of living arts": "(215) 922-1011",
+    "franklin music hall": "(215) 627-1332",
+    "the fillmore philadelphia": "(215) 309-0150",
+    "underground arts": "(215) 627-1332",
+    "milkboy philadelphia": "(215) 925-6455",
+    "punch line philly": "(215) 829-1000",
+    "marian anderson hall": "(215) 893-1999",
+    "kimmel center": "(215) 893-1999",
+    "academy of music": "(215) 893-1999",
+    "walnut street theatre": "(215) 574-3550",
+    "city winery": "(215) 515-0400",
+    "nikki lopez philly": "(215) 922-6699",
+    "noto": "(215) 735-6686",
+    "the foundry": "(215) 309-0150",
+  };
+  for (const [key, phone] of Object.entries(phones)) {
+    if (name.includes(key)) return phone;
+  }
+  return null;
+}
+
 module.exports = { getTicketmasterEvents, getTicketmasterEventById };
