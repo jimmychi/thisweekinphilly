@@ -195,6 +195,7 @@ export default function EventDetail() {
             <div style={styles.infoItem}>
               <span style={styles.infoLabel}>Venue</span>
               <span style={styles.infoValue}>{event.venue}</span>
+              {event.address && <span style={{fontSize: "0.8rem", color: "var(--stone)", marginTop: 2}}>{event.address}</span>}
             </div>
           )}
           {event.phone && (
@@ -203,12 +204,7 @@ export default function EventDetail() {
               <span style={styles.infoValue}>{event.phone}</span>
             </div>
           )}
-          {event.address && (
-            <div style={styles.infoItem}>
-              <span style={styles.infoLabel}>Address</span>
-              <span style={styles.infoValue}>{event.address}</span>
-            </div>
-          )}
+
           {event.price && (
             <div style={styles.infoItem}>
               <span style={styles.infoLabel}>Price</span>
