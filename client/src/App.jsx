@@ -38,6 +38,7 @@ export default function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/event/:id" element={<EventDetail />} />
         <Route path="/submit" element={<SubmitEvent />} />
+        <Route path="/restaurants" element={<Restaurants />} />
       </Routes>
     </BrowserRouter>
   );
