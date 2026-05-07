@@ -92,6 +92,8 @@ const styles = {
 };
 
 const KEYWORD_IMAGES = {
+  philly: "https://images.unsplash.com/photo-1570168007204-dfb528c6958f?w=600&q=80",
+  philadelphia: "https://images.unsplash.com/photo-1570168007204-dfb528c6958f?w=600&q=80",
   dog: "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=600&q=80",
   puppy: "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=600&q=80",
   cat: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=600&q=80",
