@@ -113,7 +113,7 @@ export default function Privacy() {
         <h2 style={styles.h2}>Contact Us</h2>
         <p style={styles.p}>
           If you have any questions about this privacy policy, please contact us at:{" "}
-          <a href="mailto:hello@thisweekinphilly.com" style={styles.a}>hello@thisweekinphilly.com</a>
+          <a href="mailto:info@thisweekinphilly.com" style={styles.a}>info@thisweekinphilly.com</a>
         </p>
       </div>
     </div>
