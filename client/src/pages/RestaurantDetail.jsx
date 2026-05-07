@@ -69,7 +69,7 @@ const styles = {
     fontFamily: "var(--font-body)",
     fontSize: "1rem", lineHeight: 1.7,
     color: "var(--ink)", marginBottom: 24,
-    fontStyle: "italic",
+    fontStyle: "normal",
 
   },
   sectionTitle: {
