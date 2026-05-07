@@ -30,4 +30,8 @@ services:
       - path: /*
         name: Cache-Control
         value: no-cache
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
 
