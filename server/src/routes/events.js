@@ -2,7 +2,6 @@ const express = require("express");
 const NodeCache = require("node-cache");
 const { getTicketmasterEvents, getTicketmasterEventById } = require("../services/ticketmaster");
 const { getPredicthqEvents } = require("../services/predicthq");
-const { getEventbriteEvents } = require("../services/eventbrite");
 const { submitEvent, getApprovedEvents } = require("../services/airtable");
 const { generateEventDescription } = require("../services/claude");
 
@@ -27,18 +26,16 @@ router.get("/", async (req, res) => {
   }
 
   try {
-const [tmEvents, phqEvents, atEvents, ebEvents] = await Promise.allSettled([
+const [tmEvents, phqEvents, atEvents] = await Promise.allSettled([
       getTicketmasterEvents(category, days),
       getPredicthqEvents(category, days),
       getApprovedEvents(),
-      getEventbriteEvents(category, days),
     ]);
 
     const all = [
       ...(tmEvents.status === "fulfilled" ? tmEvents.value : []),
       ...(phqEvents.status === "fulfilled" ? phqEvents.value : []),
       ...(atEvents.status === "fulfilled" ? atEvents.value : []),
-      ...(ebEvents.status === "fulfilled" ? ebEvents.value : []),
     ];
 
     const seen = new Set();
