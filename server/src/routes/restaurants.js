@@ -26,6 +26,18 @@ router.get("/neighborhoods", (req, res) => {
   res.json({ neighborhoods: PHILLY_NEIGHBORHOODS.map(n => n.name) });
 });
 
+// GET /api/restaurants/specials
+router.get("/specials", async (req, res) => {
+  const { getRestaurantSpecials } = require("../services/airtable");
+  try {
+    const specials = await getRestaurantSpecials();
+    res.json({ specials });
+  } catch (err) {
+    console.error("Specials fetch error:", err);
+    res.status(500).json({ error: "Failed to fetch specials" });
+  }
+});
+
 router.get("/:id", async (req, res) => {
   const placeId = req.params.id;
   const cacheKey = `restaurant-detail-${placeId}`;
