@@ -95,7 +95,7 @@ async function getRestaurantDetails(placeId) {
       rating: p.rating || null,
       reviewCount: p.user_ratings_total || 0,
       priceLevel: p.price_level || null,
-      address: p.formatted_address || "Philadelphia, PA",
+      address: (p.formatted_address || "Philadelphia, PA").replace(/, USA$/, "").replace(/,$/, "").trim(),
       phone: p.formatted_phone_number || null,
       website: p.website || null,
       description: p.editorial_summary?.overview || null,
