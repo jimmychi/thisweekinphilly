@@ -72,4 +72,32 @@ async function getApprovedEvents() {
   }
 }
 
-module.exports = { submitEvent, getApprovedEvents };
+async function getRestaurantSpecials() {
+  if (!AIRTABLE_BASE || !AIRTABLE_KEY) return [];
+
+  try {
+    const res = await axios.get(
+      `https://api.airtable.com/v0/${AIRTABLE_BASE}/Restaurants`,
+      {
+        params: { filterByFormula: "{Active} = 1" },
+        headers: { Authorization: `Bearer ${AIRTABLE_KEY}` },
+      }
+    );
+
+    return (res.data.records || []).map((r) => ({
+      id: `rest-${r.id}`,
+      name: r.fields["Restaurant Name"] || "",
+      special: r.fields["Special"] || null,
+      description: r.fields["Description"] || null,
+      day: r.fields["Day"] || null,
+      time: r.fields["Time"] || null,
+      neighborhood: r.fields["Neighborhood"] || null,
+      image: r.fields["Image"] || null,
+    }));
+  } catch (err) {
+    console.error("Airtable restaurants fetch error:", err.message);
+    return [];
+  }
+}
+
+module.exports = { submitEvent, getApprovedEvents, getRestaurantSpecials };
