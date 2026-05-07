@@ -11,7 +11,6 @@ router.get("/", async (req, res) => {
   const cacheKey = `restaurants-${neighborhood || "all"}-${cuisine || "all"}`;
   const cached = cache.get(cacheKey);
   if (cached) return res.json({ restaurants: cached, cached: true });
-
   try {
     const restaurants = await getPhillyRestaurants(neighborhood, cuisine);
     const sorted = restaurants.sort((a, b) => (b.rating || 0) - (a.rating || 0));
@@ -24,34 +23,6 @@ router.get("/", async (req, res) => {
 
 router.get("/neighborhoods", (req, res) => {
   res.json({ neighborhoods: PHILLY_NEIGHBORHOODS.map(n => n.name) });
-});
-
-// GET /api/restaurants/specials
-router.get("/specials", async (req, res) => {
-  const { getRestaurantSpecials } = require("../services/airtable");
-  try {
-    const specials = await getRestaurantSpecials();
-    res.json({ specials });
-  } catch (err) {
-    console.error("Specials fetch error:", err);
-    res.status(500).json({ error: "Failed to fetch specials" });
-  }
-});
-
-router.get("/:id", async (req, res) => {
-  const placeId = req.params.id;
-  const cacheKey = `restaurant-detail-${placeId}`;
-  const cached = cache.get(cacheKey);
-  if (cached) return res.json({ restaurant: cached, cached: true });
-
-  try {
-    const restaurant = await getRestaurantDetails(placeId);
-    if (!restaurant) return res.status(404).json({ error: "Restaurant not found" });
-    cache.set(cacheKey, restaurant);
-    res.json({ restaurant });
-  } catch (err) {
-    res.status(500).json({ error: "Failed to fetch restaurant details" });
-  }
 });
 
 // GET /api/restaurants/specials
@@ -92,6 +63,21 @@ router.get("/nightclubs", async (req, res) => {
     cache.set(cacheKey, sorted);
     res.json({ restaurants: sorted, count: sorted.length });
   } catch (err) { res.status(500).json({ error: "Failed to fetch nightclubs" }); }
+});
+
+router.get("/:id", async (req, res) => {
+  const placeId = req.params.id;
+  const cacheKey = `restaurant-detail-${placeId}`;
+  const cached = cache.get(cacheKey);
+  if (cached) return res.json({ restaurant: cached, cached: true });
+  try {
+    const restaurant = await getRestaurantDetails(placeId);
+    if (!restaurant) return res.status(404).json({ error: "Restaurant not found" });
+    cache.set(cacheKey, restaurant);
+    res.json({ restaurant });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch restaurant details" });
+  }
 });
 
 module.exports = router;
