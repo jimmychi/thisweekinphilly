@@ -117,6 +117,7 @@ function formatTMEvent(e) {
     date: e.dates && e.dates.start && e.dates.start.localDate,
     time: e.dates && e.dates.start && e.dates.start.localTime,
     venue: (e._embedded && e._embedded.venues && e._embedded.venues[0] && e._embedded.venues[0].name) || "TBA",
+    venueUrl: (e._embedded && e._embedded.venues && e._embedded.venues[0] && e._embedded.venues[0].url) || null,
     address: formatTMAddress(e._embedded && e._embedded.venues && e._embedded.venues[0]),
     image: bestImage ? bestImage.url : null,
     url: e.url,
