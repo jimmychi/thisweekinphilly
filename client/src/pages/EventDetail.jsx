@@ -79,6 +79,8 @@ const styles = {
     gap: 4,
   },
   infoLabel: {
+    minWidth: 60,
+    maxWidth: 60,
     fontFamily: "var(--font-body)",
     fontSize: "0.65rem",
     color: "var(--stone)",
@@ -201,8 +203,8 @@ export default function EventDetail() {
             <div style={styles.infoItem}>
               <span style={styles.infoLabel}>Venue</span>
               <span style={styles.infoValue}>{event.venue === event.title || event.venue === "Philadelphia, PA" ? "Philadelphia, PA" : event.venue}</span>
-              {event.address && <span style={{fontSize: "0.8rem", color: "var(--stone)", marginTop: 2}}>{event.address}</span>}
-              {event.phone && <span style={{fontSize: "0.8rem", color: "var(--stone)", marginTop: 2}}>{event.phone}</span>}
+              {event.address && <span style={{fontSize: "0.8rem", color: "var(--ink)", marginTop: 2}}>{event.address}</span>}
+              {event.phone && <span style={{fontSize: "0.8rem", color: "var(--ink)", marginTop: 2}}>{event.phone}</span>}
             </div>
           )}
 
