@@ -184,26 +184,25 @@ export default function RestaurantDetail() {
   const isMobile = window.innerWidth < 768;
 
   useEffect(() => {
-    if (!restaurant) return;
-    fetch(`${API_BASE}/restaurants/specials`)
-      .then(r => r.json())
-      .then(data => {
-        if (data.specials) {
-          const match = data.specials.find(s =>
-            s.name.toLowerCase().trim() === restaurant.name.toLowerCase().trim()
-          );
-          if (match) setAirtableData(match);
-        }
-      })
-      .catch(() => {});
-  }, [restaurant]);
-
-  useEffect(() => {
     fetch(`${API_BASE}/restaurants/${encodeURIComponent(id)}`)
       .then(r => r.json())
       .then(data => {
-        setRestaurant(data.restaurant || null);
+        const rest = data.restaurant || null;
+        setRestaurant(rest);
         setLoading(false);
+        if (rest) {
+          fetch(`${API_BASE}/restaurants/specials`)
+            .then(r => r.json())
+            .then(sd => {
+              if (sd.specials) {
+                const match = sd.specials.find(s =>
+                  s.name.toLowerCase().trim() === rest.name.toLowerCase().trim()
+                );
+                if (match) setAirtableData(match);
+              }
+            })
+            .catch(() => {});
+        }
       })
       .catch(() => setLoading(false));
   }, [id]);
