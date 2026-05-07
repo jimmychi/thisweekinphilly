@@ -121,7 +121,10 @@ async function getPhillyBars(neighborhood) {
       : "39.9526,-75.1652";
     const params = { location, radius: 2000, type: "bar", key: API_KEY };
     const res = await axios.get("https://maps.googleapis.com/maps/api/place/nearbysearch/json", { params });
-    const places = res.data.results || [];
+    const places = (res.data.results || []).filter(p => {
+      const types = p.types || [];
+      return !types.includes("restaurant") && !types.includes("meal_delivery") && !types.includes("meal_takeaway");
+    });
     return places.map(p => {
       const photoRef = p.photos && p.photos[0] && p.photos[0].photo_reference;
       const photoUrl = photoRef ? `https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photoreference=${photoRef}&key=${API_KEY}` : null;
