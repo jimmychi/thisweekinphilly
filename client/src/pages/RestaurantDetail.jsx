@@ -188,14 +188,17 @@ export default function RestaurantDetail() {
     fetch(`${API_BASE}/restaurants/specials`)
       .then(r => r.json())
       .then(data => {
+        console.log("SPECIALS DATA:", JSON.stringify(data));
+        console.log("RESTAURANT NAME:", restaurant.name);
         if (data.specials) {
           const match = data.specials.find(s =>
             s.name.toLowerCase().trim() === restaurant.name.toLowerCase().trim()
           );
+          console.log("MATCH:", JSON.stringify(match));
           if (match) setAirtableData(match);
         }
       })
-      .catch(() => {});
+      .catch((err) => console.error("Specials fetch error:", err));
   }, [restaurant]);
 
   useEffect(() => {
