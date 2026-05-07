@@ -47,7 +47,8 @@ function getKeywordImage(title, venue) {
   if (!title) return null;
   const lower = title.toLowerCase();
   for (const [keyword, url] of Object.entries(KEYWORD_IMAGES)) {
-    if (lower.includes(keyword)) return url;
+    const regex = new RegExp("\\b" + keyword + "\\b");
+    if (regex.test(lower)) return url;
   }
   return null;
 }
