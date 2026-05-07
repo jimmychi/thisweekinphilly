@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { formatTime } from "../utils/dates.js";
+import { formatTime, formatDate } from "../utils/dates.js";
 
 const CATEGORY_COLORS = {
   concerts: "#b84c2b",
@@ -177,9 +177,9 @@ export default function EventCard({ event, style }) {
       <div style={styles.body}>
         <div style={styles.title}>{event.title}</div>
         <div style={styles.meta}>
-          {event.time && (
+          {(event.date || event.time) && (
             <div style={styles.metaRow}>
-              <span>{formatTime(event.time)}</span>
+              <span>{[event.date ? new Date(event.date + "T12:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric" }) : null, event.time ? formatTime(event.time) : null].filter(Boolean).join(" · ")}</span>
             </div>
           )}
           {event.venue && (
