@@ -260,7 +260,10 @@ export default function RestaurantDetail() {
           </div>
 
           {restaurant.description && (
-            <p style={styles.description}>{restaurant.description}</p>
+            <p style={styles.description} dangerouslySetInnerHTML={{ __html: restaurant.description }} />
+          )}
+          {airtableData?.description && (
+            <p style={styles.description} dangerouslySetInnerHTML={{ __html: airtableData.description }} />
           )}
 
           {/* Hours */}
