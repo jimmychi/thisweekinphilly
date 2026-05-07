@@ -180,9 +180,22 @@ export default function RestaurantDetail() {
   const navigate = useNavigate();
   const [restaurant, setRestaurant] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [airtableData, setAirtableData] = useState(null);
   const isMobile = window.innerWidth < 768;
 
   useEffect(() => {
+    fetch(`${API_BASE}/restaurants/specials`)
+      .then(r => r.json())
+      .then(data => {
+        if (data.specials) {
+          const match = data.specials.find(s =>
+            s.name.toLowerCase().trim() === (restaurant?.name || "").toLowerCase().trim()
+          );
+          if (match) setAirtableData(match);
+        }
+      })
+      .catch(() => {});
+
     fetch(`${API_BASE}/restaurants/${encodeURIComponent(id)}`)
       .then(r => r.json())
       .then(data => {
