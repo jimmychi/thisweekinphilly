@@ -97,7 +97,7 @@ async function getRestaurantDetails(placeId) {
       priceLevel: p.price_level || null,
       address: (p.formatted_address || "Philadelphia, PA").replace(/, USA$/, "").replace(/,$/, "").trim(),
       phone: p.formatted_phone_number || null,
-      website: p.website || null,
+      website: p.website ? (() => { try { const u = new URL(p.website); ["utm_source","utm_medium","utm_campaign","utm_term","utm_content"].forEach(k => u.searchParams.delete(k)); return u.toString().replace(/\?$/, ""); } catch(e) { return p.website; } })() : null,
       description: p.editorial_summary?.overview || null,
       hours: p.opening_hours?.weekday_text || null,
       openNow: p.opening_hours?.open_now,
