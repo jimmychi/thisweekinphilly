@@ -11,6 +11,8 @@ import { useEvents, useCategories } from "./hooks/useEvents.js";
 import Restaurants from "./pages/Restaurants.jsx";
 import RestaurantDetail from "./pages/RestaurantDetail.jsx";
 import Privacy from "./pages/Privacy.jsx";
+import Bars from "./pages/Bars.jsx";
+import Nightclubs from "./pages/Nightclubs.jsx";
 import ScrollToTop from "./components/ScrollToTop.jsx";
 
 function HomePage() {
@@ -46,6 +48,8 @@ export default function App() {
         <Route path="/restaurants" element={<Restaurants />} />
         <Route path="/restaurants/:id" element={<RestaurantDetail />} />
         <Route path="/privacy" element={<Privacy />} />
+        <Route path="/bars" element={<Bars />} />
+        <Route path="/nightclubs" element={<Nightclubs />} />
       </Routes>
     </BrowserRouter>
   );

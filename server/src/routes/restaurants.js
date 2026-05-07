@@ -1,6 +1,6 @@
 const express = require("express");
 const NodeCache = require("node-cache");
-const { getPhillyRestaurants, getRestaurantDetails, PHILLY_NEIGHBORHOODS } = require("../services/restaurants");
+const { getPhillyRestaurants, getPhillyBars, getPhillyNightclubs, getRestaurantDetails, PHILLY_NEIGHBORHOODS } = require("../services/restaurants");
 
 const router = express.Router();
 const cache = new NodeCache({ stdTTL: 3600 });
@@ -64,6 +64,34 @@ router.get("/specials", async (req, res) => {
     console.error("Specials fetch error:", err);
     res.status(500).json({ error: "Failed to fetch specials" });
   }
+});
+
+// GET /api/restaurants/bars
+router.get("/bars", async (req, res) => {
+  const neighborhood = req.query.neighborhood || null;
+  const cacheKey = `bars-${neighborhood || "all"}`;
+  const cached = cache.get(cacheKey);
+  if (cached) return res.json({ restaurants: cached, cached: true });
+  try {
+    const bars = await getPhillyBars(neighborhood);
+    const sorted = bars.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+    cache.set(cacheKey, sorted);
+    res.json({ restaurants: sorted, count: sorted.length });
+  } catch (err) { res.status(500).json({ error: "Failed to fetch bars" }); }
+});
+
+// GET /api/restaurants/nightclubs
+router.get("/nightclubs", async (req, res) => {
+  const neighborhood = req.query.neighborhood || null;
+  const cacheKey = `nightclubs-${neighborhood || "all"}`;
+  const cached = cache.get(cacheKey);
+  if (cached) return res.json({ restaurants: cached, cached: true });
+  try {
+    const clubs = await getPhillyNightclubs(neighborhood);
+    const sorted = clubs.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+    cache.set(cacheKey, sorted);
+    res.json({ restaurants: sorted, count: sorted.length });
+  } catch (err) { res.status(500).json({ error: "Failed to fetch nightclubs" }); }
 });
 
 module.exports = router;

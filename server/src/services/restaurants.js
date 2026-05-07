@@ -112,4 +112,53 @@ async function getRestaurantDetails(placeId) {
   }
 }
 
-module.exports = { getPhillyRestaurants, getRestaurantDetails, PHILLY_NEIGHBORHOODS };
+
+async function getPhillyBars(neighborhood) {
+  if (!API_KEY) return [];
+  try {
+    const location = neighborhood
+      ? PHILLY_NEIGHBORHOODS.find(n => n.name === neighborhood)?.location || "39.9526,-75.1652"
+      : "39.9526,-75.1652";
+    const params = { location, radius: 2000, type: "bar", key: API_KEY };
+    const res = await axios.get("https://maps.googleapis.com/maps/api/place/nearbysearch/json", { params });
+    const places = res.data.results || [];
+    return places.map(p => {
+      const photoRef = p.photos && p.photos[0] && p.photos[0].photo_reference;
+      const photoUrl = photoRef ? `https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photoreference=${photoRef}&key=${API_KEY}` : null;
+      return {
+        id: p.place_id, name: p.name, rating: p.rating || null,
+        reviewCount: p.user_ratings_total || 0, priceLevel: p.price_level || null,
+        address: p.vicinity || "Philadelphia, PA", image: photoUrl,
+        neighborhood: neighborhood || "Philadelphia", types: p.types || [],
+        openNow: p.opening_hours && p.opening_hours.open_now,
+        googleMapsUrl: `https://www.google.com/maps/place/?q=place_id:${p.place_id}`,
+      };
+    });
+  } catch (err) { console.error("Google Places bars error:", err.message); return []; }
+}
+
+async function getPhillyNightclubs(neighborhood) {
+  if (!API_KEY) return [];
+  try {
+    const location = neighborhood
+      ? PHILLY_NEIGHBORHOODS.find(n => n.name === neighborhood)?.location || "39.9526,-75.1652"
+      : "39.9526,-75.1652";
+    const params = { location, radius: 2000, type: "night_club", key: API_KEY };
+    const res = await axios.get("https://maps.googleapis.com/maps/api/place/nearbysearch/json", { params });
+    const places = res.data.results || [];
+    return places.map(p => {
+      const photoRef = p.photos && p.photos[0] && p.photos[0].photo_reference;
+      const photoUrl = photoRef ? `https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photoreference=${photoRef}&key=${API_KEY}` : null;
+      return {
+        id: p.place_id, name: p.name, rating: p.rating || null,
+        reviewCount: p.user_ratings_total || 0, priceLevel: p.price_level || null,
+        address: p.vicinity || "Philadelphia, PA", image: photoUrl,
+        neighborhood: neighborhood || "Philadelphia", types: p.types || [],
+        openNow: p.opening_hours && p.opening_hours.open_now,
+        googleMapsUrl: `https://www.google.com/maps/place/?q=place_id:${p.place_id}`,
+      };
+    });
+  } catch (err) { console.error("Google Places nightclubs error:", err.message); return []; }
+}
+
+module.exports = { getPhillyRestaurants, getPhillyBars, getPhillyNightclubs, getRestaurantDetails, PHILLY_NEIGHBORHOODS };
