@@ -10,6 +10,7 @@ import SubmitEvent from "./pages/SubmitEvent.jsx";
 import { useEvents, useCategories } from "./hooks/useEvents.js";
 import Restaurants from "./pages/Restaurants.jsx";
 import RestaurantDetail from "./pages/RestaurantDetail.jsx";
+import Privacy from "./pages/Privacy.jsx";
 
 function HomePage() {
   const [activeCategory, setActiveCategory] = useState("all");
@@ -42,6 +43,7 @@ export default function App() {
         <Route path="/submit" element={<SubmitEvent />} />
         <Route path="/restaurants" element={<Restaurants />} />
         <Route path="/restaurants/:id" element={<RestaurantDetail />} />
+        <Route path="/privacy" element={<Privacy />} />
       </Routes>
     </BrowserRouter>
   );

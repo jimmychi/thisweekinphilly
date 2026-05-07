@@ -31,7 +31,8 @@ export default function Footer({ lastUpdated }) {
     <footer style={styles.footer}>
       <div style={styles.inner}>
         <div style={styles.name}>This Week in Philly</div>
-        <div style={styles.tagline}>
+        <div style={{ textAlign: "center", paddingBottom: 8 }}><a href="/privacy" style={{ fontFamily: "var(--font-body)", fontSize: "0.75rem", color: "var(--stone-light)", textDecoration: "none" }}>Privacy Policy</a></div>
+      <div style={styles.tagline}>
           <span style={styles.brass}>Philadelphia's Weekly Event Guide</span>
         </div>
       </div>
