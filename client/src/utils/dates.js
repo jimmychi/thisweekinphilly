@@ -6,7 +6,13 @@ export function formatDate(dateStr) {
 
 export function formatTime(timeStr) {
   if (!timeStr) return "";
+  // Already formatted (e.g. "6:00 PM")
+  if (timeStr.toLowerCase().includes("am") || timeStr.toLowerCase().includes("pm")) {
+    return timeStr.trim() + " ET";
+  }
+  // 24-hour format (e.g. "18:00:00")
   const [h, m] = timeStr.split(":").map(Number);
+  if (isNaN(h) || isNaN(m)) return timeStr;
   const period = h >= 12 ? "PM" : "AM";
   const hour = h % 12 || 12;
   return String(hour) + ":" + String(m).padStart(2, "0") + " " + period + " ET";
