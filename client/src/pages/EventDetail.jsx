@@ -204,6 +204,7 @@ export default function EventDetail() {
               <span style={styles.infoLabel}>Venue</span>
               <span style={styles.infoValue}>{event.venue === event.title || event.venue === "Philadelphia, PA" ? "Philadelphia, PA" : event.venue}</span>
               {event.address && <span style={{fontSize: "0.8rem", color: "var(--ink)", marginTop: 2}}>{event.address}</span>}
+              {event.venueUrl && <a href={event.venueUrl.split("?")[0]} target="_blank" rel="noopener noreferrer" style={{fontSize: "0.8rem", color: "var(--brick)", marginTop: 2, textDecoration: "underline"}}>Visit Venue Website</a>}
               {event.phone && <span style={{fontSize: "0.8rem", color: "var(--ink)", marginTop: 2}}>{event.phone}</span>}
             </div>
           )}
