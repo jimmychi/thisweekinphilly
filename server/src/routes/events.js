@@ -6,7 +6,7 @@ const { submitEvent, getApprovedEvents } = require("../services/airtable");
 const { generateEventDescription } = require("../services/claude");
 
 const router = express.Router();
-const cache = new NodeCache({ stdTTL: 900 });
+const cache = new NodeCache({ stdTTL: 3600 });
 
 const VALID_CATEGORIES = ["concerts", "sports", "arts", "nightlife", "community"];
 
