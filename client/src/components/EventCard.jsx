@@ -112,9 +112,9 @@ const KEYWORD_IMAGES = {
   museum: "https://images.unsplash.com/photo-1565060169194-19fabf63012c?w=600&q=80",
   improv: "https://images.unsplash.com/photo-1527224538127-2104bb71c51b?w=600&q=80",
   theater: "https://images.unsplash.com/photo-1503095396549-807759245b35?w=600&q=80",
-  ballet: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=80",
-  quixote: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=80",
-  academy: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=80",
+  ballet: "https://images.unsplash.com/photo-1580809361436-42a7ec204889?w=600&q=80",
+  quixote: "https://images.unsplash.com/photo-1580809361436-42a7ec204889?w=600&q=80",
+  academy: "https://images.unsplash.com/photo-1580809361436-42a7ec204889?w=600&q=80",
   orchestra: "https://images.unsplash.com/photo-1465847899084-d164df4dedc6?w=600&q=80",
   cello: "https://images.unsplash.com/photo-1465847899084-d164df4dedc6?w=600&q=80",
   classical: "https://images.unsplash.com/photo-1465847899084-d164df4dedc6?w=600&q=80",
@@ -130,7 +130,7 @@ const KEYWORD_IMAGES = {
 function getKeywordImage(title, venue) {
   // v2: venue-based image override
   if (venue && venue.toLowerCase().includes("academy of music")) {
-    return "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=80";
+    return "https://images.unsplash.com/photo-1580809361436-42a7ec204889?w=600&q=80";
   }
   if (!title) return null;
   const lower = title.toLowerCase();
