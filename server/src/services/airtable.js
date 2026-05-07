@@ -86,7 +86,7 @@ async function getRestaurantSpecials() {
 
     return (res.data.records || []).map((r) => ({
       id: `rest-${r.id}`,
-      name: r.fields["Restaurant Name"] || "",
+      name: r.fields["Restaurant Name"] || r.fields["Name"] || "",
       special: r.fields["Special"] || null,
       description: r.fields["Description"] || null,
       day: r.fields["Day"] || null,
