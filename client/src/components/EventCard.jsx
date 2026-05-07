@@ -127,7 +127,10 @@ const KEYWORD_IMAGES = {
   tea: "https://images.unsplash.com/photo-1544787219-7f47ccb76574?w=600&q=80",
 };
 
-function getKeywordImage(title) {
+function getKeywordImage(title, venue) {
+  if (venue && venue.toLowerCase().includes("academy of music")) {
+    return "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=80";
+  }
   if (!title) return null;
   const lower = title.toLowerCase();
   for (const [keyword, url] of Object.entries(KEYWORD_IMAGES)) {
@@ -159,8 +162,8 @@ export default function EventCard({ event, style }) {
       }}
     >
       <div style={styles.imgWrap}>
-        {(event.image || getKeywordImage(event.title)) && !imgErr ? (
-          <img src={event.image || getKeywordImage(event.title)} alt={event.title} style={styles.img} onError={() => setImgErr(true)} />
+        {(event.image || getKeywordImage(event.title, event.venue)) && !imgErr ? (
+          <img src={getKeywordImage(event.title, event.venue) || event.image} alt={event.title} style={styles.img} onError={() => setImgErr(true)} />
         ) : (
           <div style={styles.imgPlaceholder(event.category)}>
             {CATEGORY_EMOJI[event.category] || "📅"}
