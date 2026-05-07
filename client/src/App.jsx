@@ -11,6 +11,7 @@ import { useEvents, useCategories } from "./hooks/useEvents.js";
 import Restaurants from "./pages/Restaurants.jsx";
 import RestaurantDetail from "./pages/RestaurantDetail.jsx";
 import Privacy from "./pages/Privacy.jsx";
+import ScrollToTop from "./components/ScrollToTop.jsx";
 
 function HomePage() {
   const [activeCategory, setActiveCategory] = useState("all");
@@ -37,6 +38,7 @@ function HomePage() {
 export default function App() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/event/:id" element={<EventDetail />} />
