@@ -270,7 +270,10 @@ export default function RestaurantDetail() {
           <div style={styles.infoBox}>
             {restaurant.address && (
               <div style={styles.infoRow}>
-                <span style={styles.infoValue}>{restaurant.address}</span>
+                <div>
+                  <div style={styles.infoValue}>{restaurant.address}</div>
+                  <a href={restaurant.googleMapsUrl} target="_blank" rel="noopener noreferrer" style={{ fontSize: "0.85rem", color: "var(--brick)", textDecoration: "underline", fontFamily: "var(--font-body)" }}>Get Directions</a>
+                </div>
               </div>
             )}
             {restaurant.phone && (
@@ -308,9 +311,6 @@ export default function RestaurantDetail() {
             </div>
           )}
 
-          <a href={restaurant.googleMapsUrl} target="_blank" rel="noopener noreferrer" style={styles.cta}>
-            🗺️ Get Directions
-          </a>
 
 
           <button onClick={() => navigate("/restaurants")} style={{ ...styles.ctaSecondary, cursor: "pointer", border: "none", color: "var(--stone-dark)", fontSize: "0.85rem" }}>
