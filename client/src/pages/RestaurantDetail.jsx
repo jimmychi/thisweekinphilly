@@ -70,8 +70,7 @@ const styles = {
     fontSize: "1rem", lineHeight: 1.7,
     color: "var(--ink)", marginBottom: 24,
     fontStyle: "italic",
-    borderLeft: "3px solid var(--brick)",
-    paddingLeft: 16,
+
   },
   sectionTitle: {
     fontFamily: "var(--font-display)",
@@ -262,25 +261,6 @@ export default function RestaurantDetail() {
             <p style={styles.description} dangerouslySetInnerHTML={{ __html: airtableData.description }} />
           )}
 
-          {/* Hours */}
-          {restaurant.hours && (
-            <>
-              <div style={styles.sectionTitle}>Hours</div>
-              <div style={styles.infoBox}>
-                <div style={styles.hoursGrid}>
-                  {restaurant.hours.map((h, i) => {
-                    const isToday = h.startsWith(today);
-                    return (
-                      <div key={i} style={{ ...styles.hourRow, fontWeight: isToday ? 700 : 400, color: isToday ? "var(--brick)" : "var(--ink)" }}>
-                        <span>{h.split(": ")[0]}</span>
-                        <span>{h.split(": ")[1]}</span>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            </>
-          )}
 
 
         </div>
@@ -290,19 +270,16 @@ export default function RestaurantDetail() {
           <div style={styles.infoBox}>
             {restaurant.address && (
               <div style={styles.infoRow}>
-                <span style={styles.infoLabel}>📍</span>
                 <span style={styles.infoValue}>{restaurant.address}</span>
               </div>
             )}
             {restaurant.phone && (
               <div style={styles.infoRow}>
-                <span style={styles.infoLabel}>📞</span>
                 <span style={styles.infoValue}><a href={`tel:${restaurant.phone}`} style={{ color: "var(--brick)", textDecoration: "none" }}>{restaurant.phone}</a></span>
               </div>
             )}
             {restaurant.website && (
               <div style={styles.infoRow}>
-                <span style={styles.infoLabel}>🌐</span>
                 <span style={styles.infoValue}>
                   <a href={restaurant.website} target="_blank" rel="noopener noreferrer" style={{ color: "var(--brick)", textDecoration: "none" }}>
                     {restaurant.website.replace(/^https?:\/\//, "").replace(/\/$/, "")}
@@ -312,15 +289,29 @@ export default function RestaurantDetail() {
             )}
           </div>
 
+
+          {/* Hours */}
+          {restaurant.hours && (
+            <div style={styles.infoBox}>
+              <div style={{ ...styles.sectionTitle, marginTop: 0 }}>Hours</div>
+              <div style={styles.hoursGrid}>
+                {restaurant.hours.map((h, i) => {
+                  const isToday = h.startsWith(today);
+                  return (
+                    <div key={i} style={{ ...styles.hourRow, fontWeight: isToday ? 700 : 400, color: isToday ? "var(--brick)" : "var(--ink)" }}>
+                      <span>{h.split(": ")[0]}</span>
+                      <span>{h.split(": ")[1]}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
           <a href={restaurant.googleMapsUrl} target="_blank" rel="noopener noreferrer" style={styles.cta}>
             🗺️ Get Directions
           </a>
 
-          {restaurant.website && (
-            <a href={restaurant.website} target="_blank" rel="noopener noreferrer" style={styles.ctaSecondary}>
-              🌐 Visit Website
-            </a>
-          )}
 
           <button onClick={() => navigate("/restaurants")} style={{ ...styles.ctaSecondary, cursor: "pointer", border: "none", color: "var(--stone-dark)", fontSize: "0.85rem" }}>
             ← Back to Restaurants
