@@ -184,18 +184,21 @@ export default function RestaurantDetail() {
   const isMobile = window.innerWidth < 768;
 
   useEffect(() => {
+    if (!restaurant) return;
     fetch(`${API_BASE}/restaurants/specials`)
       .then(r => r.json())
       .then(data => {
         if (data.specials) {
           const match = data.specials.find(s =>
-            s.name.toLowerCase().trim() === (restaurant?.name || "").toLowerCase().trim()
+            s.name.toLowerCase().trim() === restaurant.name.toLowerCase().trim()
           );
           if (match) setAirtableData(match);
         }
       })
       .catch(() => {});
+  }, [restaurant]);
 
+  useEffect(() => {
     fetch(`${API_BASE}/restaurants/${encodeURIComponent(id)}`)
       .then(r => r.json())
       .then(data => {
