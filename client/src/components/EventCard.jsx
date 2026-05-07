@@ -128,7 +128,7 @@ const KEYWORD_IMAGES = {
 };
 
 function getKeywordImage(title, venue) {
-  console.log("VENUE CHECK:", JSON.stringify(venue));
+  // v2: venue-based image override
   if (venue && venue.toLowerCase().includes("academy of music")) {
     return "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=80";
   }
