@@ -83,7 +83,6 @@ export default function HappyHours() {
                 {h.phone && <a href={`tel:${h.phone}`} style={{ fontSize: "0.82rem", color: "var(--ink)", fontFamily: "var(--font-body)", textDecoration: "none", display: "block", marginBottom: 2 }}>{h.phone}</a>}
                 {h.url && <a href={h.url} target="_blank" rel="noopener noreferrer" style={{ fontSize: "0.82rem", color: "var(--brick)", textDecoration: "none", fontFamily: "var(--font-body)", display: "block", marginBottom: 6 }}>{h.url.replace(/^https?:\/\//, "").replace(/\/$/, "")}</a>}
                 <div style={styles.special}>{h.special}</div>
-                <div style={styles.neighborhood}>{h.neighborhood}</div>
               </div>
               <div style={styles.right}>
                 <div style={styles.day}>{h.day}</div>
