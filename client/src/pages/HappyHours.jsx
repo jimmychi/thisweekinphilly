@@ -32,7 +32,7 @@ const styles = {
   },
   left: { flex: 1 },
   cardName: { fontFamily: "var(--font-display)", fontSize: "1.1rem", fontWeight: 700, color: "var(--ink)", marginBottom: 4 },
-  special: { fontFamily: "var(--font-body)", fontSize: "0.95rem", color: "var(--brick)", fontWeight: 600, marginBottom: 6 },
+  special: { fontFamily: "var(--font-body)", fontSize: "1.05rem", color: "var(--brick)", fontWeight: 700, marginBottom: 6 },
   neighborhood: { fontFamily: "var(--font-body)", fontSize: "0.78rem", color: "var(--stone)", textTransform: "uppercase", letterSpacing: "0.05em" },
   right: { textAlign: "right", flexShrink: 0 },
   day: { fontFamily: "var(--font-body)", fontSize: "0.85rem", fontWeight: 600, color: "var(--ink)", marginBottom: 2 },
