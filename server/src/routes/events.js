@@ -32,10 +32,11 @@ const [tmEvents, phqEvents, atEvents] = await Promise.allSettled([
       getApprovedEvents(),
     ]);
 
+    const atEventsFiltered = (atEvents.status === "fulfilled" ? atEvents.value : []).filter(e => !category || e.category === category);
     const all = [
       ...(tmEvents.status === "fulfilled" ? tmEvents.value : []),
       ...(phqEvents.status === "fulfilled" ? phqEvents.value : []),
-      ...(atEvents.status === "fulfilled" ? atEvents.value : []),
+      ...atEventsFiltered,
     ];
 
     const seen = new Set();
