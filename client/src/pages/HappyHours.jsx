@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Header from "../components/Header.jsx";
 
 const API_BASE = import.meta.env.VITE_API_URL || "https://thisweekinphilly-api.onrender.com/api";
-const NEIGHBORHOODS = ["All", "Center City", "Old City", "Fishtown", "Rittenhouse", "South Philly", "Northern Liberties", "Fairmount", "University City"];
+const NEIGHBORHOODS = ["All", "Center City", "Old City", "Fishtown", "Rittenhouse", "South Philly", "Northern Liberties", "Fairmount", "University City", "Manayunk", "Kensington", "Grad Hospital", "West Philadelphia"];
 
 const styles = {
   page: { minHeight: "100vh", background: "var(--cream)" },
