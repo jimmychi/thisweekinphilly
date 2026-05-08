@@ -56,7 +56,7 @@ export default function Nightclubs() {
       <div style={styles.header}>
         <div style={styles.headerInner}>
           <h1 style={styles.headline}>Philly <span style={styles.accent}>Nightclubs</span></h1>
-          <p style={styles.sub}>The best nightlife across Philadelphia neighborhoods</p>
+          <p style={styles.sub}>Local Philly Nightlife</p>
         </div>
       </div>
       <div style={styles.filters}>

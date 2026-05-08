@@ -56,7 +56,7 @@ export default function Bars() {
       <div style={styles.header}>
         <div style={styles.headerInner}>
           <h1 style={styles.headline}>Philly <span style={styles.accent}>Bars</span></h1>
-          <p style={styles.sub}>The best bars across Philadelphia neighborhoods</p>
+          <p style={styles.sub}>Neighborhood Philly Bars & Cafes</p>
         </div>
       </div>
       <div style={styles.filters}>
