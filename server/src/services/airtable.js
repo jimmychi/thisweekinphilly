@@ -194,6 +194,9 @@ async function getHappyHours() {
       time: r.fields["Time"] || "",
       neighborhood: r.fields["Neighborhood"] || "",
       image: r.fields["Image"] || null,
+      url: r.fields["URL"] || null,
+      phone: r.fields["Phone"] || null,
+      address: r.fields["Address"] || null,
     }));
   } catch (err) {
     console.error("Happy hours fetch error:", err.message);
