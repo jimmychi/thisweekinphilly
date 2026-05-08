@@ -31,7 +31,7 @@ export default function Footer({ lastUpdated }) {
     <footer style={styles.footer}>
       <div style={styles.inner}>
         <div style={styles.name}>This Week in Philly</div>
-        <div style={{ textAlign: "center", paddingBottom: 8, display: "flex", justifyContent: "center", gap: 24 }}><a href="/privacy" style={{ fontFamily: "var(--font-body)", fontSize: "0.75rem", color: "var(--stone-light)", textDecoration: "none" }}>Privacy Policy</a><a href="/submit" style={{ fontFamily: "var(--font-body)", fontSize: "0.75rem", color: "var(--stone-light)", textDecoration: "none" }}>Submit Event</a></div>
+        <div style={{ textAlign: "center", paddingBottom: 8, display: "flex", justifyContent: "center", gap: 24 }}><a href="/privacy" style={{ fontFamily: "var(--font-body)", fontSize: "0.75rem", color: "var(--stone-light)", textDecoration: "none" }}>Privacy Policy</a><a href="/submit" style={{ fontFamily: "var(--font-body)", fontSize: "0.75rem", color: "var(--stone-light)", textDecoration: "none" }}>Submit Event</a><a href="mailto:info@thisweekinphilly.com" style={{ fontFamily: "var(--font-body)", fontSize: "0.75rem", color: "var(--stone-light)", textDecoration: "none" }}>Contact Us</a></div>
       <div style={styles.tagline}>
           <span style={styles.brass}>Philadelphia's Weekly Event Guide</span>
         </div>
