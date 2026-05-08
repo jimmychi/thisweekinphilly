@@ -65,21 +65,6 @@ router.get("/nightclubs", async (req, res) => {
   } catch (err) { res.status(500).json({ error: "Failed to fetch nightclubs" }); }
 });
 
-router.get("/:id", async (req, res) => {
-  const placeId = req.params.id;
-  const cacheKey = `restaurant-detail-${placeId}`;
-  const cached = cache.get(cacheKey);
-  if (cached) return res.json({ restaurant: cached, cached: true });
-  try {
-    const restaurant = await getRestaurantDetails(placeId);
-    if (!restaurant) return res.status(404).json({ error: "Restaurant not found" });
-    cache.set(cacheKey, restaurant);
-    res.json({ restaurant });
-  } catch (err) {
-    res.status(500).json({ error: "Failed to fetch restaurant details" });
-  }
-});
-
 // GET /api/restaurants/happyhours
 router.get("/happyhours", async (req, res) => {
   const { getHappyHours } = require("../services/airtable");
@@ -93,6 +78,21 @@ router.get("/happyhours", async (req, res) => {
   } catch (err) {
     console.error("Happy hours fetch error:", err);
     res.status(500).json({ error: "Failed to fetch happy hours" });
+  }
+});
+
+router.get("/:id", async (req, res) => {
+  const placeId = req.params.id;
+  const cacheKey = `restaurant-detail-${placeId}`;
+  const cached = cache.get(cacheKey);
+  if (cached) return res.json({ restaurant: cached, cached: true });
+  try {
+    const restaurant = await getRestaurantDetails(placeId);
+    if (!restaurant) return res.status(404).json({ error: "Restaurant not found" });
+    cache.set(cacheKey, restaurant);
+    res.json({ restaurant });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch restaurant details" });
   }
 });
 
