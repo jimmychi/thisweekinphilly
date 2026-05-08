@@ -36,6 +36,8 @@ const KEYWORD_IMAGES = {
   workshop: "https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=600&q=80",
   cruise: "https://images.unsplash.com/photo-1548438294-1ad5d5f4f063?w=600&q=80",
   tea: "https://images.unsplash.com/photo-1544787219-7f47ccb76574?w=600&q=80",
+  rave: "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=600&q=80",
+  dj: "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=600&q=80",
   tech: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&q=80",
   technology: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&q=80",
 };
