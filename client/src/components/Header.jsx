@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const styles = {
@@ -49,28 +49,34 @@ const styles = {
     marginLeft: "auto",
     paddingLeft: 8,
   },
-  date: {
+  navBtn: (active, isMobile) => ({
+    background: active ? "rgba(255,255,255,0.15)" : "transparent",
+    color: "var(--cream)",
     fontFamily: "var(--font-body)",
-    fontSize: "0.8rem",
-    color: "var(--stone-light)",
-    fontStyle: "italic",
-  },
-  dot: {
-    width: 8,
-    height: 8,
-    borderRadius: "50%",
-    background: "var(--brick)",
-    animation: "pulse 2s ease-in-out infinite",
-  },
+    fontSize: isMobile ? "0.7rem" : "0.8rem",
+    fontWeight: 600,
+    padding: isMobile ? "4px 8px" : "6px 16px",
+    borderRadius: 20,
+    border: "1px solid rgba(255,255,255,0.3)",
+    cursor: active ? "default" : "pointer",
+    marginRight: isMobile ? 4 : 8,
+  }),
 };
+
+const NAV_ITEMS = [
+  { label: "Events", emoji: "📅", path: "/" },
+  { label: "Restaurants", emoji: "🍽️", path: "/restaurants" },
+  { label: "Bars", emoji: "🍺", path: "/bars" },
+  { label: "Nightclubs", emoji: "🎶", path: "/nightclubs" },
+];
 
 export default function Header({ lastUpdated }) {
   const navigate = useNavigate();
   const location = window.location.pathname;
   const isMobile = window.innerWidth < 640;
-  const today = new Date().toLocaleDateString("en-US", {
-    weekday: "long", month: "long", day: "numeric", year: "numeric",
-  });
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const isActive = (path) => path === "/" ? location === "/" : location.startsWith(path);
 
   return (
     <header style={styles.header}>
@@ -80,14 +86,53 @@ export default function Header({ lastUpdated }) {
           <span style={{...styles.logoMain, cursor: "pointer"}} onClick={() => navigate("/")}>This Week in Philly</span>
           <span style={{...styles.logoSub, cursor: "pointer"}} onClick={() => navigate("/")}>Philadelphia's Event Guide</span>
         </div>
-        <div style={styles.meta}>
-          <button onClick={() => location !== "/" && navigate("/")} style={{ background: location === "/" ? "rgba(255,255,255,0.15)" : "transparent", color: "var(--cream)", fontFamily: "var(--font-body)", fontSize: isMobile ? "0.7rem" : "0.8rem", fontWeight: 600, padding: isMobile ? "4px 8px" : "6px 16px", borderRadius: 20, border: "1px solid rgba(255,255,255,0.3)", cursor: location === "/" ? "default" : "pointer", marginRight: isMobile ? 4 : 8 }}>📅 Events</button>
-          <button onClick={() => !location.startsWith("/restaurants") && navigate("/restaurants")} style={{ background: location.startsWith("/restaurants") ? "rgba(255,255,255,0.15)" : "transparent", color: "var(--cream)", fontFamily: "var(--font-body)", fontSize: isMobile ? "0.7rem" : "0.8rem", fontWeight: 600, padding: isMobile ? "4px 8px" : "6px 16px", borderRadius: 20, border: "1px solid rgba(255,255,255,0.3)", cursor: location.startsWith("/restaurants") ? "default" : "pointer", marginRight: isMobile ? 4 : 8 }}>🍽️ Restaurants</button>
-          <button onClick={() => !location.startsWith("/bars") && navigate("/bars")} style={{ background: location.startsWith("/bars") ? "rgba(255,255,255,0.15)" : "transparent", color: "var(--cream)", fontFamily: "var(--font-body)", fontSize: isMobile ? "0.7rem" : "0.8rem", fontWeight: 600, padding: isMobile ? "4px 8px" : "6px 16px", borderRadius: 20, border: "1px solid rgba(255,255,255,0.3)", cursor: location.startsWith("/bars") ? "default" : "pointer", marginRight: isMobile ? 4 : 8 }}>🍺 Bars</button>
-          <button onClick={() => !location.startsWith("/nightclubs") && navigate("/nightclubs")} style={{ background: location.startsWith("/nightclubs") ? "rgba(255,255,255,0.15)" : "transparent", color: "var(--cream)", fontFamily: "var(--font-body)", fontSize: isMobile ? "0.7rem" : "0.8rem", fontWeight: 600, padding: isMobile ? "4px 8px" : "6px 16px", borderRadius: 20, border: "1px solid rgba(255,255,255,0.3)", cursor: location.startsWith("/nightclubs") ? "default" : "pointer", marginRight: isMobile ? 4 : 8 }}>🎶 Nightclubs</button>
-          
-          
-        </div>
+
+        {isMobile ? (
+          <div style={{ position: "relative", marginLeft: "auto" }}>
+            <button
+              onClick={() => setMenuOpen(!menuOpen)}
+              style={{ background: "transparent", border: "1px solid rgba(255,255,255,0.3)", borderRadius: 8, color: "var(--cream)", padding: "6px 10px", fontSize: "1.2rem", cursor: "pointer" }}
+            >
+              ☰
+            </button>
+            {menuOpen && (
+              <div style={{
+                position: "absolute", top: 44, right: 0, background: "var(--ink)",
+                border: "1px solid rgba(255,255,255,0.15)", borderRadius: 10,
+                padding: "8px 0", minWidth: 160, zIndex: 200,
+                boxShadow: "0 8px 24px rgba(0,0,0,0.3)",
+              }}>
+                {NAV_ITEMS.map(item => (
+                  <button
+                    key={item.path}
+                    onClick={() => { navigate(item.path); setMenuOpen(false); }}
+                    style={{
+                      display: "block", width: "100%", textAlign: "left",
+                      background: isActive(item.path) ? "rgba(255,255,255,0.1)" : "transparent",
+                      color: "var(--cream)", fontFamily: "var(--font-body)",
+                      fontSize: "0.9rem", fontWeight: isActive(item.path) ? 700 : 400,
+                      padding: "10px 20px", border: "none", cursor: "pointer",
+                    }}
+                  >
+                    {item.emoji} {item.label}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        ) : (
+          <div style={styles.meta}>
+            {NAV_ITEMS.map(item => (
+              <button
+                key={item.path}
+                onClick={() => !isActive(item.path) && navigate(item.path)}
+                style={styles.navBtn(isActive(item.path), false)}
+              >
+                {item.emoji} {item.label}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
     </header>
   );
