@@ -2,7 +2,7 @@ const express = require("express");
 const NodeCache = require("node-cache");
 const { getTicketmasterEvents, getTicketmasterEventById } = require("../services/ticketmaster");
 const { getPredicthqEvents } = require("../services/predicthq");
-const { submitEvent, getApprovedEvents } = require("../services/airtable");
+const { submitEvent, getApprovedEvents, syncEventsToAirtable } = require("../services/airtable");
 const { generateEventDescription } = require("../services/claude");
 
 const router = express.Router();
@@ -53,6 +53,12 @@ const [tmEvents, phqEvents, atEvents] = await Promise.allSettled([
     });
 
     cache.set(cacheKey, deduped);
+    // Sync new events to Airtable in background
+    const tmAndPhq = [
+      ...(tmEvents.status === "fulfilled" ? tmEvents.value : []),
+      ...(phqEvents.status === "fulfilled" ? phqEvents.value : []),
+    ];
+    syncEventsToAirtable(tmAndPhq).catch(err => console.error("Sync error:", err));
     res.json({ events: deduped, cached: false, count: deduped.length });
   } catch (err) {
     console.error("Events fetch error:", err);
