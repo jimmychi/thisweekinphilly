@@ -169,7 +169,7 @@ export default function EventCard({ event, style }) {
     >
       <div style={styles.imgWrap}>
         {(event.image || getKeywordImage(event.title, event.venue)) && !imgErr ? (
-          <img src={getKeywordImage(event.title, event.venue) || event.image} alt={event.title} style={styles.img} onError={() => setImgErr(true)} />
+          <img src={event.image || getKeywordImage(event.title, event.venue)} alt={event.title} style={styles.img} onError={() => setImgErr(true)} />
         ) : (
           <div style={styles.imgPlaceholder(event.category)}>
             {CATEGORY_EMOJI[event.category] || "📅"}
