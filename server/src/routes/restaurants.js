@@ -80,4 +80,20 @@ router.get("/:id", async (req, res) => {
   }
 });
 
+// GET /api/restaurants/happyhours
+router.get("/happyhours", async (req, res) => {
+  const { getHappyHours } = require("../services/airtable");
+  const cacheKey = "happyhours";
+  const cached = cache.get(cacheKey);
+  if (cached) return res.json({ happyHours: cached, cached: true });
+  try {
+    const happyHours = await getHappyHours();
+    cache.set(cacheKey, happyHours);
+    res.json({ happyHours });
+  } catch (err) {
+    console.error("Happy hours fetch error:", err);
+    res.status(500).json({ error: "Failed to fetch happy hours" });
+  }
+});
+
 module.exports = router;

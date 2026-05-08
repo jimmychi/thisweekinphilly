@@ -176,4 +176,29 @@ async function syncEventsToAirtable(events) {
   console.log(`Synced ${synced} new events to Airtable`);
 }
 
-module.exports = { submitEvent, getApprovedEvents, getRestaurantSpecials, syncEventsToAirtable };
+async function getHappyHours() {
+  if (!AIRTABLE_BASE || !AIRTABLE_KEY) return [];
+  try {
+    const res = await axios.get(
+      `https://api.airtable.com/v0/${AIRTABLE_BASE}/Happy%20Hours`,
+      {
+        params: { filterByFormula: "{Active} = 1" },
+        headers: { Authorization: `Bearer ${AIRTABLE_KEY}` },
+      }
+    );
+    return (res.data.records || []).map((r) => ({
+      id: `hh-${r.id}`,
+      name: r.fields["Restaurant Name"] || "",
+      special: r.fields["Special"] || "",
+      day: r.fields["Day"] || "",
+      time: r.fields["Time"] || "",
+      neighborhood: r.fields["Neighborhood"] || "",
+      image: r.fields["Image"] || null,
+    }));
+  } catch (err) {
+    console.error("Happy hours fetch error:", err.message);
+    return [];
+  }
+}
+
+module.exports = { submitEvent, getApprovedEvents, getRestaurantSpecials, syncEventsToAirtable, getHappyHours };
