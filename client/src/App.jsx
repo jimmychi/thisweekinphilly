@@ -8,6 +8,7 @@ import Footer from "./components/Footer.jsx";
 import EventDetail from "./pages/EventDetail.jsx";
 import SubmitEvent from "./pages/SubmitEvent.jsx";
 import { useEvents, useCategories } from "./hooks/useEvents.js";
+import DayBar from "./components/DayBar.jsx";
 import Restaurants from "./pages/Restaurants.jsx";
 import RestaurantDetail from "./pages/RestaurantDetail.jsx";
 import Privacy from "./pages/Privacy.jsx";
@@ -17,6 +18,7 @@ import ScrollToTop from "./components/ScrollToTop.jsx";
 
 function HomePage() {
   const [activeCategory, setActiveCategory] = useState("all");
+  const [activeDay, setActiveDay] = useState(null);
   const categories = useCategories();
   const { events, loading, error, lastUpdated } = useEvents(activeCategory, 7);
 
@@ -29,8 +31,9 @@ function HomePage() {
         activeCategory={activeCategory}
         onSelect={setActiveCategory}
       />
+      <DayBar activeDay={activeDay} onSelect={setActiveDay} />
       <div style={{ flex: 1, background: "var(--cream)" }}>
-        <EventGrid events={events} loading={loading} error={error} />
+        <EventGrid events={activeDay ? events.filter(e => e.date === activeDay) : events} loading={loading} error={error} />
       </div>
       <Footer lastUpdated={lastUpdated} />
     </div>
