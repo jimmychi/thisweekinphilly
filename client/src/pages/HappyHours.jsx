@@ -61,7 +61,7 @@ export default function HappyHours() {
       <div style={styles.header}>
         <div style={styles.headerInner}>
           <h1 style={styles.headline}>Philly <span style={styles.accent}>Happy Hours</span></h1>
-          <p style={styles.sub}>The best drink deals across Philadelphia</p>
+          <p style={styles.sub}>Local Happy Hour Deals</p>
         </div>
       </div>
       <div style={styles.filters}>
