@@ -153,7 +153,7 @@ export default function Restaurants() {
           <h1 style={styles.headline}>
             Philly <span style={styles.accent}>Restaurants</span>
           </h1>
-          <p style={styles.sub}>Top-rated dining across Philadelphia neighborhoods</p>
+          <p style={styles.sub}>Local Philly Dining</p>
         </div>
       </div>
 
