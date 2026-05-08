@@ -92,6 +92,16 @@ router.get("/:id", async (req, res) => {
     if (id.startsWith("tm-")) {
       const tmId = id.replace("tm-", "");
       event = await getTicketmasterEventById(tmId);
+    } else if (id.startsWith("at-")) {
+      // Try cache first
+      const allCached = cache.get("events-all-7") || [];
+      event = allCached.find((e) => e.id === id) || null;
+      // Fallback to Airtable directly
+      if (!event) {
+        const { getApprovedEvents } = require("../services/airtable");
+        const atEvents = await getApprovedEvents();
+        event = atEvents.find((e) => e.id === id) || null;
+      }
     } else {
       const allCached = cache.get("events-all-7") || [];
       event = allCached.find((e) => e.id === id) || null;
