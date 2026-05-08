@@ -69,8 +69,8 @@ export default function DayBar({ activeDay, onSelect }) {
           style={styles.btn(!activeDay)}
           onClick={() => onSelect(null)}
         >
-          <span style={styles.dayName}>All</span>
-          <span style={styles.dayNum}>Days</span>
+          <span style={styles.dayName}>This</span>
+          <span style={styles.dayNum}>Week</span>
         </button>
         {days.map((d) => (
           <button
@@ -78,7 +78,7 @@ export default function DayBar({ activeDay, onSelect }) {
             style={styles.btn(activeDay === d.dateStr)}
             onClick={() => onSelect(d.dateStr)}
           >
-            <span style={styles.dayName}>{d.isToday ? "Today" : d.dayName}</span>
+            <span style={styles.dayName}>{d.dayName}</span>
             <span style={styles.dayNum}>{d.dayNum}</span>
           </button>
         ))}
