@@ -63,7 +63,7 @@ async function getPredicthqEvents(category, daysAhead) {
         source: "predicthq",
         title: e.title,
         category: (function() {
-          var cat = mapPHQCategory(e.category);
+          var cat = mapPHQCategory(e.category, e.title);
           var t = (e.title || "").toLowerCase();
           if (cat === "concerts" && (t.includes("philharmonic") || t.includes("orchestra") || t.includes("symphony") || t.includes("classical") || t.includes("ballet") || t.includes("opera") || t.includes("chamber"))) return "arts";
           return cat;
@@ -84,8 +84,13 @@ async function getPredicthqEvents(category, daysAhead) {
   }
 }
 
-function mapPHQCategory(category) {
+function mapPHQCategory(category, title) {
   if (!category) return "other";
+  // Title-based overrides for miscategorized events
+  if (title) {
+    const t = title.toLowerCase();
+    if (t.includes("musical") || t.includes("theatre") || t.includes("ballet") || t.includes("opera") || t.includes("symphony") || t.includes("little women")) return "arts";
+  }
   if (category === "concerts") return "concerts";
   if (category === "classical") return "arts";
   if (category === "sports") return "sports";
