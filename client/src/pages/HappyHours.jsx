@@ -83,7 +83,7 @@ export default function HappyHours() {
                 {h.address && <div style={{ fontSize: "0.82rem", color: "var(--stone-dark)", fontFamily: "var(--font-body)", marginBottom: 2 }}>{h.address}</div>}
                 {h.phone && <a href={`tel:${h.phone}`} style={{ fontSize: "0.82rem", color: "var(--ink)", fontFamily: "var(--font-body)", textDecoration: "none", display: "block", marginBottom: 2 }}>{h.phone}</a>}
                 {h.url && <a href={h.url} target="_blank" rel="noopener noreferrer" style={{ fontSize: "0.82rem", color: "var(--brick)", textDecoration: "none", fontFamily: "var(--font-body)", display: "block", marginBottom: 2 }}>{h.url.replace(/^https?:\/\//, "").replace(/\/$/, "")}</a>}
-                {h.address && <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(h.name + " " + h.address)}`} target="_blank" rel="noopener noreferrer" style={{ fontSize: "0.8rem", color: "var(--brick)", textDecoration: "underline", fontFamily: "var(--font-body)", display: "inline-block", marginBottom: 12 }}>Get Directions</a>}
+                {h.address && <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(h.name + " " + h.address)}`} target="_blank" rel="noopener noreferrer" style={{ fontSize: "0.8rem", color: "var(--brick)", textDecoration: "underline", fontFamily: "var(--font-body)", display: "inline-block", marginBottom: 12, marginTop: 0 }}>Get Directions</a>}
                 <div style={styles.special}>{h.special}</div>
               </div>
               <div style={styles.right}>
