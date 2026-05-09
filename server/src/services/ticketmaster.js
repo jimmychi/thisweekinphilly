@@ -125,6 +125,7 @@ function formatTMEvent(e) {
     description: e.info || e.pleaseNote || null,
     seatmap: e.seatmap && e.seatmap.staticUrl || null,
     phone: getVenuePhone(e._embedded && e._embedded.venues && e._embedded.venues[0] && e._embedded.venues[0].name) || null,
+    venueWebsite: getVenueWebsite(e._embedded && e._embedded.venues && e._embedded.venues[0] && e._embedded.venues[0].name) || null,
   };
 }
 
@@ -150,6 +151,40 @@ function formatTMPrice(priceRanges) {
   const range = priceRanges[0];
   if (range.min === range.max) return "$" + range.min;
   return "$" + range.min + "-$" + range.max;
+}
+
+
+function getVenueWebsite(venueName) {
+  if (!venueName) return null;
+  const name = venueName.toLowerCase();
+  const websites = {
+    "citizens bank park": "https://www.mlb.com/phillies/ballpark",
+    "xfinity mobile arena": "https://www.wellsfargocenterphilly.com",
+    "wells fargo center": "https://www.wellsfargocenterphilly.com",
+    "the met presented by highmark": "https://themetphilly.com",
+    "union transfer": "https://www.utphilly.com",
+    "theatre of living arts": "https://www.livenation.com/venue/KovZpZAJFdaA/theatre-of-living-arts-events",
+    "franklin music hall": "https://www.franklinmusichall.com",
+    "the fillmore philadelphia": "https://www.fillmorephilly.com",
+    "underground arts": "https://www.undergroundarts.org",
+    "milkboy philadelphia": "https://www.milkboyphilly.com",
+    "punch line philly": "https://www.punchlinephilly.com",
+    "marian anderson hall": "https://www.kimmelcultural.org",
+    "kimmel center": "https://www.kimmelcultural.org",
+    "perelman theater": "https://www.kimmelcultural.org",
+    "academy of music": "https://www.kimmelcultural.org",
+    "walnut street theatre": "https://www.walnutstreettheatre.org",
+    "city winery": "https://citywinery.com/philadelphia",
+    "nikki lopez philly": "https://www.nikkilo.pez",
+    "noto": "https://www.notophiladelphia.com",
+    "philamoca": "https://www.philamoca.org",
+    "brooklyn bowl philadelphia": "https://www.brooklynbowl.com/philadelphia",
+    "the foundry": "https://www.foundryphilly.com",
+  };
+  for (const [key, website] of Object.entries(websites)) {
+    if (name.includes(key)) return website;
+  }
+  return null;
 }
 
 function getVenuePhone(venueName) {
