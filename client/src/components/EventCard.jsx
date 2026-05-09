@@ -194,7 +194,7 @@ export default function EventCard({ event, style }) {
         </div>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginTop: "auto", paddingTop: 8 }}>
           {event.price && <span style={styles.price}>{event.price}</span>}
-          <span style={styles.source}>{event.source === "predicthq" ? "" : event.source}</span>
+
         </div>
       </div>
     </div>
