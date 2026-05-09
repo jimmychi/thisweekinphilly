@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Header from "../components/Header.jsx";
+import Footer from "../components/Footer.jsx";
 
 const API_BASE = import.meta.env.VITE_API_URL || "https://thisweekinphilly-api.onrender.com/api";
 const PRICE = { 1: "$", 2: "$$", 3: "$$$", 4: "$$$$" };
@@ -171,6 +172,7 @@ function StarRating({ rating }) {
       {"★".repeat(full)}{half ? "½" : ""}{"☆".repeat(5 - full - (half ? 1 : 0))}
       {" "}{rating}
     </span>
+      <Footer />
   );
 }
 

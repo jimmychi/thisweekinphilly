@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Header from "../components/Header.jsx";
+import Footer from "../components/Footer.jsx";
 
 const API_BASE = import.meta.env.VITE_API_URL || "https://thisweekinphilly-api.onrender.com/api";
 const NEIGHBORHOODS = ["All", "Center City", "Old City", "Fishtown", "Rittenhouse", "South Philly", "Northern Liberties", "Fairmount", "University City", "Manayunk", "Kensington", "Grad Hospital", "West Philadelphia"];
@@ -93,5 +94,6 @@ export default function HappyHours() {
         </div>
       )}
     </div>
+      <Footer />
   );
 }

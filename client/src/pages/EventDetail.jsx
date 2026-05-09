@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Header from "../components/Header.jsx";
+import Footer from "../components/Footer.jsx";
 import { formatDate, formatTime } from "../utils/dates.js";
 
 
@@ -283,5 +284,6 @@ export default function EventDetail() {
 
       </div>
     </div>
+      <Footer />
   );
 }// Tue May  5 20:36:15 EDT 2026

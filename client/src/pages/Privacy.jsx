@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../components/Header.jsx";
+import Footer from "../components/Footer.jsx";
 
 const styles = {
   page: { minHeight: "100vh", background: "var(--cream)" },
@@ -117,5 +118,6 @@ export default function Privacy() {
         </p>
       </div>
     </div>
+      <Footer />
   );
 }
