@@ -14,7 +14,6 @@ const KEYWORD_IMAGES = {
   garden: "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=600&q=80",
   plant: "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=600&q=80",
   food: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&q=80",
-  brunch: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&q=80",
   beer: "https://images.unsplash.com/photo-1535958636474-b021ee887b13?w=600&q=80",
   wine: "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=600&q=80",
   yoga: "https://images.unsplash.com/photo-1575052814086-f385e2e2ad1b?w=600&q=80",
@@ -226,7 +225,7 @@ export default function EventDetail() {
         <button style={styles.back} onClick={() => navigate("/")}>← Back to Events</button>
       </div>
 
-      {(() => { const ki = getKeywordImage(event.title, event.venue); const src = ki || event.image; return src ? <img src={src} alt={event.title} style={styles.hero} /> : <div style={styles.heroPlaceholder(event.category)}>{CATEGORY_EMOJI[event.category] || "📅"}</div>; })()}
+      {(() => { const ki = getKeywordImage(event.title, event.venue); const src = event.image && !ki ? event.image : (ki || event.image); return src ? <img src={src} alt={event.title} style={styles.hero} /> : <div style={styles.heroPlaceholder(event.category)}>{CATEGORY_EMOJI[event.category] || "📅"}</div>; })()}
 
       <div style={styles.body}>
         <div style={styles.category}>{event.category}</div>
