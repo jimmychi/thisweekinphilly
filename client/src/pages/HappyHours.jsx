@@ -54,7 +54,7 @@ export default function HappyHours() {
       .catch(() => setLoading(false));
   }, []);
 
-  const filtered = neighborhood === "All" ? happyHours : happyHours.filter(h => h.neighborhood === neighborhood);
+  const filtered = (neighborhood === "All" ? happyHours : happyHours.filter(h => h.neighborhood === neighborhood)).sort((a, b) => a.name.localeCompare(b.name));
 
   return (
     <div style={styles.page}>
