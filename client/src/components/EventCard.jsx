@@ -47,7 +47,7 @@ const styles = {
     opacity: 0.85,
   }),
   body: {
-    padding: "14px 16px 16px",
+    padding: "14px 16px 4px",
     flex: 1,
     display: "flex",
     flexDirection: "column",
