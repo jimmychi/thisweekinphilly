@@ -85,7 +85,7 @@ export default function Bars() {
           ))}
         </div>
       )}
-    </div>
       <Footer />
+    </div>
   );
 }

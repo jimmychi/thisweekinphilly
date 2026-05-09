@@ -193,7 +193,7 @@ export default function Restaurants() {
           ))}
         </div>
       )}
-    </div>
       <Footer />
+    </div>
   );
 }

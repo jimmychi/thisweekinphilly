@@ -117,7 +117,7 @@ export default function Privacy() {
           <a href="mailto:info@thisweekinphilly.com" style={styles.a}>info@thisweekinphilly.com</a>
         </p>
       </div>
-    </div>
       <Footer />
+    </div>
   );
 }

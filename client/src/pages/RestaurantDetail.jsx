@@ -172,7 +172,6 @@ function StarRating({ rating }) {
       {"★".repeat(full)}{half ? "½" : ""}{"☆".repeat(5 - full - (half ? 1 : 0))}
       {" "}{rating}
     </span>
-      <Footer />
   );
 }
 

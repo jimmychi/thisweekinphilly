@@ -85,7 +85,7 @@ export default function Nightclubs() {
           ))}
         </div>
       )}
-    </div>
       <Footer />
+    </div>
   );
 }
