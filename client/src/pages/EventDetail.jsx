@@ -89,7 +89,7 @@ const styles = {
     height: 320,
     objectFit: "cover",
     display: "block",
-    borderRadius: 12,
+    borderRadius: 6,
     marginBottom: 8,
   },
   heroPlaceholder: (category) => ({
@@ -100,7 +100,7 @@ const styles = {
     alignItems: "center",
     justifyContent: "center",
     fontSize: "5rem",
-    borderRadius: 12,
+    borderRadius: 6,
     marginBottom: 8,
   }),
   body: {
