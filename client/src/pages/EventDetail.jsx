@@ -79,20 +79,29 @@ const styles = {
     transform: "translateY(-50%)",
     zIndex: 10,
   },
+  heroWrap: {
+    maxWidth: 800,
+    margin: "0 auto",
+    padding: "24px 24px 0",
+  },
   hero: {
     width: "100%",
-    height: 380,
+    height: 320,
     objectFit: "cover",
     display: "block",
+    borderRadius: 12,
+    marginBottom: 8,
   },
   heroPlaceholder: (category) => ({
     width: "100%",
-    height: 380,
+    height: 320,
     background: "var(--ink)",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     fontSize: "5rem",
+    borderRadius: 12,
+    marginBottom: 8,
   }),
   body: {
     maxWidth: 800,
@@ -226,7 +235,9 @@ export default function EventDetail() {
         <button style={styles.back} onClick={() => navigate("/")}>← Back to Events</button>
       </div>
 
-      {(() => { const ki = getKeywordImage(event.title, event.venue); const src = event.image && !ki ? event.image : (ki || event.image); return src ? <img src={src} alt={event.title} style={styles.hero} /> : <div style={styles.heroPlaceholder(event.category)}>{CATEGORY_EMOJI[event.category] || "📅"}</div>; })()}
+      <div style={styles.heroWrap}>
+        {(() => { const ki = getKeywordImage(event.title, event.venue); const src = event.image && !ki ? event.image : (ki || event.image); return src ? <img src={src} alt={event.title} style={styles.hero} /> : <div style={styles.heroPlaceholder(event.category)}>{CATEGORY_EMOJI[event.category] || "📅"}</div>; })()}
+      </div>
 
       <div style={styles.body}>
         <div style={styles.category}>{event.category}</div>
