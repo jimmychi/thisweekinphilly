@@ -137,6 +137,7 @@ function getKeywordImage(title, venue) {
   }
   if (!title) return null;
   const lower = title.toLowerCase();
+  if (lower.includes("mother's day") || lower.includes("mothers day")) return "/flowers.jpg";
   for (const [keyword, url] of Object.entries(KEYWORD_IMAGES)) {
     const regex = new RegExp("\\b" + keyword + "\\b");
     if (regex.test(lower)) return url;
