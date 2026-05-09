@@ -249,8 +249,9 @@ export default function EventDetail() {
               <span style={styles.infoLabel}>Venue</span>
               <span style={styles.infoValue}>{event.venue === event.title || event.venue === "Philadelphia, PA" ? "Philadelphia, PA" : event.venue}</span>
               {event.address && <span style={{fontSize: "0.8rem", color: "var(--ink)", marginTop: 2}}>{event.address}</span>}
-              {(event.venueWebsite || event.venueUrl) && <a href={event.venueWebsite || event.venueUrl.split("?")[0]} target="_blank" rel="noopener noreferrer" style={{fontSize: "0.8rem", color: "var(--brick)", marginTop: 2, textDecoration: "underline"}}>Visit Venue Website</a>}
               {event.phone && <span style={{fontSize: "0.8rem", color: "var(--ink)", marginTop: 2}}>{event.phone}</span>}
+              {(event.venueWebsite || event.venueUrl) && <a href={event.venueWebsite || event.venueUrl.split("?")[0]} target="_blank" rel="noopener noreferrer" style={{fontSize: "0.8rem", color: "var(--brick)", marginTop: 2, textDecoration: "underline", display: "block"}}>Visit Venue Website</a>}
+              {event.url && <a href={event.url} target="_blank" rel="noopener noreferrer" style={{fontSize: "0.8rem", color: "var(--brick)", marginTop: 2, textDecoration: "underline", display: "block"}}>Get Tickets</a>}
             </div>
           )}
 
@@ -267,16 +268,7 @@ export default function EventDetail() {
           <p style={styles.description}>{event.description}</p>
         )}
 
-        <div style={styles.ctaWrap}>
-          <a
-            href={event.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={styles.cta}
-          >
-            {event.source === "predicthq" ? "Find Tickets & Info" : "Get Tickets on Ticketmaster"}
-          </a>
-        </div>
+
       </div>
     </div>
   );
