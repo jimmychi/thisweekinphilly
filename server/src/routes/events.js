@@ -39,8 +39,11 @@ const [tmEvents, phqEvents, atEvents] = await Promise.allSettled([
       ...atEventsFiltered,
     ];
 
+    const today = new Date().toISOString().split("T")[0];
+    const upcoming = all.filter(e => !e.date || e.date >= today);
+
     const seen = new Set();
-    const deduped = all.filter((e) => {
+    const deduped = upcoming.filter((e) => {
       const key = `${e.title?.toLowerCase().trim()}-${e.date}`;
       if (seen.has(key)) return false;
       seen.add(key);
