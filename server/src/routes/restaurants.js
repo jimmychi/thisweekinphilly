@@ -58,8 +58,10 @@ router.get("/nightclubs", async (req, res) => {
   const cached = cache.get(cacheKey);
   if (cached) return res.json({ restaurants: cached, cached: true });
   try {
+    const BLACKLIST = ["The Trestle Inn"];
     const clubs = await getPhillyNightclubs(neighborhood);
-    const sorted = clubs.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+    const filtered = clubs.filter(c => !BLACKLIST.some(b => c.name.includes(b)));
+    const sorted = filtered.sort((a, b) => (b.rating || 0) - (a.rating || 0));
     cache.set(cacheKey, sorted);
     res.json({ restaurants: sorted, count: sorted.length });
   } catch (err) { res.status(500).json({ error: "Failed to fetch nightclubs" }); }
