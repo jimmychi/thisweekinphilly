@@ -3,7 +3,7 @@ import Header from "../components/Header.jsx";
 import Footer from "../components/Footer.jsx";
 
 const API_BASE = import.meta.env.VITE_API_URL || "https://thisweekinphilly-api.onrender.com/api";
-const NEIGHBORHOODS = ["All", "Center City", "Old City", "Fairmount", "University City", "South Philly", "North Philly"];
+const NEIGHBORHOODS = ["All", "Center City", "Old City", "Fairmount", "University City", "South Philly", "North Philly", "Rittenhouse"];
 
 const styles = {
   page: { minHeight: "100vh", background: "var(--cream)", display: "flex", flexDirection: "column" },
@@ -20,12 +20,21 @@ const styles = {
   filters: { background: "var(--parchment)", borderBottom: "1px solid var(--stone)", padding: "16px 24px", display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "center" },
   pill: (active) => ({ padding: "8px 18px", borderRadius: 999, border: active ? "none" : "1px solid var(--stone)", background: active ? "var(--brick)" : "transparent", color: active ? "#fff" : "var(--ink)", fontFamily: "var(--font-body)", fontSize: "0.85rem", fontWeight: active ? 700 : 400, cursor: "pointer" }),
   list: { maxWidth: 900, margin: "0 auto", padding: "32px 24px", flex: 1 },
-  card: { background: "#fff", borderRadius: 12, marginBottom: 16, boxShadow: "0 1px 4px rgba(0,0,0,0.06)", overflow: "hidden" },
-  cardImg: { width: "100%", height: 200, objectFit: "cover" },
-  cardBody: { padding: "20px 24px" },
-  cardName: { fontFamily: "var(--font-display)", fontSize: "1.3rem", fontWeight: 700, color: "var(--ink)", marginBottom: 4 },
-  special: { fontFamily: "var(--font-body)", fontSize: "1rem", color: "var(--brick)", fontWeight: 700, marginBottom: 8 },
-  description: { fontFamily: "var(--font-body)", fontSize: "0.9rem", color: "var(--ink-soft)", lineHeight: 1.6, marginBottom: 10 },
+  card: {
+    background: "#fff",
+    borderRadius: 12,
+    padding: "20px 24px",
+    marginBottom: 12,
+    boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+    gap: 16,
+  },
+  left: { flex: 1 },
+  cardName: { fontFamily: "var(--font-display)", fontSize: "1.1rem", fontWeight: 700, color: "var(--ink)", marginBottom: 4 },
+  special: { fontFamily: "var(--font-body)", fontSize: "1.05rem", color: "var(--brick)", fontWeight: 700, marginBottom: 6 },
+  description: { fontFamily: "var(--font-body)", fontSize: "0.88rem", color: "var(--ink-soft)", lineHeight: 1.6, marginBottom: 8 },
   meta: { fontFamily: "var(--font-body)", fontSize: "0.82rem", color: "var(--stone-dark)", marginBottom: 3 },
   link: { fontSize: "0.82rem", color: "var(--brick)", textDecoration: "underline", fontFamily: "var(--font-body)", display: "inline-block", marginTop: 4, marginRight: 16 },
   loading: { textAlign: "center", padding: "80px 24px", fontFamily: "var(--font-body)", color: "var(--stone-dark)", fontSize: "1.1rem" },
@@ -66,18 +75,17 @@ export default function Museums() {
         <div style={styles.list}>
           {filtered.map(m => (
             <div key={m.id} style={styles.card}>
-              {m.image && <img src={m.image} alt={m.name} style={styles.cardImg} />}
-              <div style={styles.cardBody}>
+              <div style={styles.left}>
                 <div style={styles.cardName}>{m.name}</div>
-                {m.special && <div style={styles.special}>🎟️ {m.special}</div>}
-                {m.description && <p style={styles.description}>{m.description}</p>}
-                {m.address && <div style={styles.meta}>📍 {m.address}</div>}
-                {m.phone && <div style={styles.meta}>📞 {m.phone}</div>}
+                {m.address && <div style={styles.meta}>{m.address}</div>}
+                {m.phone && <a href={`tel:${m.phone}`} style={{ fontSize: "0.82rem", color: "var(--ink)", fontFamily: "var(--font-body)", textDecoration: "none", display: "block", marginBottom: 2 }}>{m.phone}</a>}
                 {m.hours && <div style={styles.meta}>🕐 {m.hours}</div>}
                 {m.admission && <div style={styles.meta}>🎫 {m.admission}</div>}
-                <div style={{ marginTop: 8 }}>
-                  {m.address && <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(m.name + " " + m.address)}`} target="_blank" rel="noopener noreferrer" style={styles.link}>Get Directions</a>}
+                {m.special && <div style={styles.special}>{m.special}</div>}
+                {m.description && <p style={styles.description}>{m.description}</p>}
+                <div>
                   {m.url && <a href={m.url} target="_blank" rel="noopener noreferrer" style={styles.link}>Visit Website</a>}
+                  {m.address && <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(m.name + " " + m.address)}`} target="_blank" rel="noopener noreferrer" style={{ ...styles.link, marginBottom: 12 }}>Get Directions</a>}
                 </div>
               </div>
             </div>
