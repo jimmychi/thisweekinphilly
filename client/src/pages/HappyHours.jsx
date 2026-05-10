@@ -3,7 +3,7 @@ import Header from "../components/Header.jsx";
 import Footer from "../components/Footer.jsx";
 
 const API_BASE = import.meta.env.VITE_API_URL || "https://thisweekinphilly-api.onrender.com/api";
-const NEIGHBORHOODS = ["All", "Center City", "Old City", "Fishtown", "Rittenhouse", "South Street", "South Philly", "Northern Liberties", "Fairmount", "University City", "Manayunk", "Kensington", "Grad Hospital", "West Philadelphia"];
+const NEIGHBORHOODS = ["All", "Center City", "Old City", "Fishtown", "Rittenhouse", "South Street", "South Philly", "Northern Liberties", "Fairmount", "University City", "Manayunk", "Grad Hospital", "West Philadelphia"];
 
 const styles = {
   page: { minHeight: "100vh", background: "var(--cream)" },
