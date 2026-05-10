@@ -179,14 +179,19 @@ async function syncEventsToAirtable(events) {
 async function getHappyHours() {
   if (!AIRTABLE_BASE || !AIRTABLE_KEY) return [];
   try {
-    const res = await axios.get(
-      `https://api.airtable.com/v0/${AIRTABLE_BASE}/Happy%20Hours`,
-      {
-        params: { filterByFormula: "{Active} = 1" },
-        headers: { Authorization: `Bearer ${AIRTABLE_KEY}` },
-      }
-    );
-    return (res.data.records || []).map((r) => ({
+    let records = [];
+    let offset = null;
+    do {
+      const params = { filterByFormula: "{Active} = 1", pageSize: 100 };
+      if (offset) params.offset = offset;
+      const res = await axios.get(
+        `https://api.airtable.com/v0/${AIRTABLE_BASE}/Happy%20Hours`,
+        { params, headers: { Authorization: `Bearer ${AIRTABLE_KEY}` } }
+      );
+      records = records.concat(res.data.records || []);
+      offset = res.data.offset || null;
+    } while (offset);
+    return records.map((r) => ({
       id: `hh-${r.id}`,
       name: r.fields["Restaurant Name"] || "",
       special: r.fields["Special"] || "",
