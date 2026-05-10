@@ -3,7 +3,7 @@ import Header from "../components/Header.jsx";
 import Footer from "../components/Footer.jsx";
 
 const API_BASE = import.meta.env.VITE_API_URL || "https://thisweekinphilly-api.onrender.com/api";
-const NEIGHBORHOODS = ["All", "Center City", "Old City", "Fairmount", "University City", "North Philly", "Rittenhouse"];
+const NEIGHBORHOODS = ["All", "Kid Friendly", "Center City", "Old City", "Fairmount", "University City", "North Philly", "Rittenhouse"];
 
 const styles = {
   page: { minHeight: "100vh", background: "var(--cream)", display: "flex", flexDirection: "column" },
@@ -52,7 +52,7 @@ export default function Museums() {
       .catch(() => setLoading(false));
   }, []);
 
-  const filtered = (neighborhood === "All" ? museums : museums.filter(m => m.neighborhood === neighborhood))
+  const filtered = (neighborhood === "Kid Friendly" ? museums.filter(m => m.kidFriendly) : neighborhood === "All" ? museums : museums.filter(m => m.neighborhood === neighborhood))
     .sort((a, b) => a.name.localeCompare(b.name));
 
   return (
@@ -76,7 +76,7 @@ export default function Museums() {
           {filtered.map(m => (
             <div key={m.id} style={styles.card}>
               <div style={styles.left}>
-                <div style={styles.cardName}>{m.name}</div>
+                <div style={styles.cardName}>{m.name} {m.kidFriendly && <span style={{ fontSize: "0.75rem", background: "#e8f5e9", color: "#2e7d32", borderRadius: 20, padding: "2px 8px", fontWeight: 600, marginLeft: 6 }}>👶 Kid Friendly</span>}</div>
                 {m.address && <div style={styles.meta}>{m.address}</div>}
                 {m.phone && <a href={`tel:${m.phone}`} style={{ fontSize: "0.82rem", color: "var(--ink)", fontFamily: "var(--font-body)", textDecoration: "none", display: "block", marginBottom: 2 }}>{m.phone}</a>}
                 {m.hours && <div style={styles.meta}>🕐 {m.hours}</div>}

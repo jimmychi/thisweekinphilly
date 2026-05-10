@@ -226,6 +226,7 @@ async function getMuseums() {
       image: r.fields["Image"] || null,
       url: r.fields["URL"] || null,
       neighborhood: r.fields["Neighborhood"] || null,
+      kidFriendly: r.fields["Kid Friendly"] || false,
     }));
   } catch (err) {
     console.error("Museums fetch error:", err.message);
