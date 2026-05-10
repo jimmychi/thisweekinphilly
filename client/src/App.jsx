@@ -15,6 +15,7 @@ import Privacy from "./pages/Privacy.jsx";
 import Bars from "./pages/Bars.jsx";
 import Nightclubs from "./pages/Nightclubs.jsx";
 import HappyHours from "./pages/HappyHours.jsx";
+import Museums from "./pages/Museums.jsx";
 import ScrollToTop from "./components/ScrollToTop.jsx";
 
 function HomePage() {
@@ -55,6 +56,7 @@ export default function App() {
         <Route path="/bars" element={<Bars />} />
         <Route path="/nightclubs" element={<Nightclubs />} />
         <Route path="/happyhours" element={<HappyHours />} />
+        <Route path="/museums" element={<Museums />} />
       </Routes>
     </BrowserRouter>
   );

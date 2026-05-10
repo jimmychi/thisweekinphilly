@@ -65,6 +65,22 @@ router.get("/nightclubs", async (req, res) => {
   } catch (err) { res.status(500).json({ error: "Failed to fetch nightclubs" }); }
 });
 
+// GET /api/restaurants/museums
+router.get("/museums", async (req, res) => {
+  const { getMuseums } = require("../services/airtable");
+  const cacheKey = "museums";
+  const cached = cache.get(cacheKey);
+  if (cached) return res.json({ museums: cached, cached: true });
+  try {
+    const museums = await getMuseums();
+    cache.set(cacheKey, museums);
+    res.json({ museums });
+  } catch (err) {
+    console.error("Museums fetch error:", err);
+    res.status(500).json({ error: "Failed to fetch museums" });
+  }
+});
+
 // GET /api/restaurants/happyhours
 router.get("/happyhours", async (req, res) => {
   const { getHappyHours } = require("../services/airtable");

@@ -204,4 +204,33 @@ async function getHappyHours() {
   }
 }
 
-module.exports = { submitEvent, getApprovedEvents, getRestaurantSpecials, syncEventsToAirtable, getHappyHours };
+async function getMuseums() {
+  if (!AIRTABLE_BASE || !AIRTABLE_KEY) return [];
+  try {
+    const res = await axios.get(
+      `https://api.airtable.com/v0/${AIRTABLE_BASE}/Museums`,
+      {
+        params: { filterByFormula: "{Active} = 1" },
+        headers: { Authorization: `Bearer ${AIRTABLE_KEY}` },
+      }
+    );
+    return (res.data.records || []).map((r) => ({
+      id: `museum-${r.id}`,
+      name: r.fields["Museum Name"] || "",
+      description: r.fields["Description"] || null,
+      address: r.fields["Address"] || null,
+      phone: r.fields["Phone"] || null,
+      hours: r.fields["Hours"] || null,
+      admission: r.fields["Admission"] || null,
+      special: r.fields["Special"] || null,
+      image: r.fields["Image"] || null,
+      url: r.fields["URL"] || null,
+      neighborhood: r.fields["Neighborhood"] || null,
+    }));
+  } catch (err) {
+    console.error("Museums fetch error:", err.message);
+    return [];
+  }
+}
+
+module.exports = { submitEvent, getApprovedEvents, getRestaurantSpecials, syncEventsToAirtable, getHappyHours, getMuseums };

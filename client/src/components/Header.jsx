@@ -69,6 +69,7 @@ const NAV_ITEMS = [
   { label: "Bars", emoji: "🍺", path: "/bars" },
   { label: "Nightclubs", emoji: "🎶", path: "/nightclubs" },
   { label: "Happy Hours", emoji: "🍺", path: "/happyhours" },
+  { label: "Museums", emoji: "🏛️", path: "/museums" },
 ];
 
 export default function Header({ lastUpdated }) {
