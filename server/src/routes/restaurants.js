@@ -123,7 +123,8 @@ router.get("/sync", async (req, res) => {
           { params: { input: `${r.name} Philadelphia PA`, inputtype: "textquery", fields: "place_id,name,formatted_address,rating,price_level,photos,formatted_phone_number,website", key: process.env.GOOGLE_PLACES_API_KEY } }
         );
         const candidate = searchRes.data.candidates && searchRes.data.candidates[0];
-        if (!candidate) continue;
+        console.log("Restaurant:", r.name, "Candidate:", candidate?.name, "PlaceID:", candidate?.place_id);
+        if (!candidate) { console.log("No candidate for", r.name); continue; }
         
         const photoRef = candidate.photos && candidate.photos[0] && candidate.photos[0].photo_reference;
         const photoUrl = photoRef ? `https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photoreference=${photoRef}&key=${process.env.GOOGLE_PLACES_API_KEY}` : null;
@@ -143,6 +144,7 @@ router.get("/sync", async (req, res) => {
           { headers: { Authorization: `Bearer ${process.env.AIRTABLE_API_KEY}`, "Content-Type": "application/json" } }
         );
         updated++;
+        console.log("Updated:", r.name);
         await new Promise(resolve => setTimeout(resolve, 200));
       } catch (e) {
         console.error("Sync error for", r.name, e.message, e.response?.data);
