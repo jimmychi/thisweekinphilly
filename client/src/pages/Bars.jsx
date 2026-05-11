@@ -79,6 +79,8 @@ export default function Bars() {
                   {r.openNow && <span style={styles.openNow}>● Open Now</span>}
                 </div>
                 <div style={styles.address}>{r.address}</div>
+                {r.phone && <a href={`tel:${r.phone}`} style={{ fontSize: "0.78rem", color: "var(--ink)", textDecoration: "none", fontFamily: "var(--font-body)", display: "block", marginBottom: 2 }} onClick={e => e.stopPropagation()}>{r.phone}</a>}
+                {r.website && <a href={r.website} target="_blank" rel="noopener noreferrer" style={{ fontSize: "0.78rem", color: "var(--brick)", textDecoration: "none", fontFamily: "var(--font-body)", display: "block", marginBottom: 4 }} onClick={e => e.stopPropagation()}>{r.website.replace(/^https?:\/\//, "").replace(/\/$/, "")}</a>}
                 <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(r.name + " " + r.address)}`} target="_blank" rel="noopener noreferrer" style={{ fontSize: "0.78rem", color: "var(--brick)", textDecoration: "none", fontFamily: "var(--font-body)", fontWeight: 600 }} onClick={e => e.stopPropagation()}>Get Directions →</a>
               </div>
             </div>
