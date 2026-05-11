@@ -163,6 +163,32 @@ router.get("/sync", async (req, res) => {
   }
 });
 
+
+// GET /api/restaurants/syncneighborhoods - one time sync to populate neighborhoods
+router.get("/syncneighborhoods", async (req, res) => {
+  const neighborhoods = {"Vernick Food & Drink": "Rittenhouse", "Lemon Hill": "Fairmount", "Butcher and Singer": "Center City", "Noord": "East Passyunk", "Monk's Cafe": "Center City", "Sabrina's Cafe": "Callowhill", "Wm. Mulherin's Sons": "Fishtown", "Vernick Fish": "Center City", "Oyster House": "Center City", "The Dandelion": "Rittenhouse", "Fogo de Ch\u00e3o Brazilian Steakhouse": "Center City", "Kanella": "Washington Square West", "Parc": "Rittenhouse", "The Capital Grille": "Center City", "Laser Wolf": "Fishtown", "Zahav": "Old City", "Barbuzzo": "Washington Square West", "Rex 1516": "South Street", "High Street on Market": "Old City", "Amada": "Old City", "Serpico": "Washington Square West", "El Vez": "Washington Square West", "Abe Fisher": "Rittenhouse", "HipCityVeg": "Center City", "Time": "Center City", "McGillin's Olde Ale House": "Center City", "Good Dog Bar": "Rittenhouse", "Laurel": "East Passyunk", "City Tap House Logan Square": "Center City", "Southwark": "South Philly", "Vetri Cucina": "Rittenhouse", "Fogo de Chao Brazilian Steakhouse": "Center City"};
+  try {
+    const { getAirtableRestaurants } = require("../services/airtable");
+    const restaurants = await getAirtableRestaurants(null);
+    let updated = 0;
+    for (const r of restaurants) {
+      const neighborhood = neighborhoods[r.name];
+      if (!neighborhood) continue;
+      const airtableId = r.id.replace("at-rest-rec", "rec");
+      await axios.patch(
+        `https://api.airtable.com/v0/${process.env.AIRTABLE_BASE_ID}/Restaurants/${airtableId}`,
+        { fields: { "Neighborhood": neighborhood } },
+        { headers: { Authorization: `Bearer ${process.env.AIRTABLE_API_KEY}`, "Content-Type": "application/json" } }
+      );
+      updated++;
+      await new Promise(resolve => setTimeout(resolve, 200));
+    }
+    res.json({ message: `Updated ${updated} restaurant neighborhoods` });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 router.get("/:id", async (req, res) => {
   const id = req.params.id;
   const cacheKey = `restaurant-detail-${id}`;
