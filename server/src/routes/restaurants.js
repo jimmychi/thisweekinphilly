@@ -122,6 +122,7 @@ router.get("/sync", async (req, res) => {
           "https://maps.googleapis.com/maps/api/place/textsearch/json",
           { params: { query: `${r.name} Philadelphia PA`, key: process.env.GOOGLE_PLACES_API_KEY } }
         );
+        console.log("API Status:", searchRes.data.status, "Error:", searchRes.data.error_message);
         const candidate = searchRes.data.results && searchRes.data.results[0];
         console.log("Restaurant:", r.name, "Candidate:", candidate?.name, "PlaceID:", candidate?.place_id);
         if (!candidate) { console.log("No candidate for", r.name); continue; }
