@@ -172,7 +172,7 @@ router.get("/:id", async (req, res) => {
       if (!atRest) return res.status(404).json({ error: "Restaurant not found" });
       if (atRest.placeId) {
         const googleData = await getRestaurantDetails(atRest.placeId);
-        restaurant = { ...googleData, ...atRest, photos: googleData?.photos || [], reviews: googleData?.reviews || [] };
+        restaurant = { ...googleData, ...atRest, description: atRest.description || googleData?.description || null, address: atRest.address !== "Philadelphia, PA" ? atRest.address : googleData?.address || atRest.address, photos: googleData?.photos || [], reviews: googleData?.reviews || [], hours: googleData?.hours || null };
       } else {
         restaurant = atRest;
       }
