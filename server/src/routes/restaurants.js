@@ -145,7 +145,7 @@ router.get("/sync", async (req, res) => {
         updated++;
         await new Promise(resolve => setTimeout(resolve, 200));
       } catch (e) {
-        console.error("Sync error for", r.name, e.message);
+        console.error("Sync error for", r.name, e.message, e.response?.data);
       }
     }
     res.json({ message: `Synced ${updated} restaurants` });
