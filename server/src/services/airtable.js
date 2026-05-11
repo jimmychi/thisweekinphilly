@@ -239,4 +239,45 @@ async function getMuseums() {
   }
 }
 
-module.exports = { submitEvent, getApprovedEvents, getRestaurantSpecials, syncEventsToAirtable, getHappyHours, getMuseums };
+async function getAirtableRestaurants(neighborhood) {
+  if (!AIRTABLE_BASE || !AIRTABLE_KEY) return [];
+  try {
+    let records = [];
+    let offset = null;
+    do {
+      const params = { filterByFormula: "{Active} = 1", pageSize: 100 };
+      if (offset) params.offset = offset;
+      const res = await axios.get(
+        `https://api.airtable.com/v0/${AIRTABLE_BASE}/Restaurants`,
+        { params, headers: { Authorization: `Bearer ${AIRTABLE_KEY}` } }
+      );
+      records = records.concat(res.data.records || []);
+      offset = res.data.offset || null;
+    } while (offset);
+    const mapped = records.map((r) => ({
+      id: `at-rest-${r.id}`,
+      name: r.fields["Restaurant Name"] || "",
+      address: r.fields["Address"] || "Philadelphia, PA",
+      phone: r.fields["Phone"] || null,
+      website: r.fields["Website"] || null,
+      neighborhood: r.fields["Neighborhood"] || null,
+      cuisine: r.fields["Cuisine"] || null,
+      rating: r.fields["Rating"] || null,
+      priceLevel: r.fields["Price Level"] || null,
+      description: r.fields["Description"] || null,
+      image: r.fields["Image"] || null,
+      placeId: r.fields["Place ID"] || null,
+      type: r.fields["Type"] || "Restaurant",
+      specials: r.fields["Specials"] || null,
+    }));
+    if (neighborhood && neighborhood !== "All") {
+      return mapped.filter(r => r.neighborhood === neighborhood);
+    }
+    return mapped;
+  } catch (err) {
+    console.error("Airtable restaurants fetch error:", err.message);
+    return [];
+  }
+}
+
+module.exports = { submitEvent, getApprovedEvents, getRestaurantSpecials, syncEventsToAirtable, getHappyHours, getMuseums, getAirtableRestaurants };
