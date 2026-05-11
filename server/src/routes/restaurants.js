@@ -105,20 +105,6 @@ router.get("/happyhours", async (req, res) => {
   }
 });
 
-router.get("/:id", async (req, res) => {
-  const placeId = req.params.id;
-  const cacheKey = `restaurant-detail-${placeId}`;
-  const cached = cache.get(cacheKey);
-  if (cached) return res.json({ restaurant: cached, cached: true });
-  try {
-    const restaurant = await getRestaurantDetails(placeId);
-    if (!restaurant) return res.status(404).json({ error: "Restaurant not found" });
-    cache.set(cacheKey, restaurant);
-    res.json({ restaurant });
-  } catch (err) {
-    res.status(500).json({ error: "Failed to fetch restaurant details" });
-  }
-});
 
 // GET /api/restaurants/sync - one time sync to populate Place IDs and images
 router.get("/sync", async (req, res) => {
@@ -163,6 +149,21 @@ router.get("/sync", async (req, res) => {
     res.json({ message: `Synced ${updated} restaurants` });
   } catch (err) {
     res.status(500).json({ error: err.message });
+  }
+});
+
+router.get("/:id", async (req, res) => {
+  const placeId = req.params.id;
+  const cacheKey = `restaurant-detail-${placeId}`;
+  const cached = cache.get(cacheKey);
+  if (cached) return res.json({ restaurant: cached, cached: true });
+  try {
+    const restaurant = await getRestaurantDetails(placeId);
+    if (!restaurant) return res.status(404).json({ error: "Restaurant not found" });
+    cache.set(cacheKey, restaurant);
+    res.json({ restaurant });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch restaurant details" });
   }
 });
 
