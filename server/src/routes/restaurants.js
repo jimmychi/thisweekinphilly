@@ -12,10 +12,15 @@ router.get("/", async (req, res) => {
   const cached = cache.get(cacheKey);
   if (cached) return res.json({ restaurants: cached, cached: true });
   try {
-    const restaurants = await getPhillyRestaurants(neighborhood, cuisine);
+    const { getAirtableRestaurants, syncRestaurantsToAirtable } = require("../services/airtable");
+    const restaurants = await getAirtableRestaurants(neighborhood);
     const sorted = restaurants.sort((a, b) => (b.rating || 0) - (a.rating || 0));
     cache.set(cacheKey, sorted);
     res.json({ restaurants: sorted, count: sorted.length });
+    // Sync new restaurants from Google Places in background
+    getPhillyRestaurants(neighborhood, cuisine).then(googleRestaurants => {
+      syncRestaurantsToAirtable(googleRestaurants).catch(() => {});
+    }).catch(() => {});
   } catch (err) {
     res.status(500).json({ error: "Failed to fetch restaurants" });
   }
