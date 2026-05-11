@@ -1,4 +1,5 @@
 const express = require("express");
+const axios = require("axios");
 const NodeCache = require("node-cache");
 const { getPhillyRestaurants, getPhillyBars, getPhillyNightclubs, getRestaurantDetails, PHILLY_NEIGHBORHOODS } = require("../services/restaurants");
 
@@ -116,6 +117,52 @@ router.get("/:id", async (req, res) => {
     res.json({ restaurant });
   } catch (err) {
     res.status(500).json({ error: "Failed to fetch restaurant details" });
+  }
+});
+
+// GET /api/restaurants/sync - one time sync to populate Place IDs and images
+router.get("/sync", async (req, res) => {
+  try {
+    const { getAirtableRestaurants } = require("../services/airtable");
+    const restaurants = await getAirtableRestaurants(null);
+    const needsSync = restaurants.filter(r => !r.placeId);
+    
+    let updated = 0;
+    for (const r of needsSync) {
+      try {
+        const searchRes = await axios.get(
+          "https://maps.googleapis.com/maps/api/place/findplacefromtext/json",
+          { params: { input: `${r.name} Philadelphia PA`, inputtype: "textquery", fields: "place_id,name,formatted_address,rating,price_level,photos,formatted_phone_number,website", key: process.env.GOOGLE_PLACES_API_KEY } }
+        );
+        const candidate = searchRes.data.candidates && searchRes.data.candidates[0];
+        if (!candidate) continue;
+        
+        const photoRef = candidate.photos && candidate.photos[0] && candidate.photos[0].photo_reference;
+        const photoUrl = photoRef ? `https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photoreference=${photoRef}&key=${process.env.GOOGLE_PLACES_API_KEY}` : null;
+        
+        // Update Airtable record
+        const airtableId = r.id.replace("at-rest-", "");
+        await axios.patch(
+          `https://api.airtable.com/v0/${process.env.AIRTABLE_BASE_ID}/Restaurants/${airtableId}`,
+          { fields: {
+            "Place ID": candidate.place_id,
+            "Address": candidate.formatted_address || r.address,
+            "Rating": candidate.rating || null,
+            "Phone": candidate.formatted_phone_number || null,
+            "Website": candidate.website || null,
+            "Image": photoUrl,
+          }},
+          { headers: { Authorization: `Bearer ${process.env.AIRTABLE_API_KEY}`, "Content-Type": "application/json" } }
+        );
+        updated++;
+        await new Promise(resolve => setTimeout(resolve, 200));
+      } catch (e) {
+        console.error("Sync error for", r.name, e.message);
+      }
+    }
+    res.json({ message: `Synced ${updated} restaurants` });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 });
 
