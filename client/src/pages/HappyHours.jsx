@@ -17,7 +17,7 @@ const styles = {
   headline: { fontFamily: "var(--font-display)", fontSize: "clamp(2rem, 5vw, 3rem)", fontWeight: 900, color: "var(--cream)", marginBottom: 8 },
   accent: { color: "var(--brick)" },
   sub: { fontFamily: "var(--font-body)", fontStyle: "italic", fontSize: "1rem", color: "var(--stone-light)" },
-  filters: { background: "var(--parchment)", borderBottom: "1px solid var(--stone)", padding: "16px 24px", display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "center" },
+  filters: { background: "var(--warm-white)", borderBottom: "1px solid var(--stone)", padding: "16px 24px", display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "center", position: "sticky", top: 68, zIndex: 90, backdropFilter: "blur(8px)" },
   pill: (active) => ({ padding: "8px 18px", borderRadius: 999, border: active ? "none" : "1px solid var(--stone)", background: active ? "var(--brick)" : "transparent", color: active ? "#fff" : "var(--ink)", fontFamily: "var(--font-body)", fontSize: "0.85rem", fontWeight: active ? 700 : 400, cursor: "pointer" }),
   list: { maxWidth: 900, margin: "0 auto", padding: "32px 24px" },
   card: {
