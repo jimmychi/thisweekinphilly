@@ -158,12 +158,27 @@ router.get("/sync", async (req, res) => {
 });
 
 router.get("/:id", async (req, res) => {
-  const placeId = req.params.id;
-  const cacheKey = `restaurant-detail-${placeId}`;
+  const id = req.params.id;
+  const cacheKey = `restaurant-detail-${id}`;
   const cached = cache.get(cacheKey);
   if (cached) return res.json({ restaurant: cached, cached: true });
   try {
-    const restaurant = await getRestaurantDetails(placeId);
+    let restaurant = null;
+    if (id.startsWith("at-rest-")) {
+      // Airtable restaurant - get from Airtable then enrich with Google Places
+      const { getAirtableRestaurants } = require("../services/airtable");
+      const all = await getAirtableRestaurants(null);
+      const atRest = all.find(r => r.id === id);
+      if (!atRest) return res.status(404).json({ error: "Restaurant not found" });
+      if (atRest.placeId) {
+        const googleData = await getRestaurantDetails(atRest.placeId);
+        restaurant = { ...googleData, ...atRest, photos: googleData?.photos || [], reviews: googleData?.reviews || [] };
+      } else {
+        restaurant = atRest;
+      }
+    } else {
+      restaurant = await getRestaurantDetails(id);
+    }
     if (!restaurant) return res.status(404).json({ error: "Restaurant not found" });
     cache.set(cacheKey, restaurant);
     res.json({ restaurant });
