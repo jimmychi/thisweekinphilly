@@ -112,7 +112,8 @@ router.get("/sync", async (req, res) => {
     const { getAirtableRestaurants } = require("../services/airtable");
     const restaurants = await getAirtableRestaurants(null);
     console.log("Total restaurants:", restaurants.length, "Sample placeId:", restaurants[0]?.placeId);
-    const needsSync = restaurants.filter(r => !r.placeId);
+    const force = req.query.force === "true";
+    const needsSync = force ? restaurants : restaurants.filter(r => !r.placeId);
     console.log("Needs sync:", needsSync.length);
     
     let updated = 0;
