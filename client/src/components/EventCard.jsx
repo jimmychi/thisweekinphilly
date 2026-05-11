@@ -127,6 +127,8 @@ const KEYWORD_IMAGES = {
   tea: "https://images.unsplash.com/photo-1544787219-7f47ccb76574?w=600&q=80",
   rave: "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=600&q=80",
   dj: "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=600&q=80",
+  club: "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=600&q=80",
+  disco: "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=600&q=80",
   phillies: "https://images.unsplash.com/photo-1566577739112-5180d4bf9390?w=600&q=80",
   baseball: "https://images.unsplash.com/photo-1566577739112-5180d4bf9390?w=600&q=80",
   mets: "https://images.unsplash.com/photo-1566577739112-5180d4bf9390?w=600&q=80",
