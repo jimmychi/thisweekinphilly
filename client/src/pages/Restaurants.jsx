@@ -31,6 +31,8 @@ const styles = {
     position: "sticky",
     top: 68,
     zIndex: 90,
+    background: "var(--warm-white)",
+    backdropFilter: "blur(8px)",
     background: "var(--parchment)",
     borderBottom: "1px solid var(--stone)",
     padding: "16px 24px",
