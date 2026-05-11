@@ -30,6 +30,7 @@ const KEYWORD_IMAGES = {
   academy: "https://images.unsplash.com/photo-1580809361436-42a7ec204889?w=600&q=80",
   orchestra: "https://images.unsplash.com/photo-1465847899084-d164df4dedc6?w=600&q=80",
   cello: "https://images.unsplash.com/photo-1465847899084-d164df4dedc6?w=600&q=80",
+  sulic: "https://images.unsplash.com/photo-1465847899084-d164df4dedc6?w=600&q=80",
   classical: "https://images.unsplash.com/photo-1465847899084-d164df4dedc6?w=600&q=80",
   violin: "https://images.unsplash.com/photo-1465847899084-d164df4dedc6?w=600&q=80",
   tattoo: "https://images.unsplash.com/photo-1568515387631-8b650bbcdb90?w=600&q=80",
