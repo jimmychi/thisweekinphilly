@@ -123,12 +123,17 @@ router.get("/sync", async (req, res) => {
           "https://maps.googleapis.com/maps/api/place/textsearch/json",
           { params: { query: `${r.name} Philadelphia PA`, key: process.env.GOOGLE_PLACES_API_KEY } }
         );
-        console.log("API Status:", searchRes.data.status, "Error:", searchRes.data.error_message);
         const candidate = searchRes.data.results && searchRes.data.results[0];
-        console.log("Restaurant:", r.name, "Candidate:", candidate?.name, "PlaceID:", candidate?.place_id);
         if (!candidate) { console.log("No candidate for", r.name); continue; }
+
+        // Get full details including phone and website
+        const detailRes = await axios.get(
+          "https://maps.googleapis.com/maps/api/place/details/json",
+          { params: { place_id: candidate.place_id, fields: "formatted_phone_number,website,photos", key: process.env.GOOGLE_PLACES_API_KEY } }
+        );
+        const details = detailRes.data.result || {};
         
-        const photoRef = candidate.photos && candidate.photos[0] && candidate.photos[0].photo_reference;
+        const photoRef = details.photos?.[0]?.photo_reference || candidate.photos?.[0]?.photo_reference;
         const photoUrl = photoRef ? `https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photoreference=${photoRef}&key=${process.env.GOOGLE_PLACES_API_KEY}` : null;
         
         // Update Airtable record
@@ -139,8 +144,8 @@ router.get("/sync", async (req, res) => {
             "Place ID": candidate.place_id,
             "Address": candidate.formatted_address || r.address,
             "Rating": candidate.rating || null,
-            "Phone": candidate.formatted_phone_number || null,
-            "Website": candidate.website || null,
+            "Phone": details.formatted_phone_number || null,
+            "Website": details.website ? details.website.split("?")[0].replace(/\/$/, "") : null,
             "Image": photoUrl,
           }},
           { headers: { Authorization: `Bearer ${process.env.AIRTABLE_API_KEY}`, "Content-Type": "application/json" } }
