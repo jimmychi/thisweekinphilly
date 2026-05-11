@@ -181,7 +181,24 @@ export default function RestaurantDetail() {
   const [restaurant, setRestaurant] = useState(null);
   const [loading, setLoading] = useState(true);
   const [airtableData, setAirtableData] = useState(null);
+  const [venueEvents, setVenueEvents] = useState([]);
   const isMobile = window.innerWidth < 768;
+
+  useEffect(() => {
+    // Fetch venue events after restaurant loads
+    if (restaurant) {
+      fetch(`${API_BASE}/events?days=30`)
+        .then(r => r.json())
+        .then(data => {
+          const matched = (data.events || []).filter(e =>
+            e.venue && restaurant.name &&
+            e.venue.toLowerCase().includes(restaurant.name.toLowerCase().split(" ")[0])
+          );
+          setVenueEvents(matched.slice(0, 5));
+        })
+        .catch(() => {});
+    }
+  }, [restaurant]);
 
   useEffect(() => {
     fetch(`${API_BASE}/restaurants/${encodeURIComponent(id)}`)
