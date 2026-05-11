@@ -280,4 +280,56 @@ async function getAirtableRestaurants(neighborhood) {
   }
 }
 
-module.exports = { submitEvent, getApprovedEvents, getRestaurantSpecials, syncEventsToAirtable, getHappyHours, getMuseums, getAirtableRestaurants };
+async function syncRestaurantsToAirtable(googleRestaurants) {
+  if (!AIRTABLE_BASE || !AIRTABLE_KEY) return;
+  try {
+    // Get existing Place IDs from Airtable
+    let existing = [];
+    let offset = null;
+    do {
+      const params = { fields: ["Place ID"], pageSize: 100 };
+      if (offset) params.offset = offset;
+      const res = await axios.get(
+        `https://api.airtable.com/v0/${AIRTABLE_BASE}/Restaurants`,
+        { params, headers: { Authorization: `Bearer ${AIRTABLE_KEY}` } }
+      );
+      existing = existing.concat(res.data.records || []);
+      offset = res.data.offset || null;
+    } while (offset);
+
+    const existingPlaceIds = new Set(existing.map(r => r.fields["Place ID"]).filter(Boolean));
+
+    // Filter to only new restaurants
+    const newRestaurants = googleRestaurants.filter(r => r.id && !existingPlaceIds.has(r.id));
+
+    if (newRestaurants.length === 0) return;
+
+    // Insert in batches of 10 (Airtable limit)
+    for (let i = 0; i < newRestaurants.length; i += 10) {
+      const batch = newRestaurants.slice(i, i + 10);
+      await axios.post(
+        `https://api.airtable.com/v0/${AIRTABLE_BASE}/Restaurants`,
+        {
+          records: batch.map(r => ({
+            fields: {
+              "Restaurant Name": r.name,
+              "Address": r.address || "",
+              "Neighborhood": r.neighborhood || "",
+              "Rating": r.rating || null,
+              "Price Level": r.priceLevel ? "$".repeat(r.priceLevel) : null,
+              "Place ID": r.id,
+              "Image": r.image || null,
+              "Active": false,
+            }
+          }))
+        },
+        { headers: { Authorization: `Bearer ${AIRTABLE_KEY}`, "Content-Type": "application/json" } }
+      );
+    }
+    console.log(`Synced ${newRestaurants.length} new restaurants to Airtable`);
+  } catch (err) {
+    console.error("Restaurant sync error:", err.message);
+  }
+}
+
+module.exports = { submitEvent, getApprovedEvents, getRestaurantSpecials, syncEventsToAirtable, getHappyHours, getMuseums, getAirtableRestaurants, syncRestaurantsToAirtable };
