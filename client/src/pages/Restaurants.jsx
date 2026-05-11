@@ -28,6 +28,9 @@ const styles = {
   accent: { color: "var(--brick)" },
   sub: { fontFamily: "var(--font-body)", fontStyle: "italic", fontSize: "1rem", color: "var(--stone-light)" },
   filters: {
+    position: "sticky",
+    top: 68,
+    zIndex: 90,
     background: "var(--parchment)",
     borderBottom: "1px solid var(--stone)",
     padding: "16px 24px",
