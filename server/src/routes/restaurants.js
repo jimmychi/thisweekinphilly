@@ -119,10 +119,10 @@ router.get("/sync", async (req, res) => {
     for (const r of needsSync) {
       try {
         const searchRes = await axios.get(
-          "https://maps.googleapis.com/maps/api/place/findplacefromtext/json",
-          { params: { input: `${r.name} Philadelphia PA`, inputtype: "textquery", fields: "place_id,name,formatted_address,rating,price_level,photos,formatted_phone_number,website", key: process.env.GOOGLE_PLACES_API_KEY } }
+          "https://maps.googleapis.com/maps/api/place/textsearch/json",
+          { params: { query: `${r.name} Philadelphia PA`, key: process.env.GOOGLE_PLACES_API_KEY } }
         );
-        const candidate = searchRes.data.candidates && searchRes.data.candidates[0];
+        const candidate = searchRes.data.results && searchRes.data.results[0];
         console.log("Restaurant:", r.name, "Candidate:", candidate?.name, "PlaceID:", candidate?.place_id);
         if (!candidate) { console.log("No candidate for", r.name); continue; }
         
