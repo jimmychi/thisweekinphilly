@@ -129,7 +129,7 @@ router.get("/sync", async (req, res) => {
         const photoUrl = photoRef ? `https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photoreference=${photoRef}&key=${process.env.GOOGLE_PLACES_API_KEY}` : null;
         
         // Update Airtable record
-        const airtableId = r.id.replace("at-rest-", "");
+        const airtableId = r.id.replace("at-rest-rec", "rec");
         await axios.patch(
           `https://api.airtable.com/v0/${process.env.AIRTABLE_BASE_ID}/Restaurants/${airtableId}`,
           { fields: {
