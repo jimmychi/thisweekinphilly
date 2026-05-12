@@ -249,15 +249,15 @@ router.get("/:id", async (req, res) => {
   if (cached) return res.json({ restaurant: cached, cached: true });
   try {
     let restaurant = null;
-    if (id.startsWith("at-rest-")) {
-      // Airtable restaurant - get from Airtable then enrich with Google Places
-      const { getAirtableRestaurants } = require("../services/airtable");
-      const all = await getAirtableRestaurants(null);
+    if (id.startsWith("at-rest-") || id.startsWith("at-bar-")) {
+      const { getAirtableRestaurants, getAirtableBars } = require("../services/airtable");
+      const isBar = id.startsWith("at-bar-");
+      const all = isBar ? await getAirtableBars(null) : await getAirtableRestaurants(null);
       const atRest = all.find(r => r.id === id);
       if (!atRest) return res.status(404).json({ error: "Restaurant not found" });
       if (atRest.placeId) {
         const googleData = await getRestaurantDetails(atRest.placeId);
-        restaurant = { ...googleData, ...atRest, description: atRest.description || googleData?.description || null, address: atRest.address !== "Philadelphia, PA" ? atRest.address : googleData?.address || atRest.address, photos: googleData?.photos || [], reviews: googleData?.reviews || [], hours: googleData?.hours || null };
+        restaurant = { ...googleData, ...atRest, name: atRest.name || googleData?.name, description: atRest.description || googleData?.description || null, address: atRest.address !== "Philadelphia, PA" ? atRest.address : googleData?.address || atRest.address, photos: googleData?.photos || [], reviews: googleData?.reviews || [], hours: googleData?.hours || null };
       } else {
         restaurant = atRest;
       }
