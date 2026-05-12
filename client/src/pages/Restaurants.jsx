@@ -172,6 +172,7 @@ export default function Restaurants() {
             {n}
           </button>
         ))}
+        </div>
       </div>
 
       {loading ? (
