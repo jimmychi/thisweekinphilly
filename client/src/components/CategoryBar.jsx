@@ -32,7 +32,7 @@ const styles = {
   }),
 };
 
-export default function CategoryBar({ categories, activeCategory, onSelect }) {
+export default function CategoryBar({ categories, activeCategory, onSelect, freeOnly, onFreeToggle }) {
   return (
     <nav style={styles.bar}>
       <div style={styles.inner}>
@@ -46,6 +46,13 @@ export default function CategoryBar({ categories, activeCategory, onSelect }) {
             <span>{cat.label}</span>
           </button>
         ))}
+        <button
+          style={styles.btn(freeOnly)}
+          onClick={onFreeToggle}
+        >
+          <span>🎟️</span>
+          <span>Free</span>
+        </button>
       </div>
     </nav>
   );
