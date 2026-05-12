@@ -45,15 +45,20 @@ async function getApprovedEvents() {
   if (!AIRTABLE_BASE || !AIRTABLE_KEY) return [];
 
   try {
-    const res = await axios.get(
-      `https://api.airtable.com/v0/${AIRTABLE_BASE}/${encodeURIComponent(TABLE_NAME)}`,
-      {
-        params: { filterByFormula: "{Approved} = 1" },
-        headers: { Authorization: `Bearer ${AIRTABLE_KEY}` },
-      }
-    );
+    let records = [];
+    let offset = null;
+    do {
+      const params = { filterByFormula: "{Approved} = 1", pageSize: 100 };
+      if (offset) params.offset = offset;
+      const res = await axios.get(
+        `https://api.airtable.com/v0/${AIRTABLE_BASE}/${encodeURIComponent(TABLE_NAME)}`,
+        { params, headers: { Authorization: `Bearer ${AIRTABLE_KEY}` } }
+      );
+      records = records.concat(res.data.records || []);
+      offset = res.data.offset || null;
+    } while (offset);
 
-    return (res.data.records || []).map((r) => ({
+    return records.map((r) => ({
       id: r.fields["Event ID"] ? r.fields["Event ID"] : `at-${r.id}`,
       source: r.fields["Source"] || "community",
       title: r.fields["Event Name"],
