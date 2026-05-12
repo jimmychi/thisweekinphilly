@@ -44,7 +44,7 @@ const [tmEvents, phqEvents, atEvents] = await Promise.allSettled([
 
     const seen = new Set();
     const deduped = upcoming.filter((e) => {
-      const key = `${e.title?.toLowerCase().trim()}-${e.date}`;
+      const key = `${e.title?.toLowerCase().trim()}-${e.date}-${e.time || ""}`;
       if (seen.has(key)) return false;
       seen.add(key);
       return true;
