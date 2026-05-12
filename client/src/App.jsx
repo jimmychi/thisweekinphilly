@@ -34,7 +34,7 @@ function HomePage() {
         activeCategory={activeCategory}
         onSelect={setActiveCategory}
         freeOnly={freeOnly}
-        onFreeToggle={() => setFreeOnly(!freeOnly)}
+        onFreeToggle={() => { setFreeOnly(prev => !prev); }}
       />
       <DayBar activeDay={activeDay} onSelect={setActiveDay} />
       <div style={{ flex: 1, background: "var(--cream)" }}>
