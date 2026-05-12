@@ -46,13 +46,6 @@ export default function CategoryBar({ categories, activeCategory, onSelect, free
             <span>{cat.label}</span>
           </button>
         ))}
-        {onFreeToggle && <button
-          style={styles.btn(freeOnly)}
-          onClick={onFreeToggle}
-        >
-          <span>🎟️</span>
-          <span>Free Events</span>
-        </button>}
       </div>
     </nav>
   );
