@@ -42,14 +42,15 @@ const styles = {
     borderBottom: "1px solid var(--stone)",
   },
   pill: (active) => ({
-    padding: "8px 18px",
+    padding: "5px 12px",
     borderRadius: 999,
     border: active ? "none" : "1px solid var(--stone)",
     background: active ? "var(--brick)" : "transparent",
     color: active ? "#fff" : "var(--ink)",
     fontFamily: "var(--font-body)",
-    fontSize: "0.85rem",
+    fontSize: "0.75rem",
     fontWeight: active ? 700 : 400,
+    whiteSpace: "nowrap",
     cursor: "pointer",
   }),
   grid: {
