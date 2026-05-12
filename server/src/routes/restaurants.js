@@ -52,7 +52,7 @@ router.get("/bars", async (req, res) => {
   try {
     const { getAirtableBars, syncBarsToAirtable } = require("../services/airtable");
     const bars = await getAirtableBars(neighborhood);
-    const sorted = bars.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+    const sorted = bars.sort((a, b) => a.name.localeCompare(b.name));
     cache.set(cacheKey, sorted);
     res.json({ restaurants: sorted, count: sorted.length });
     // Sync new bars from Google Places in background
