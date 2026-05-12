@@ -263,6 +263,7 @@ export default function RestaurantDetail() {
       ) : (
         <div style={styles.photoPlaceholder}>🍽️</div>
       )}
+      </div>
 
       <div style={{ maxWidth: 900, margin: "0 auto", padding: "32px 24px", display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 320px", gap: 32 }}>
         {/* Left Column */}
