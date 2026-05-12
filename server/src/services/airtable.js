@@ -332,4 +332,90 @@ async function syncRestaurantsToAirtable(googleRestaurants) {
   }
 }
 
-module.exports = { submitEvent, getApprovedEvents, getRestaurantSpecials, syncEventsToAirtable, getHappyHours, getMuseums, getAirtableRestaurants, syncRestaurantsToAirtable };
+async function getAirtableBars(neighborhood) {
+  if (!AIRTABLE_BASE || !AIRTABLE_KEY) return [];
+  try {
+    let records = [];
+    let offset = null;
+    do {
+      const params = { filterByFormula: "{Active} = 1", pageSize: 100 };
+      if (offset) params.offset = offset;
+      const res = await axios.get(
+        `https://api.airtable.com/v0/${AIRTABLE_BASE}/Bars`,
+        { params, headers: { Authorization: `Bearer ${AIRTABLE_KEY}` } }
+      );
+      records = records.concat(res.data.records || []);
+      offset = res.data.offset || null;
+    } while (offset);
+    const mapped = records.map((r) => ({
+      id: `at-bar-${r.id}`,
+      name: r.fields["Bar Name"] || "",
+      address: r.fields["Address"] || "Philadelphia, PA",
+      phone: r.fields["Phone"] || null,
+      website: r.fields["Website"] || null,
+      neighborhood: r.fields["Neighborhood"] || null,
+      rating: r.fields["Rating"] || null,
+      priceLevel: r.fields["Price Level"] || null,
+      description: r.fields["Description"] || null,
+      image: r.fields["Image"] || null,
+      placeId: r.fields["Place ID"] || null,
+    }));
+    if (neighborhood && neighborhood !== "All") {
+      return mapped.filter(r => r.neighborhood === neighborhood);
+    }
+    return mapped;
+  } catch (err) {
+    console.error("Airtable bars fetch error:", err.message);
+    return [];
+  }
+}
+
+async function syncBarsToAirtable(googleBars) {
+  if (!AIRTABLE_BASE || !AIRTABLE_KEY) return;
+  try {
+    let existing = [];
+    let offset = null;
+    do {
+      const params = { fields: ["Place ID"], pageSize: 100 };
+      if (offset) params.offset = offset;
+      const res = await axios.get(
+        `https://api.airtable.com/v0/${AIRTABLE_BASE}/Bars`,
+        { params, headers: { Authorization: `Bearer ${AIRTABLE_KEY}` } }
+      );
+      existing = existing.concat(res.data.records || []);
+      offset = res.data.offset || null;
+    } while (offset);
+
+    const existingPlaceIds = new Set(existing.map(r => r.fields["Place ID"]).filter(Boolean));
+    const newBars = googleBars.filter(r => r.id && !existingPlaceIds.has(r.id));
+    if (newBars.length === 0) return;
+
+    for (let i = 0; i < newBars.length; i += 10) {
+      const batch = newBars.slice(i, i + 10);
+      await axios.post(
+        `https://api.airtable.com/v0/${AIRTABLE_BASE}/Bars`,
+        {
+          records: batch.map(r => ({
+            fields: {
+              "Bar Name": r.name,
+              "Address": r.address || "",
+              "Neighborhood": r.neighborhood || "",
+              "Rating": r.rating || null,
+              "Price Level": r.priceLevel ? "$".repeat(r.priceLevel) : null,
+              "Place ID": r.id,
+              "Image": r.image || null,
+              "Active": false,
+              "Date Added": new Date().toISOString().split("T")[0],
+            }
+          }))
+        },
+        { headers: { Authorization: `Bearer ${AIRTABLE_KEY}`, "Content-Type": "application/json" } }
+      );
+    }
+    console.log(`Synced ${newBars.length} new bars to Airtable`);
+  } catch (err) {
+    console.error("Bars sync error:", err.message);
+  }
+}
+
+module.exports = { submitEvent, getApprovedEvents, getRestaurantSpecials, syncEventsToAirtable, getHappyHours, getMuseums, getAirtableRestaurants, syncRestaurantsToAirtable, getAirtableBars, syncBarsToAirtable };

@@ -50,11 +50,64 @@ router.get("/bars", async (req, res) => {
   const cached = cache.get(cacheKey);
   if (cached) return res.json({ restaurants: cached, cached: true });
   try {
-    const bars = await getPhillyBars(neighborhood);
+    const { getAirtableBars, syncBarsToAirtable } = require("../services/airtable");
+    const bars = await getAirtableBars(neighborhood);
     const sorted = bars.sort((a, b) => (b.rating || 0) - (a.rating || 0));
     cache.set(cacheKey, sorted);
     res.json({ restaurants: sorted, count: sorted.length });
+    // Sync new bars from Google Places in background
+    getPhillyBars(neighborhood).then(googleBars => {
+      syncBarsToAirtable(googleBars).catch(() => {});
+    }).catch(() => {});
   } catch (err) { res.status(500).json({ error: "Failed to fetch bars" }); }
+});
+
+// GET /api/restaurants/syncbars
+router.get("/syncbars", async (req, res) => {
+  try {
+    const { getAirtableBars } = require("../services/airtable");
+    const bars = await getAirtableBars(null);
+    const force = req.query.force === "true";
+    const needsSync = force ? bars : bars.filter(r => !r.placeId);
+    let updated = 0;
+    for (const r of needsSync) {
+      try {
+        const searchRes = await axios.get(
+          "https://maps.googleapis.com/maps/api/place/textsearch/json",
+          { params: { query: `${r.name} bar Philadelphia PA`, key: process.env.GOOGLE_PLACES_API_KEY } }
+        );
+        const candidate = searchRes.data.results && searchRes.data.results[0];
+        if (!candidate) continue;
+        const detailRes = await axios.get(
+          "https://maps.googleapis.com/maps/api/place/details/json",
+          { params: { place_id: candidate.place_id, fields: "formatted_phone_number,website,photos", key: process.env.GOOGLE_PLACES_API_KEY } }
+        );
+        const details = detailRes.data.result || {};
+        const photoRef = details.photos?.[0]?.photo_reference || candidate.photos?.[0]?.photo_reference;
+        const photoUrl = photoRef ? `https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photoreference=${photoRef}&key=${process.env.GOOGLE_PLACES_API_KEY}` : null;
+        const airtableId = r.id.replace("at-bar-rec", "rec");
+        await axios.patch(
+          `https://api.airtable.com/v0/${process.env.AIRTABLE_BASE_ID}/Bars/${airtableId}`,
+          { fields: {
+            "Place ID": candidate.place_id,
+            "Address": candidate.formatted_address || r.address,
+            "Rating": candidate.rating || null,
+            "Phone": details.formatted_phone_number || null,
+            "Website": details.website ? details.website.split("?")[0].replace(/\/$/, "") : null,
+            "Image": photoUrl,
+          }},
+          { headers: { Authorization: `Bearer ${process.env.AIRTABLE_API_KEY}`, "Content-Type": "application/json" } }
+        );
+        updated++;
+        await new Promise(resolve => setTimeout(resolve, 200));
+      } catch (e) {
+        console.error("Sync error for", r.name, e.message);
+      }
+    }
+    res.json({ message: `Synced ${updated} bars` });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // GET /api/restaurants/nightclubs
