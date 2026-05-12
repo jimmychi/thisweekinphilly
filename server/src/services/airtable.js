@@ -359,6 +359,7 @@ async function getAirtableBars(neighborhood) {
       description: r.fields["Description"] || null,
       image: r.fields["Image"] || null,
       placeId: r.fields["Place ID"] || null,
+      specials: r.fields["Specials"] || null,
     }));
     if (neighborhood && neighborhood !== "All") {
       return mapped.filter(r => r.neighborhood === neighborhood);
