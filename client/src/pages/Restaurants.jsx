@@ -166,6 +166,7 @@ export default function Restaurants() {
       </div>
 
       <div style={styles.filters}>
+        <div style={{ display: "flex", gap: 6, margin: "0 auto" }}>
         {NEIGHBORHOODS.map(n => (
           <button key={n} style={styles.pill(n === neighborhood)} onClick={() => setNeighborhood(n)}>
             {n}
