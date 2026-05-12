@@ -10,17 +10,23 @@ const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
 
 const styles = {
   page: { minHeight: "100vh", background: "var(--cream)" },
+  photoWrap: {
+    maxWidth: 800,
+    margin: "0 auto",
+    padding: "24px 24px 0",
+  },
   photoGrid: {
     display: "grid",
     gridTemplateColumns: "2fr 1fr 1fr",
-    gridTemplateRows: "200px 200px",
+    gridTemplateRows: "160px 160px",
     gap: 4,
-    maxHeight: 404,
+    borderRadius: 6,
     overflow: "hidden",
   },
   photoGridMobile: {
     width: "100%",
     height: 220,
+    borderRadius: 6,
     overflow: "hidden",
   },
   photoMain: {
@@ -35,6 +41,7 @@ const styles = {
   photoPlaceholder: {
     width: "100%", height: 320,
     background: "var(--parchment)",
+    borderRadius: 6,
     display: "flex", alignItems: "center",
     justifyContent: "center", fontSize: "4rem",
   },
@@ -245,6 +252,7 @@ export default function RestaurantDetail() {
       <Header />
 
       {/* Photo Grid */}
+      <div style={styles.photoWrap}>
       {restaurant.photos && restaurant.photos.length > 0 ? (
         <div style={isMobile ? styles.photoGridMobile : styles.photoGrid}>
           <img src={restaurant.photos[0]} alt={restaurant.name} style={styles.photoMain} />
