@@ -22,7 +22,6 @@ function HomePage() {
   const [activeCategory, setActiveCategory] = useState("all");
   const [activeDay, setActiveDay] = useState(null);
   const [freeOnly, setFreeOnly] = useState(false);
-  const [freeOnly, setFreeOnly] = useState(false);
   const categories = useCategories();
   const { events, loading, error, lastUpdated } = useEvents(activeCategory, 7);
 
