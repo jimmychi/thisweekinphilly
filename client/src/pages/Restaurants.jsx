@@ -40,11 +40,6 @@ const styles = {
     WebkitOverflowScrolling: "touch",
     padding: "12px 16px",
     borderBottom: "1px solid var(--stone)",
-    padding: "16px 24px",
-    display: "flex",
-    gap: 8,
-    flexWrap: "wrap",
-    justifyContent: "center",
   },
   pill: (active) => ({
     padding: "8px 18px",
