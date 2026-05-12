@@ -197,6 +197,7 @@ router.get("/sync", async (req, res) => {
             "Place ID": candidate.place_id,
             "Address": candidate.formatted_address || r.address,
             "Rating": candidate.rating || null,
+            "Price Level": candidate.price_level ? "$".repeat(candidate.price_level) : null,
             "Phone": details.formatted_phone_number || null,
             "Website": details.website ? details.website.split("?")[0].replace(/\/$/, "") : null,
             "Image": photoUrl,
