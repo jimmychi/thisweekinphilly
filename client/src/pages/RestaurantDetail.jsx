@@ -11,7 +11,7 @@ const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
 const styles = {
   page: { minHeight: "100vh", background: "var(--cream)" },
   photoWrap: {
-    maxWidth: 800,
+    maxWidth: 900,
     margin: "0 auto",
     padding: "24px 24px 0",
   },
