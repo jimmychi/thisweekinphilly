@@ -41,6 +41,7 @@ export default function Bars() {
   const [bars, setBars] = useState([]);
   const [loading, setLoading] = useState(true);
   const [neighborhood, setNeighborhood] = useState("All");
+  const [happyHours, setHappyHours] = useState([]);
 
   useEffect(() => {
     setLoading(true);
@@ -78,6 +79,7 @@ export default function Bars() {
                   {r.priceLevel && <span style={styles.price}>{PRICE[r.priceLevel]}</span>}
                   {r.openNow && <span style={styles.openNow}>● Open Now</span>}
                 </div>
+                {(() => { const hh = happyHours.find(h => h.name.toLowerCase().includes(r.name.toLowerCase().split(" ")[0]) || r.name.toLowerCase().includes(h.name.toLowerCase().split(" ")[0])); return hh ? <div style={{ fontSize: "0.78rem", background: "var(--brick)", color: "#fff", borderRadius: 20, padding: "2px 8px", display: "inline-block", marginBottom: 6, fontFamily: "var(--font-body)", fontWeight: 600 }}>🍺 Happy Hour: {hh.time}</div> : null; })()}
                 <div style={styles.address}>{r.address}</div>
                 {r.phone && <a href={`tel:${r.phone}`} style={{ fontSize: "0.78rem", color: "var(--ink)", textDecoration: "none", fontFamily: "var(--font-body)", display: "block", marginBottom: 2 }} onClick={e => e.stopPropagation()}>{r.phone}</a>}
                 {r.website && <a href={r.website} target="_blank" rel="noopener noreferrer" style={{ fontSize: "0.78rem", color: "var(--brick)", textDecoration: "none", fontFamily: "var(--font-body)", display: "block", marginBottom: 4 }} onClick={e => e.stopPropagation()}>{r.website.replace(/^https?:\/\//, "").replace(/\/$/, "")}</a>}
