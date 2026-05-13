@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 const API_BASE = import.meta.env.VITE_API_URL || "https://thisweekinphilly-api.onrender.com/api";
 
-const NEIGHBORHOODS = ["All", "Center City", "Old City", "Fishtown", "Rittenhouse", "South Philly", "Northern Liberties", "University City"];
+const NEIGHBORHOODS = ["All", "Center City", "Old City", "Fishtown", "Rittenhouse", "South Philly", "Northern Liberties", "University City", "Manayunk", "South Street"];
 
 const PRICE = { 1: "$", 2: "$$", 3: "$$$", 4: "$$$$" };
 
