@@ -3,7 +3,7 @@ import Header from "../components/Header.jsx";
 import Footer from "../components/Footer.jsx";
 
 const API_BASE = import.meta.env.VITE_API_URL || "https://thisweekinphilly-api.onrender.com/api";
-const NEIGHBORHOODS = ["All", "Center City", "Old City", "Fishtown", "Rittenhouse", "South Street", "South Philly", "Northern Liberties", "Fairmount", "University City", "Manayunk", "Northern Liberties", "West Philadelphia", "King of Prussia"];
+const NEIGHBORHOODS = ["All", "Center City", "Old City", "Fishtown", "Rittenhouse", "South Street", "South Philly", "Northern Liberties", "Fairmount", "University City", "Manayunk", "West Philadelphia", "King of Prussia"];
 
 const styles = {
   page: { minHeight: "100vh", background: "var(--cream)" },
@@ -17,7 +17,7 @@ const styles = {
   headline: { fontFamily: "var(--font-display)", fontSize: "clamp(2rem, 5vw, 3rem)", fontWeight: 900, color: "var(--cream)", marginBottom: 8 },
   accent: { color: "var(--brick)" },
   sub: { fontFamily: "var(--font-body)", fontStyle: "italic", fontSize: "1rem", color: "var(--stone-light)" },
-  filters: { background: "var(--warm-white)", borderBottom: "1px solid var(--stone)", padding: "12px 16px", display: "flex", gap: 6, flexWrap: "nowrap", overflowX: "auto", WebkitOverflowScrolling: "touch", justifyContent: "center", position: "sticky", top: 68, zIndex: 90, backdropFilter: "blur(8px)" },
+  filters: { background: "var(--warm-white)", borderBottom: "1px solid var(--stone)", padding: "12px 16px", display: "flex", gap: 6, flexWrap: "nowrap", overflowX: "auto", WebkitOverflowScrolling: "touch", justifyContent: "flex-start", position: "sticky", top: 68, zIndex: 90, backdropFilter: "blur(8px)" },
   pill: (active) => ({ padding: "5px 12px", borderRadius: 999, border: active ? "none" : "1px solid var(--stone)", background: active ? "var(--brick)" : "transparent", color: active ? "#fff" : "var(--ink)", fontFamily: "var(--font-body)", fontSize: "0.75rem", fontWeight: active ? 700 : 400, cursor: "pointer", whiteSpace: "nowrap" }),
   list: { maxWidth: 900, margin: "0 auto", padding: "32px 24px" },
   card: {
