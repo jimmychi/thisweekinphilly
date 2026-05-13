@@ -79,6 +79,7 @@ router.get("/syncbars", async (req, res) => {
           { params: { query: `${r.name} bar Philadelphia PA`, key: process.env.GOOGLE_PLACES_API_KEY } }
         );
         const candidate = searchRes.data.results && searchRes.data.results[0];
+        console.log("Bar:", r.name, "Status:", searchRes.data.status, "Candidate:", candidate?.name);
         if (!candidate) continue;
         const detailRes = await axios.get(
           "https://maps.googleapis.com/maps/api/place/details/json",
