@@ -38,7 +38,7 @@ function HomePage() {
       />
       <DayBar activeDay={activeDay} onSelect={setActiveDay} />
       <div style={{ flex: 1, background: "var(--cream)" }}>
-        <EventGrid events={(activeDay ? events.filter(e => e.date === activeDay) : events).filter(e => !freeOnly || !e.price || e.price === "0" || e.price.toLowerCase().includes("free"))} loading={loading} error={error} />
+        <EventGrid events={(activeDay ? events.filter(e => e.date === activeDay) : events).filter(e => !freeOnly || !e.price || e.price === "0" || (e.price && e.price.toLowerCase().includes("free")))} loading={loading} error={error} />
       </div>
       <Footer lastUpdated={lastUpdated} />
     </div>
