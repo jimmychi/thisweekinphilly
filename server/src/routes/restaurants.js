@@ -67,8 +67,10 @@ router.get("/syncbars", async (req, res) => {
   try {
     const { getAirtableBars } = require("../services/airtable");
     const bars = await getAirtableBars(null);
+    console.log("Total bars:", bars.length);
     const force = req.query.force === "true";
     const needsSync = force ? bars : bars.filter(r => !r.placeId);
+    console.log("Needs sync:", needsSync.length, "force:", force);
     let updated = 0;
     for (const r of needsSync) {
       try {
