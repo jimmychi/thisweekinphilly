@@ -120,7 +120,7 @@ router.get("/nightclubs", async (req, res) => {
     const BLACKLIST = ["The Trestle Inn"];
     const clubs = await getPhillyNightclubs(neighborhood);
     const filtered = clubs.filter(c => !BLACKLIST.some(b => c.name.includes(b)));
-    const sorted = filtered.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+    const sorted = filtered.sort((a, b) => a.name.localeCompare(b.name));
     cache.set(cacheKey, sorted);
     res.json({ restaurants: sorted, count: sorted.length });
   } catch (err) { res.status(500).json({ error: "Failed to fetch nightclubs" }); }
