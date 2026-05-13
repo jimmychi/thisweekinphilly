@@ -37,18 +37,7 @@ function HomePage() {
         freeOnly={freeOnly}
         onFreeToggle={() => { setFreeOnly(prev => !prev); }}
       />
-      <div style={{ background: "var(--warm-white)", borderBottom: "1px solid var(--border)", padding: "10px 24px" }}>
-        <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-          <input
-            type="text"
-            placeholder="🔍 Search events, venues..."
-            value={searchQuery}
-            onChange={e => setSearchQuery(e.target.value)}
-            style={{ width: "100%", padding: "8px 16px", borderRadius: 40, border: "1.5px solid var(--border)", fontFamily: "var(--font-body)", fontSize: "0.9rem", background: "var(--cream)", outline: "none", boxSizing: "border-box" }}
-          />
-        </div>
-      </div>
-      <DayBar activeDay={activeDay} onSelect={setActiveDay} />
+      <DayBar activeDay={activeDay} onSelect={setActiveDay} searchQuery={searchQuery} onSearch={e => setSearchQuery(e.target.value)} />
       <div style={{ flex: 1, background: "var(--cream)" }}>
         <EventGrid events={(activeDay ? events.filter(e => e.date === activeDay) : events).filter(e => !freeOnly || !e.price || e.price === "0" || (e.price && e.price.toLowerCase().includes("free"))).filter(e => !searchQuery || e.title?.toLowerCase().includes(searchQuery.toLowerCase()) || e.venue?.toLowerCase().includes(searchQuery.toLowerCase()) || e.description?.toLowerCase().includes(searchQuery.toLowerCase()))} loading={loading} error={error} />
       </div>

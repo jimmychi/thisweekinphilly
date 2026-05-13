@@ -57,7 +57,7 @@ const styles = {
 
 const DAY_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-export default function DayBar({ activeDay, onSelect }) {
+export default function DayBar({ activeDay, onSelect, searchQuery, onSearch }) {
   const isMobile = window.innerWidth < 640;
   const days = [];
   const today = new Date();
@@ -75,7 +75,7 @@ export default function DayBar({ activeDay, onSelect }) {
   }
 
   return (
-    <nav style={styles.bar}>
+    <nav style={{ ...styles.bar, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
       <div style={styles.inner}>
         <button
           style={styles.btn(!activeDay, isMobile)}
@@ -95,6 +95,13 @@ export default function DayBar({ activeDay, onSelect }) {
           </button>
         ))}
       </div>
+      <input
+        type="text"
+        placeholder="🔍 Search..."
+        value={searchQuery || ""}
+        onChange={onSearch}
+        style={{ padding: "5px 12px", borderRadius: 40, border: "1.5px solid var(--border)", fontFamily: "var(--font-body)", fontSize: "0.78rem", background: "var(--cream)", outline: "none", width: 140, flexShrink: 0 }}
+      />
     </nav>
   );
 }
