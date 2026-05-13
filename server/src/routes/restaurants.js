@@ -15,7 +15,7 @@ router.get("/", async (req, res) => {
   try {
     const { getAirtableRestaurants, syncRestaurantsToAirtable } = require("../services/airtable");
     const restaurants = await getAirtableRestaurants(neighborhood);
-    const sorted = restaurants.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+    const sorted = restaurants.sort((a, b) => a.name.localeCompare(b.name));
     cache.set(cacheKey, sorted);
     res.json({ restaurants: sorted, count: sorted.length });
     // Sync new restaurants from Google Places in background
