@@ -100,7 +100,7 @@ export default function DayBar({ activeDay, onSelect, searchQuery, onSearch }) {
         placeholder="🔍 Search..."
         value={searchQuery || ""}
         onChange={onSearch}
-        style={{ padding: "5px 12px", borderRadius: 40, border: "1.5px solid var(--border)", fontFamily: "var(--font-body)", fontSize: "0.78rem", background: "var(--cream)", outline: "none", width: 140, flexShrink: 0 }}
+        style={{ padding: "5px 12px", borderRadius: 40, border: "1.5px solid var(--border)", fontFamily: "var(--font-body)", fontSize: "0.78rem", background: "var(--cream)", outline: "none", width: 140, flexShrink: 0, marginLeft: 12 }}
       />
     </nav>
   );
