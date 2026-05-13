@@ -18,10 +18,7 @@ router.get("/", async (req, res) => {
     const sorted = restaurants.sort((a, b) => a.name.localeCompare(b.name));
     cache.set(cacheKey, sorted);
     res.json({ restaurants: sorted, count: sorted.length });
-    // Sync new restaurants from Google Places in background
-    getPhillyRestaurants(neighborhood, cuisine).then(googleRestaurants => {
-      syncRestaurantsToAirtable(googleRestaurants).catch(() => {});
-    }).catch(() => {});
+
   } catch (err) {
     res.status(500).json({ error: "Failed to fetch restaurants" });
   }
@@ -55,10 +52,7 @@ router.get("/bars", async (req, res) => {
     const sorted = bars.sort((a, b) => a.name.localeCompare(b.name));
     cache.set(cacheKey, sorted);
     res.json({ restaurants: sorted, count: sorted.length });
-    // Sync new bars from Google Places in background
-    getPhillyBars(neighborhood).then(googleBars => {
-      syncBarsToAirtable(googleBars).catch(() => {});
-    }).catch(() => {});
+
   } catch (err) { res.status(500).json({ error: "Failed to fetch bars" }); }
 });
 
