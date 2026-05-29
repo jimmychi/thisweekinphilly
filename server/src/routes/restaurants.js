@@ -284,7 +284,7 @@ router.get("/syncimages", async (req, res) => {
         updated++;
         console.log("Updated images for:", r.name);
         await new Promise(resolve => setTimeout(resolve, 300));
-      } catch (e) { console.error("Image sync error for", r.name, e.message); }
+      } catch (e) { console.error("Image sync error for", r.name, e.message, e.response?.data || e.stack || ""); }
     }
     res.json({ message: `Updated images for ${updated} ${type}` });
   } catch (err) {
