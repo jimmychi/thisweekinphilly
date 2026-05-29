@@ -1,5 +1,18 @@
 const express = require("express");
 const axios = require("axios");
+const urlModule = require("url");
+
+function getProxyConfig() {
+  if (!process.env.FIXIE_URL) return {};
+  const fixieUrl = new urlModule.URL(process.env.FIXIE_URL);
+  return {
+    proxy: {
+      host: fixieUrl.hostname,
+      port: parseInt(fixieUrl.port),
+      auth: { username: fixieUrl.username, password: fixieUrl.password }
+    }
+  };
+}
 const NodeCache = require("node-cache");
 const { getPhillyRestaurants, getPhillyBars, getPhillyNightclubs, getRestaurantDetails, PHILLY_NEIGHBORHOODS } = require("../services/restaurants");
 
