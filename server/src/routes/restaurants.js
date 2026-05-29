@@ -4,13 +4,9 @@ const urlModule = require("url");
 
 function getProxyConfig() {
   if (!process.env.FIXIE_URL) return {};
-  const fixieUrl = new urlModule.URL(process.env.FIXIE_URL);
   return {
-    proxy: {
-      host: fixieUrl.hostname,
-      port: parseInt(fixieUrl.port),
-      auth: { username: fixieUrl.username, password: fixieUrl.password }
-    }
+    httpsAgent: new (require("https-proxy-agent").HttpsProxyAgent)(process.env.FIXIE_URL),
+    proxy: false
   };
 }
 const NodeCache = require("node-cache");
