@@ -5,6 +5,7 @@ const { getPhillyRestaurants, getPhillyBars, getPhillyNightclubs, getRestaurantD
 
 const router = express.Router();
 const cache = new NodeCache({ stdTTL: 3600 });
+let isSyncing = false;
 
 router.get("/", async (req, res) => {
   const neighborhood = req.query.neighborhood || null;
