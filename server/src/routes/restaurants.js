@@ -8,11 +8,19 @@ cloudinary.config({
 });
 async function uploadToCloudinary(googlePhotoUrl, folder) {
   try {
-    const result = await cloudinary.uploader.upload(googlePhotoUrl, { folder: folder || "thisweekinphilly", resource_type: "image" });
+    const proxyConfig = getProxyConfig();
+    const response = await axios.get(googlePhotoUrl, { 
+      responseType: "arraybuffer", 
+      ...proxyConfig,
+      maxRedirects: 5
+    });
+    const base64 = Buffer.from(response.data).toString("base64");
+    const dataUri = `data:image/jpeg;base64,${base64}`;
+    const result = await cloudinary.uploader.upload(dataUri, { folder: folder || "thisweekinphilly", resource_type: "image" });
     return result.secure_url;
   } catch (e) {
     console.error("Cloudinary upload error:", e.message);
-    return googlePhotoUrl;
+    return null;
   }
 }
 const urlModule = require("url");
