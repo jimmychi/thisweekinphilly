@@ -281,7 +281,7 @@ router.get("/syncimages", async (req, res) => {
     const type = req.query.type || "bars";
     const { getAirtableBars, getAirtableRestaurants } = require("../services/airtable");
     const items = type === "restaurants" ? await getAirtableRestaurants(null) : await getAirtableBars(null);
-    const needsImage = items.filter(r => r.placeId && !r.image);
+    const needsImage = items.filter(r => r.placeId && (!r.image || r.image.includes("maps.googleapis.com")));
     console.log(`Needs images (${type}):`, needsImage.length);
     let updated = 0;
     for (const r of needsImage) {
