@@ -240,6 +240,45 @@ router.get("/syncneighborhoods", async (req, res) => {
   }
 });
 
+// GET /api/restaurants/syncimages - sync only images for bars and restaurants
+router.get("/syncimages", async (req, res) => {
+  if (isSyncing) return res.status(429).json({ error: "Sync already running, please wait" });
+  isSyncing = true;
+  try {
+    const type = req.query.type || "bars";
+    const { getAirtableBars, getAirtableRestaurants } = require("../services/airtable");
+    const items = type === "restaurants" ? await getAirtableRestaurants(null) : await getAirtableBars(null);
+    const needsImage = items.filter(r => r.placeId && !r.image);
+    console.log(`Needs images (${type}):`, needsImage.length);
+    let updated = 0;
+    for (const r of needsImage) {
+      try {
+        const detailRes = await axios.get("https://maps.googleapis.com/maps/api/place/details/json", { params: { place_id: r.placeId, fields: "photos", key: process.env.GOOGLE_PLACES_API_KEY }, ...getProxyConfig() });
+        const photos = detailRes.data.result?.photos || [];
+        if (!photos.length) continue;
+        const allPhotoRefs = photos.slice(0, 6).map(p => p.photo_reference).filter(Boolean);
+        const cloudinaryUrls = [];
+        for (const ref of allPhotoRefs) {
+          const gUrl = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photoreference=${ref}&key=${process.env.GOOGLE_PLACES_API_KEY}`;
+          const cUrl = await uploadToCloudinary(gUrl, "thisweekinphilly");
+          if (cUrl) cloudinaryUrls.push(cUrl);
+        }
+        if (!cloudinaryUrls.length) continue;
+        const airtableId = type === "restaurants" ? r.id.replace("at-rest-rec", "rec") : r.id.replace("at-bar-rec", "rec");
+        const table = type === "restaurants" ? "Restaurants" : "Bars";
+        await axios.patch(`https://api.airtable.com/v0/${process.env.AIRTABLE_BASE_ID}/${table}/${airtableId}`, { fields: { "Image": cloudinaryUrls[0], "Images": cloudinaryUrls.join(",") } }, { headers: { Authorization: `Bearer ${process.env.AIRTABLE_API_KEY}`, "Content-Type": "application/json" } });
+        updated++;
+        console.log("Updated images for:", r.name);
+        await new Promise(resolve => setTimeout(resolve, 300));
+      } catch (e) { console.error("Image sync error for", r.name, e.message); }
+    }
+    res.json({ message: `Updated images for ${updated} ${type}` });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  } finally {
+    isSyncing = false;
+  }
+});
 router.get("/:id", async (req, res) => {
   const id = req.params.id;
   const cacheKey = `restaurant-detail-${id}`;
@@ -271,3 +310,4 @@ router.get("/:id", async (req, res) => {
 });
 
 module.exports = router;
+

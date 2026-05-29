@@ -1,0 +1,15 @@
+{
+  "expo": {
+    "extra": {
+      "eas": {
+        "projectId": "4d46ce78-4254-49af-85df-46b6436dd819"
+      }
+    },
+    "ios": {
+      "bundleIdentifier": "com.jimmychi213.thisweekinphilly",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
+    }
+  }
+}
