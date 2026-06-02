@@ -363,6 +363,7 @@ async function getAirtableBars(neighborhood) {
       priceLevel: r.fields["Price Level"] || null,
       description: r.fields["Description"] || null,
       image: r.fields["Image"] || null,
+      images: r.fields["Images"] ? r.fields["Images"].split(",") : [],
       placeId: r.fields["Place ID"] || null,
       specials: r.fields["Specials"] || null,
     }));
