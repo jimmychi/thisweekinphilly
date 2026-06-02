@@ -329,7 +329,14 @@ router.get("/:id", async (req, res) => {
         const googleData = await getRestaurantDetails(atRest.placeId);
         restaurant = { ...googleData, ...atRest, name: atRest.name || googleData?.name, description: atRest.description || googleData?.description || null, address: atRest.address !== "Philadelphia, PA" ? atRest.address : googleData?.address || atRest.address, photos: googleData?.photos || [], reviews: googleData?.reviews || [], hours: googleData?.hours || null };
       } else {
-        restaurant = { ...atRest, photos: atRest.images && atRest.images.length > 0 ? atRest.images : atRest.image ? [atRest.image] : [] };
+        let googleDesc = null;
+        if (atRest.placeId && !atRest.description) {
+          try {
+            const descRes = await axios.get("https://maps.googleapis.com/maps/api/place/details/json", { params: { place_id: atRest.placeId, fields: "editorial_summary", key: process.env.GOOGLE_PLACES_API_KEY }, ...getProxyConfig() });
+            googleDesc = descRes.data.result?.editorial_summary?.overview || null;
+          } catch (e) {}
+        }
+        restaurant = { ...atRest, description: atRest.description || googleDesc, photos: atRest.images && atRest.images.length > 0 ? atRest.images : atRest.image ? [atRest.image] : [] };
       }
     } else {
       restaurant = await getRestaurantDetails(id);
