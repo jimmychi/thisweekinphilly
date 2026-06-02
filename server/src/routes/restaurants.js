@@ -325,7 +325,7 @@ router.get("/:id", async (req, res) => {
       const all = isBar ? await getAirtableBars(null) : await getAirtableRestaurants(null);
       const atRest = all.find(r => r.id === id);
       if (!atRest) return res.status(404).json({ error: "Restaurant not found" });
-      if (atRest.placeId) {
+      if (atRest.placeId && !atRest.image) {
         const googleData = await getRestaurantDetails(atRest.placeId);
         restaurant = { ...googleData, ...atRest, name: atRest.name || googleData?.name, description: atRest.description || googleData?.description || null, address: atRest.address !== "Philadelphia, PA" ? atRest.address : googleData?.address || atRest.address, photos: googleData?.photos || [], reviews: googleData?.reviews || [], hours: googleData?.hours || null };
       } else {
