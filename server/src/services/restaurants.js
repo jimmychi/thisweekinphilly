@@ -168,7 +168,7 @@ async function getPhillyNightclubs(neighborhood) {
         googleMapsUrl: `https://www.google.com/maps/place/?q=place_id:${p.place_id}`,
       };
     });
-  } catch (err) { console.error("Google Places nightclubs error:", err.message); return []; }
+  } catch (err) { console.error("Google Places nightclubs error:", err.message, err.response?.data || err.response?.status || ""); return []; }
 }
 
 module.exports = { getPhillyRestaurants, getPhillyBars, getPhillyNightclubs, getRestaurantDetails, PHILLY_NEIGHBORHOODS };
