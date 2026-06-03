@@ -1,7 +1,7 @@
 const express = require("express");
 const NodeCache = require("node-cache");
 const { getTicketmasterEvents, getTicketmasterEventById } = require("../services/ticketmaster");
-const { getPredicthqEvents } = require("../services/predicthq");
+// const { getPredicthqEvents } = require("../services/predicthq"); // disabled - trial expired
 const { submitEvent, getApprovedEvents, syncEventsToAirtable } = require("../services/airtable");
 const { generateEventDescription } = require("../services/claude");
 
@@ -28,7 +28,8 @@ router.get("/", async (req, res) => {
   try {
 const [tmEvents, phqEvents, atEvents] = await Promise.allSettled([
       getTicketmasterEvents(category, days),
-      getPredicthqEvents(category, days),
+      // getPredicthqEvents(category, days), // disabled - trial expired
+      Promise.resolve([]),
       getApprovedEvents(),
     ]);
 
