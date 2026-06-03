@@ -273,7 +273,7 @@ export default function RestaurantDetail() {
           <div style={styles.metaRow}>
   
   
-            {restaurant.priceLevel && <span style={styles.price}>{PRICE[restaurant.priceLevel]} · {PRICE_LABEL[restaurant.priceLevel]}</span>}
+            {restaurant.priceLevel && <span style={styles.price}>{PRICE_LABEL[restaurant.priceLevel]}</span>}
             {restaurant.openNow !== undefined && (
               <span style={restaurant.openNow ? styles.openNow : styles.closed}>
                 {restaurant.openNow ? "● Open Now" : "● Closed"}

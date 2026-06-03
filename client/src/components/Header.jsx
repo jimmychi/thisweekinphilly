@@ -127,7 +127,7 @@ export default function Header({ lastUpdated }) {
             {NAV_ITEMS.map(item => (
               <button
                 key={item.path}
-                onClick={() => !isActive(item.path) && navigate(item.path)}
+                onClick={() => navigate(item.path)}
                 style={styles.navBtn(isActive(item.path), false)}
               >
                 {item.emoji} {item.label}
