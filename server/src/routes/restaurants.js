@@ -147,9 +147,17 @@ router.get("/nightclubs", async (req, res) => {
   const cached = cache.get(cacheKey);
   if (cached) return res.json({ restaurants: cached, cached: true });
   try {
+    const { getAirtableNightclubs } = require("../services/airtable");
+    const clubs = await getAirtableNightclubs(neighborhood);
+    if (clubs.length > 0) {
+      const sorted = clubs.sort((a, b) => a.name.localeCompare(b.name));
+      cache.set(cacheKey, sorted);
+      return res.json({ restaurants: sorted, count: sorted.length });
+    }
+    // Fallback to Google Places if Airtable is empty
     const BLACKLIST = ["The Trestle Inn"];
-    const clubs = await getPhillyNightclubs(neighborhood);
-    const filtered = clubs.filter(c => !BLACKLIST.some(b => c.name.includes(b)));
+    const googleClubs = await getPhillyNightclubs(neighborhood);
+    const filtered = googleClubs.filter(c => !BLACKLIST.some(b => c.name.includes(b)));
     const sorted = filtered.sort((a, b) => a.name.localeCompare(b.name));
     cache.set(cacheKey, sorted);
     res.json({ restaurants: sorted, count: sorted.length });
@@ -312,6 +320,45 @@ router.get("/syncimages", async (req, res) => {
     isSyncing = false;
   }
 });
+// GET /api/restaurants/syncnightclubs
+router.get("/syncnightclubs", async (req, res) => {
+  if (isSyncing) return res.status(429).json({ error: "Sync already running, please wait" });
+  isSyncing = true;
+  try {
+    const { getAirtableNightclubs } = require("../services/airtable");
+    const existing = await getAirtableNightclubs(null);
+    const existingIds = new Set(existing.map(r => r.placeId).filter(Boolean));
+    const googleClubs = await getPhillyNightclubs(null);
+    let added = 0;
+    for (const club of googleClubs) {
+      if (existingIds.has(club.id)) continue;
+      try {
+        await axios.post(
+          `https://api.airtable.com/v0/${process.env.AIRTABLE_BASE_ID}/Nightclubs`,
+          { fields: {
+            "Name": club.name,
+            "Address": club.address,
+            "Neighborhood": club.neighborhood,
+            "Rating": club.rating,
+            "Price Level": club.priceLevel ? "$".repeat(club.priceLevel) : null,
+            "Place ID": club.id,
+            "Active": false,
+          }},
+          { headers: { Authorization: `Bearer ${process.env.AIRTABLE_API_KEY}`, "Content-Type": "application/json" } }
+        );
+        added++;
+        console.log("Added nightclub:", club.name);
+        await new Promise(resolve => setTimeout(resolve, 200));
+      } catch (e) { console.error("Error adding nightclub:", club.name, e.message); }
+    }
+    res.json({ message: `Added ${added} nightclubs` });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  } finally {
+    isSyncing = false;
+  }
+});
+
 router.get("/:id", async (req, res) => {
   const id = req.params.id;
   const cacheKey = `restaurant-detail-${id}`;

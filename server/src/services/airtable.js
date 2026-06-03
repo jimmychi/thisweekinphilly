@@ -425,4 +425,46 @@ async function syncBarsToAirtable(googleBars) {
   }
 }
 
-module.exports = { submitEvent, getApprovedEvents, getRestaurantSpecials, syncEventsToAirtable, getHappyHours, getMuseums, getAirtableRestaurants, syncRestaurantsToAirtable, getAirtableBars, syncBarsToAirtable };
+
+async function getAirtableNightclubs(neighborhood) {
+  if (!AIRTABLE_BASE || !AIRTABLE_KEY) return [];
+  try {
+    let records = [];
+    let offset = null;
+    do {
+      const params = { filterByFormula: "{Active} = 1", pageSize: 100 };
+      if (offset) params.offset = offset;
+      const res = await axios.get(
+        `https://api.airtable.com/v0/${AIRTABLE_BASE}/Nightclubs`,
+        { params, headers: { Authorization: `Bearer ${AIRTABLE_KEY}` } }
+      );
+      records = records.concat(res.data.records || []);
+      offset = res.data.offset || null;
+    } while (offset);
+    const mapped = records.map((r) => ({
+      id: `at-club-${r.id}`,
+      name: r.fields["Name"] || "",
+      address: r.fields["Address"] || "Philadelphia, PA",
+      phone: r.fields["Phone"] || null,
+      website: r.fields["Website"] || null,
+      neighborhood: r.fields["Neighborhood"] || null,
+      rating: r.fields["Rating"] || null,
+      priceLevel: r.fields["Price Level"] || null,
+      description: r.fields["Description"] || null,
+      image: r.fields["Image"] || null,
+      images: r.fields["Images"] ? r.fields["Images"].split(",") : [],
+      placeId: r.fields["Place ID"] || null,
+      specials: r.fields["Specials"] || null,
+      hours: r.fields["Hours"] || null,
+    }));
+    if (neighborhood && neighborhood !== "All") {
+      return mapped.filter(r => r.neighborhood === neighborhood);
+    }
+    return mapped;
+  } catch (err) {
+    console.error("Airtable nightclubs fetch error:", err.message);
+    return [];
+  }
+}
+
+module.exports = { submitEvent, getApprovedEvents, getRestaurantSpecials, syncEventsToAirtable, getHappyHours, getMuseums, getAirtableRestaurants, syncRestaurantsToAirtable, getAirtableBars, syncBarsToAirtable, getAirtableNightclubs };
