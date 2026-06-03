@@ -58,7 +58,7 @@ const styles = {
     padding: isMobile ? "4px 8px" : "6px 16px",
     borderRadius: 20,
     border: "1px solid rgba(255,255,255,0.3)",
-    cursor: active ? "default" : "pointer",
+    cursor: "pointer",
     marginRight: isMobile ? 4 : 8,
   }),
 };
