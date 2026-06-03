@@ -284,7 +284,7 @@ export default function RestaurantDetail() {
           {restaurant.description && (
             <p style={styles.description} dangerouslySetInnerHTML={{ __html: restaurant.description }} />
           )}
-          {airtableData?.description {airtableData?.description && ({airtableData?.description && ( airtableData.description !== restaurant.description {airtableData?.description && ({airtableData?.description && ( (
+          {airtableData?.description && airtableData.description !== restaurant.description && (
             <p style={styles.description} dangerouslySetInnerHTML={{ __html: airtableData.description }} />
           )}
 
