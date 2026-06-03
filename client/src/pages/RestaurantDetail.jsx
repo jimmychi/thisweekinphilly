@@ -273,7 +273,7 @@ export default function RestaurantDetail() {
           <div style={styles.metaRow}>
   
   
-            {restaurant.priceLevel && <span style={styles.price}>{PRICE_LABEL[restaurant.priceLevel]}</span>}
+            
             {restaurant.openNow !== undefined && (
               <span style={restaurant.openNow ? styles.openNow : styles.closed}>
                 {restaurant.openNow ? "● Open Now" : "● Closed"}
@@ -284,7 +284,7 @@ export default function RestaurantDetail() {
           {restaurant.description && (
             <p style={styles.description} dangerouslySetInnerHTML={{ __html: restaurant.description }} />
           )}
-          {airtableData?.description && (
+          {airtableData?.description {airtableData?.description && ({airtableData?.description && ( airtableData.description !== restaurant.description {airtableData?.description && ({airtableData?.description && ( (
             <p style={styles.description} dangerouslySetInnerHTML={{ __html: airtableData.description }} />
           )}
 
