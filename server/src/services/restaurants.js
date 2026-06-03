@@ -1,4 +1,14 @@
 const axios = require("axios");
+const urlModule = require("url");
+
+function getProxyConfig() {
+  if (!process.env.FIXIE_URL) return {};
+  const fixieUrl = new urlModule.URL(process.env.FIXIE_URL);
+  return {
+    httpsAgent: new (require("https-proxy-agent").HttpsProxyAgent)(process.env.FIXIE_URL),
+    proxy: false
+  };
+}
 
 const API_KEY = process.env.GOOGLE_PLACES_API_KEY;
 
@@ -120,7 +130,7 @@ async function getPhillyBars(neighborhood) {
       ? PHILLY_NEIGHBORHOODS.find(n => n.name === neighborhood)?.location || "39.9526,-75.1652"
       : "39.9526,-75.1652";
     const params = { location, radius: 2000, type: "bar", key: API_KEY };
-    const res = await axios.get("https://maps.googleapis.com/maps/api/place/nearbysearch/json", { params });
+    const res = await axios.get("https://maps.googleapis.com/maps/api/place/nearbysearch/json", { params, ...getProxyConfig() });
     const places = res.data.results || [];
     return places.map(p => {
       const photoRef = p.photos && p.photos[0] && p.photos[0].photo_reference;
@@ -144,7 +154,7 @@ async function getPhillyNightclubs(neighborhood) {
       ? PHILLY_NEIGHBORHOODS.find(n => n.name === neighborhood)?.location || "39.9526,-75.1652"
       : "39.9526,-75.1652";
     const params = { location, radius: 2000, type: "night_club", key: API_KEY };
-    const res = await axios.get("https://maps.googleapis.com/maps/api/place/nearbysearch/json", { params });
+    const res = await axios.get("https://maps.googleapis.com/maps/api/place/nearbysearch/json", { params, ...getProxyConfig() });
     const places = res.data.results || [];
     return places.map(p => {
       const photoRef = p.photos && p.photos[0] && p.photos[0].photo_reference;
