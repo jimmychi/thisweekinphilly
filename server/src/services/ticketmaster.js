@@ -11,6 +11,17 @@ const CATEGORY_MAP = {
   nightlife: { segmentName: "Music", genreId: "KnvZfZ7vAvF" },
 };
 
+const TEAM_IMAGES = {
+  "philadelphia flyers": "https://a.espncdn.com/i/teamlogos/nhl/500/phi.png",
+  "philadelphia phillies": "https://a.espncdn.com/i/teamlogos/mlb/500/phi.png",
+  "philadelphia eagles": "https://a.espncdn.com/i/teamlogos/nfl/500/phi.png",
+  "philadelphia 76ers": "https://a.espncdn.com/i/teamlogos/nba/500/phi.png",
+  "76ers": "https://a.espncdn.com/i/teamlogos/nba/500/phi.png",
+  "phillies": "https://a.espncdn.com/i/teamlogos/mlb/500/phi.png",
+  "eagles": "https://a.espncdn.com/i/teamlogos/nfl/500/phi.png",
+  "flyers": "https://a.espncdn.com/i/teamlogos/nhl/500/phi.png",
+};
+
 const PHILLY_TEAMS = {
   "philadelphia phillies": { espnId: "phi", league: "baseball/mlb" },
   "philadelphia eagles": { espnId: "phi", league: "football/nfl" },
@@ -120,7 +131,13 @@ function formatTMEvent(e) {
     venue: (e._embedded && e._embedded.venues && e._embedded.venues[0] && e._embedded.venues[0].name) || "TBA",
     venueUrl: (e._embedded && e._embedded.venues && e._embedded.venues[0] && e._embedded.venues[0].url) || null,
     address: formatTMAddress(e._embedded && e._embedded.venues && e._embedded.venues[0]),
-    image: bestImage ? bestImage.url : null,
+    image: (function() {
+      const titleLower = (e.name || "").toLowerCase();
+      for (const team in TEAM_IMAGES) {
+        if (titleLower.includes(team)) return TEAM_IMAGES[team];
+      }
+      return bestImage ? bestImage.url : null;
+    })(),
     url: e.url,
     price: formatTMPrice(e.priceRanges),
     description: e.info || e.pleaseNote || null,
