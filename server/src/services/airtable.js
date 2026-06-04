@@ -40,7 +40,34 @@ async function submitEvent(eventData) {
     return null;
   }
 }
+async function getBarImageMap() {
+  if (!AIRTABLE_BASE || !AIRTABLE_KEY) return {};
+  try {
+    let records = [];
+    let offset = null;
+    do {
+      const params = { fields: ["Bar Name", "Image"], filterByFormula: "{Active} = 1", pageSize: 100 };
+      if (offset) params.offset = offset;
+      const res = await axios.get(
+        `https://api.airtable.com/v0/${AIRTABLE_BASE}/Bars`,
+        { params, headers: { Authorization: `Bearer ${AIRTABLE_KEY}` } }
+      );
+      records = records.concat(res.data.records || []);
+      offset = res.data.offset || null;
+    } while (offset);
 
+    const map = {};
+    for (const r of records) {
+      const name = (r.fields["Bar Name"] || "").toLowerCase().trim();
+      const image = r.fields["Image"] || null;
+      if (name && image) map[name] = image;
+    }
+    return map;
+  } catch (err) {
+    console.error("Bar image map fetch error:", err.message);
+    return {};
+  }
+}
 async function getApprovedEvents() {
   if (!AIRTABLE_BASE || !AIRTABLE_KEY) return [];
 
@@ -58,21 +85,67 @@ async function getApprovedEvents() {
       offset = res.data.offset || null;
     } while (offset);
 
-    return records.map((r) => ({
-      id: r.fields["Event ID"] ? r.fields["Event ID"] : `at-${r.id}`,
-      source: r.fields["Source"] || "community",
-      title: r.fields["Event Name"],
-      date: r.fields["Date"],
-      time: r.fields["Time"],
-      venue: r.fields["Venue"] || "Philadelphia, PA",
-      address: r.fields["Address"] || "Philadelphia, PA",
-      image: r.fields["Image URL"] || null,
-      url: r.fields["URL"] || null,
-      price: r.fields["Price"] || null,
-      description: r.fields["Description"] || null,
-      category: (r.fields["Category"] || "community").toLowerCase(),
-      phone: r.fields["Phone"] || null,
-    }));
+  async function getApprovedEvents() {
+  if (!AIRTABLE_BASE || !AIRTABLE_KEY) return [];
+
+  try {
+    let records = [];
+    let offset = null;
+    do {
+      const params = { filterByFormula: "{Approved} = 1", pageSize: 100 };
+      if (offset) params.offset = offset;
+      const res = await axios.get(
+        `https://api.airtable.com/v0/${AIRTABLE_BASE}/${encodeURIComponent(TABLE_NAME)}`,
+        { params, headers: { Authorization: `Bearer ${AIRTABLE_KEY}` } }
+      );
+      records = records.concat(res.data.records || []);
+      offset = res.data.offset || null;
+    } while (offset);
+
+    // Build bar name -> image map for venue image matching
+    const barImageMap = await getBarImageMap();
+
+    return records.map((r) => {
+      const venue = r.fields["Venue"] || "Philadelphia, PA";
+      const eventImage = r.fields["Image URL"] || null;
+
+      // If no event image, check if the venue matches a bar we have an image for
+      let image = eventImage;
+      if (!image) {
+        const venueLower = venue.toLowerCase().trim();
+        // Exact match first
+        if (barImageMap[venueLower]) {
+          image = barImageMap[venueLower];
+        } else {
+          // Partial match — bar name is contained in venue name or vice versa
+          const matchedKey = Object.keys(barImageMap).find(
+            (barName) => venueLower.includes(barName) || barName.includes(venueLower)
+          );
+          if (matchedKey) image = barImageMap[matchedKey];
+        }
+      }
+
+      return {
+        id: r.fields["Event ID"] ? r.fields["Event ID"] : `at-${r.id}`,
+        source: r.fields["Source"] || "community",
+        title: r.fields["Event Name"],
+        date: r.fields["Date"],
+        time: r.fields["Time"],
+        venue,
+        address: r.fields["Address"] || "Philadelphia, PA",
+        image,
+        url: r.fields["URL"] || null,
+        price: r.fields["Price"] || null,
+        description: r.fields["Description"] || null,
+        category: (r.fields["Category"] || "community").toLowerCase(),
+        phone: r.fields["Phone"] || null,
+      };
+    });
+  } catch (err) {
+    console.error("Airtable fetch error:", err.message);
+    return [];
+  }
+}
   } catch (err) {
     console.error("Airtable fetch error:", err.message);
     return [];
