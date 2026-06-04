@@ -26,7 +26,11 @@ async function uploadToCloudinary(googlePhotoUrl, folder) {
 const urlModule = require("url");
 
 function getProxyConfig() {
-  return {}; // Fixie temporarily disabled
+  if (!process.env.FIXIE_URL) return {};
+  return {
+    httpsAgent: new (require("https-proxy-agent").HttpsProxyAgent)(process.env.FIXIE_URL),
+    proxy: false
+  };
 }
 const NodeCache = require("node-cache");
 const { getPhillyRestaurants, getPhillyBars, getPhillyNightclubs, getRestaurantDetails, PHILLY_NEIGHBORHOODS } = require("../services/restaurants");
