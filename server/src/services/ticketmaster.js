@@ -70,6 +70,7 @@ async function getTicketmasterEvents(category, daysAhead) {
     size: 50,
     sort: "date,asc",
   };
+  if (category === "community") return [];
   if (category && CATEGORY_MAP[category]) {
     const catConfig = CATEGORY_MAP[category];
     if (catConfig.segmentName) params.segmentName = catConfig.segmentName;
