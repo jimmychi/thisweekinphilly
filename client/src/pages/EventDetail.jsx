@@ -271,7 +271,11 @@ export default function EventDetail() {
               {event.phone && <span style={{fontSize: "0.8rem", color: "var(--ink)", marginTop: 2}}>{event.phone}</span>}
               {(event.venueWebsite || event.venueUrl) && <a href={event.venueWebsite || event.venueUrl.split("?")[0]} target="_blank" rel="noopener noreferrer" style={{fontSize: "0.8rem", color: "var(--brick)", marginTop: 2, textDecoration: "none", display: "block"}}>{(event.venueWebsite || event.venueUrl.split("?")[0]).replace(/^https?:\/\//, "").replace(/\/$/, "")}</a>}
               {event.address && <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(event.venue + " " + event.address)}`} target="_blank" rel="noopener noreferrer" style={{fontSize: "0.8rem", color: "var(--brick)", marginTop: 2, textDecoration: "underline", display: "block"}}>Get Directions</a>}
-              {event.url && <a href={event.url} target="_blank" rel="noopener noreferrer" style={{fontSize: "0.8rem", color: "var(--brick)", marginTop: 2, textDecoration: "underline", display: "block"}}>Get Tickets</a>}
+              {event.url && (
+                <a href={event.url} target="_blank" rel="noopener noreferrer" style={{fontSize: "0.8rem", color: "var(--brick)", marginTop: 2, textDecoration: "underline", display: "block"}}>
+                  {event.id?.startsWith("tm-") ? "Get Tickets" : event.url.replace(/^https?:\/\//, "").replace(/\/$/, "").split("?")[0]}
+                </a>
+              )}
             </div>
           )}
 
