@@ -2,12 +2,7 @@ const axios = require("axios");
 const urlModule = require("url");
 
 function getProxyConfig() {
-  if (!process.env.FIXIE_URL) return {};
-  const fixieUrl = new urlModule.URL(process.env.FIXIE_URL);
-  return {
-    httpsAgent: new (require("https-proxy-agent").HttpsProxyAgent)(process.env.FIXIE_URL),
-    proxy: false
-  };
+  return {}; // Fixie temporarily disabled
 }
 
 const API_KEY = process.env.GOOGLE_PLACES_API_KEY;
