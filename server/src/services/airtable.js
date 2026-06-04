@@ -40,6 +40,7 @@ async function submitEvent(eventData) {
     return null;
   }
 }
+
 async function getBarImageMap() {
   if (!AIRTABLE_BASE || !AIRTABLE_KEY) return {};
   try {
@@ -68,6 +69,7 @@ async function getBarImageMap() {
     return {};
   }
 }
+
 async function getApprovedEvents() {
   if (!AIRTABLE_BASE || !AIRTABLE_KEY) return [];
 
@@ -85,39 +87,18 @@ async function getApprovedEvents() {
       offset = res.data.offset || null;
     } while (offset);
 
-  async function getApprovedEvents() {
-  if (!AIRTABLE_BASE || !AIRTABLE_KEY) return [];
-
-  try {
-    let records = [];
-    let offset = null;
-    do {
-      const params = { filterByFormula: "{Approved} = 1", pageSize: 100 };
-      if (offset) params.offset = offset;
-      const res = await axios.get(
-        `https://api.airtable.com/v0/${AIRTABLE_BASE}/${encodeURIComponent(TABLE_NAME)}`,
-        { params, headers: { Authorization: `Bearer ${AIRTABLE_KEY}` } }
-      );
-      records = records.concat(res.data.records || []);
-      offset = res.data.offset || null;
-    } while (offset);
-
-    // Build bar name -> image map for venue image matching
     const barImageMap = await getBarImageMap();
 
     return records.map((r) => {
       const venue = r.fields["Venue"] || "Philadelphia, PA";
       const eventImage = r.fields["Image URL"] || null;
 
-      // If no event image, check if the venue matches a bar we have an image for
       let image = eventImage;
       if (!image) {
         const venueLower = venue.toLowerCase().trim();
-        // Exact match first
         if (barImageMap[venueLower]) {
           image = barImageMap[venueLower];
         } else {
-          // Partial match — bar name is contained in venue name or vice versa
           const matchedKey = Object.keys(barImageMap).find(
             (barName) => venueLower.includes(barName) || barName.includes(venueLower)
           );
@@ -141,11 +122,6 @@ async function getApprovedEvents() {
         phone: r.fields["Phone"] || null,
       };
     });
-  } catch (err) {
-    console.error("Airtable fetch error:", err.message);
-    return [];
-  }
-}
   } catch (err) {
     console.error("Airtable fetch error:", err.message);
     return [];
@@ -180,11 +156,9 @@ async function getRestaurantSpecials() {
   }
 }
 
-
 async function syncEventsToAirtable(events) {
   if (!AIRTABLE_BASE || !AIRTABLE_KEY) return;
 
-  // Get existing Event IDs to avoid duplicates
   let existingIds = new Set();
   try {
     let offset = null;
@@ -204,14 +178,12 @@ async function syncEventsToAirtable(events) {
     console.error("Airtable fetch existing IDs error:", err.message);
   }
 
-  // Filter out events already in Airtable
   const newEvents = events.filter(e => e.id && !existingIds.has(e.id));
   if (!newEvents.length) {
     console.log("No new events to sync");
     return;
   }
 
-  // Airtable allows max 10 records per request
   const chunks = [];
   for (let i = 0; i < newEvents.length; i += 10) {
     chunks.push(newEvents.slice(i, i + 10));
@@ -245,7 +217,6 @@ async function syncEventsToAirtable(events) {
         { headers: { Authorization: `Bearer ${AIRTABLE_KEY}`, "Content-Type": "application/json" } }
       );
       synced += chunk.length;
-      // Rate limit: 5 requests per second
       await new Promise(r => setTimeout(r, 250));
     } catch (err) {
       console.error("Airtable sync chunk error:", err.response?.data || err.message);
@@ -361,7 +332,6 @@ async function getAirtableRestaurants(neighborhood) {
 async function syncRestaurantsToAirtable(googleRestaurants) {
   if (!AIRTABLE_BASE || !AIRTABLE_KEY) return;
   try {
-    // Get existing Place IDs from Airtable
     let existing = [];
     let offset = null;
     do {
@@ -376,13 +346,9 @@ async function syncRestaurantsToAirtable(googleRestaurants) {
     } while (offset);
 
     const existingPlaceIds = new Set(existing.map(r => r.fields["Place ID"]).filter(Boolean));
-
-    // Filter to only new restaurants
     const newRestaurants = googleRestaurants.filter(r => r.id && !existingPlaceIds.has(r.id));
-
     if (newRestaurants.length === 0) return;
 
-    // Insert in batches of 10 (Airtable limit)
     for (let i = 0; i < newRestaurants.length; i += 10) {
       const batch = newRestaurants.slice(i, i + 10);
       await axios.post(
@@ -497,7 +463,6 @@ async function syncBarsToAirtable(googleBars) {
     console.error("Bars sync error:", err.message);
   }
 }
-
 
 async function getAirtableNightclubs(neighborhood) {
   if (!AIRTABLE_BASE || !AIRTABLE_KEY) return [];
