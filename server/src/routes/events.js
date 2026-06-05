@@ -7,6 +7,8 @@ const { generateEventDescription } = require("../services/claude");
 
 const router = express.Router();
 const cache = new NodeCache({ stdTTL: 3600 });
+let lastSync = 0;
+const SYNC_INTERVAL = 60 * 60 * 1000;
 
 const VALID_CATEGORIES = ["concerts", "sports", "arts", "nightlife", "community"];
 
@@ -63,7 +65,10 @@ const [tmEvents, phqEvents, atEvents] = await Promise.allSettled([
       ...(tmEvents.status === "fulfilled" ? tmEvents.value : []),
       ...(phqEvents.status === "fulfilled" ? phqEvents.value : []),
     ];
-    syncEventsToAirtable(tmAndPhq).catch(err => console.error("Sync error:", err));
+    if (Date.now() - lastSync > SYNC_INTERVAL) {
+      lastSync = Date.now();
+      syncEventsToAirtable(tmAndPhq).catch(err => console.error("Sync error:", err));
+    }
     res.json({ events: deduped, cached: false, count: deduped.length });
   } catch (err) {
     console.error("Events fetch error:", err);
