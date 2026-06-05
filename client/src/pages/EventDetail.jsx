@@ -76,7 +76,7 @@ const styles = {
     padding: "0 24px",
     fontFamily: "var(--font-body)",
     fontSize: "0.8rem",
-    color: "rgba(255,255,255,0.7)",
+    color: "var(--brick)",
     cursor: "pointer",
     background: "none",
     border: "none",
