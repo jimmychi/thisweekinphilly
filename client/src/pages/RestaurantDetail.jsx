@@ -340,8 +340,8 @@ export default function RestaurantDetail() {
 
 
 
-          <button onClick={() => navigate("/restaurants")} style={{ ...styles.ctaSecondary, cursor: "pointer", border: "none", color: "var(--stone-dark)", fontSize: "0.85rem" }}>
-            ← Back to Restaurants
+          <button onClick={() => navigate(id?.startsWith("at-bar-") ? "/bars" : "/restaurants")} style={{ ...styles.ctaSecondary, cursor: "pointer", border: "none", color: "var(--stone-dark)", fontSize: "0.85rem" }}>
+            {id?.startsWith("at-bar-") ? "← Back to Bars" : "← Back to Restaurants"}
           </button>
         </div>
       </div>
