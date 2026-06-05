@@ -155,7 +155,7 @@ function mapTMCategory(classification) {
   if (segment === "sports") return "sports";
   if (segment === "arts & theatre") return "arts";
   if (segment === "family") return "family";
-  return "other";
+  return "community";
 }
 
 function formatTMAddress(venue) {
