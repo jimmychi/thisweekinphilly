@@ -55,7 +55,7 @@ export default function EventCard({ event, isLast }) {
         }}>
           {event.title}
         </div>
-        {event.venue && event.venue !== "Philadelphia, PA" && (
+{event.venue && event.venue !== "Philadelphia, PA" && (
           <div style={{
             fontSize: "0.78rem",
             color: "var(--stone)",
@@ -65,6 +65,19 @@ export default function EventCard({ event, isLast }) {
             marginTop: 2,
           }}>
             {event.venue}
+          </div>
+        )}
+        {event.description && (
+          <div style={{
+            fontSize: "0.78rem",
+            color: "var(--ink-soft)",
+            marginTop: 4,
+            display: "-webkit-box",
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: "vertical",
+            overflow: "hidden",
+          }}>
+            {event.description}
           </div>
         )}
       </div>
