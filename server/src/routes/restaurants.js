@@ -290,9 +290,11 @@ router.get("/syncimages", async (req, res) => {
     const { getAirtableBars, getAirtableRestaurants } = require("../services/airtable");
     const items = type === "restaurants" ? await getAirtableRestaurants(null) : await getAirtableBars(null);
     const needsImage = items.filter(r => r.placeId && (!r.image || r.image.includes("maps.googleapis.com")));
+    const limit = parseInt(req.query.limit) || 25;
+    const batch = needsImage.slice(0, limit);
     console.log(`Needs images (${type}):`, needsImage.length);
     let updated = 0;
-    for (const r of needsImage) {
+    for (const r of batch) {
       try {
         const detailRes = await axios.get("https://maps.googleapis.com/maps/api/place/details/json", { params: { place_id: r.placeId, fields: "photos", key: process.env.GOOGLE_PLACES_API_KEY }, ...getProxyConfig() });
         const photos = detailRes.data.result?.photos || [];
