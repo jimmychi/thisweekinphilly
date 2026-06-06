@@ -4,7 +4,7 @@ import { groupEventsByDate, getDayLabel } from "../utils/dates.js";
 
 const styles = {
   wrap: {
-    maxWidth: 1200,
+    maxWidth: 800,
     margin: "0 auto",
     padding: "32px 24px 64px",
   },
@@ -15,11 +15,10 @@ const styles = {
     display: "flex",
     alignItems: "center",
     gap: 16,
-    marginBottom: 18,
+    marginBottom: 12,
   },
   dayLabel: {
     fontFamily: "var(--font-body)",
-    fontStyle: "normal",
     fontSize: "1.4rem",
     fontWeight: 600,
     color: "var(--ink)",
@@ -34,10 +33,13 @@ const styles = {
     color: "var(--stone)",
     fontFamily: "var(--font-body)",
   },
-  grid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
-    gap: 20,
+  list: {
+    display: "flex",
+    flexDirection: "column",
+    border: "1px solid var(--border)",
+    borderRadius: 8,
+    overflow: "hidden",
+    background: "var(--warm-white)",
   },
   emptyState: {
     textAlign: "center",
@@ -58,7 +60,7 @@ const styles = {
     backgroundSize: "600px 100%",
     animation: "shimmer 1.5s infinite",
     borderRadius: 8,
-    height: 280,
+    height: 56,
   },
 };
 
@@ -66,8 +68,8 @@ function Skeleton() {
   return (
     <div style={styles.wrap}>
       <div style={{ marginBottom: 40 }}>
-        <div style={{ ...styles.skeleton, height: 28, width: 160, marginBottom: 18 }} />
-        <div style={styles.grid}>
+        <div style={{ ...styles.skeleton, height: 28, width: 160, marginBottom: 12 }} />
+        <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
           {[1, 2, 3, 4, 5, 6].map((i) => (
             <div key={i} style={{ ...styles.skeleton, animationDelay: `${i * 0.1}s` }} />
           ))}
@@ -109,19 +111,19 @@ export default function EventGrid({ events, loading, error }) {
 
   return (
     <main style={styles.wrap}>
-      {sortedDates.map((date, di) => (
+      {sortedDates.map((date) => (
         <section key={date} style={styles.section}>
           <div style={styles.dayHeader}>
             <h2 style={styles.dayLabel}>{getDayLabel(date)}</h2>
             <div style={styles.dayLine} />
             <span style={styles.count}>{groups[date].length} event{groups[date].length !== 1 ? "s" : ""}</span>
           </div>
-          <div style={styles.grid}>
+          <div style={styles.list}>
             {groups[date].map((event, i) => (
               <EventCard
                 key={event.id}
                 event={event}
-                style={{ animation: `fadeUp 0.4s ease ${(i % 6) * 0.06}s both` }}
+                isLast={i === groups[date].length - 1}
               />
             ))}
           </div>
