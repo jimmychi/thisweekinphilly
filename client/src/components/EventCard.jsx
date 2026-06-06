@@ -67,17 +67,15 @@ export default function EventCard({ event, isLast }) {
             {event.venue}
           </div>
         )}
-        {event.description && (
+        {event.address && event.address !== "Philadelphia, PA" && (
           <div style={{
             fontSize: "0.78rem",
             color: "var(--ink-soft)",
             marginTop: 4,
             display: "-webkit-box",
-            WebkitLineClamp: 2,
-            WebkitBoxOrient: "vertical",
             overflow: "hidden",
           }}>
-            {event.description}
+            {event.address}
           </div>
         )}
       </div>
