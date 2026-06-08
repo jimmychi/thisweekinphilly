@@ -25,7 +25,7 @@ const styles = {
 
 export default function SubmitEvent() {
   const navigate = useNavigate();
-  const [form, setForm] = useState({ title: "", date: "", time: "", venue: "", description: "", url: "", email: "", image: "", image: "" });
+  const [form, setForm] = useState({ title: "", date: "", time: "", venue: "", description: "", url: "", email: "", image: "" });
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(null);
