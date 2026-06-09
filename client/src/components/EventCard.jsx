@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { formatTime } from "../utils/dates.js";
 
@@ -22,6 +22,7 @@ export default function EventCard({ event, isLast }) {
   const navigate = useNavigate();
   const color = CATEGORY_COLORS[event.category] || "#9e9080";
   const emoji = CATEGORY_EMOJI[event.category] || "📅";
+  const [imgErr, setImgErr] = useState(false);
 
   return (
     <div
@@ -32,17 +33,37 @@ export default function EventCard({ event, isLast }) {
         display: "flex",
         alignItems: "center",
         gap: 14,
-        padding: "14px 16px",
+        padding: "12px 16px",
         cursor: "pointer",
         background: "var(--warm-white)",
         borderBottom: isLast ? "none" : "1px solid var(--border)",
         transition: "background 0.15s ease",
       }}
     >
-      {/* Category emoji */}
-      <span style={{ fontSize: "1.2rem", flexShrink: 0, width: 28, textAlign: "center" }}>{emoji}</span>
+      <div style={{
+        flexShrink: 0,
+        width: 56,
+        height: 56,
+        borderRadius: 6,
+        overflow: "hidden",
+        background: color,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        fontSize: "1.4rem",
+      }}>
+        {event.image && !imgErr ? (
+          <img
+            src={event.image}
+            alt={event.title}
+            onError={() => setImgErr(true)}
+            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+          />
+        ) : (
+          <span>{emoji}</span>
+        )}
+      </div>
 
-      {/* Title + venue */}
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{
           fontFamily: "var(--font-display)",
@@ -55,7 +76,7 @@ export default function EventCard({ event, isLast }) {
         }}>
           {event.title}
         </div>
-{event.venue && event.venue !== "Philadelphia, PA" && (
+        {event.venue && event.venue !== "Philadelphia, PA" && (
           <div style={{
             fontSize: "0.78rem",
             color: "var(--stone)",
@@ -71,16 +92,16 @@ export default function EventCard({ event, isLast }) {
           <div style={{
             fontSize: "0.78rem",
             color: "var(--ink-soft)",
-            marginTop: 4,
-            display: "-webkit-box",
+            whiteSpace: "nowrap",
             overflow: "hidden",
+            textOverflow: "ellipsis",
+            marginTop: 2,
           }}>
             {event.address}
           </div>
         )}
       </div>
 
-      {/* Time + price */}
       <div style={{ flexShrink: 0, textAlign: "right" }}>
         {event.time && (
           <div style={{ fontSize: "0.82rem", color: "var(--ink)", fontWeight: 600 }}>
