@@ -221,6 +221,7 @@ export default function EventDetail() {
         if (!res.ok) throw new Error("Not found");
         const data = await res.json();
         setEvent(data.event);
+        document.title = `${data.event.title} at ${data.event.venue} - This Week in Philly`;
       } catch {
         navigate("/");
       } finally {
@@ -228,6 +229,7 @@ export default function EventDetail() {
       }
     }
     fetchEvent();
+    return () => { document.title = "This Week in Philly"; };
   }, [id]);
 
   if (loading) return (
