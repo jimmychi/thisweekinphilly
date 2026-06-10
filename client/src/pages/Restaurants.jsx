@@ -138,6 +138,7 @@ const styles = {
 export default function Restaurants() {
   const navigate = useNavigate();
   const [restaurants, setRestaurants] = useState([]);
+  useEffect(() => { document.title = "Best Restaurants in Philadelphia | This Week in Philly"; return () => { document.title = "This Week in Philly"; }; }, []);
   const [loading, setLoading] = useState(true);
   const [neighborhood, setNeighborhood] = useState("All");
 

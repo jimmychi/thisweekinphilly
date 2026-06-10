@@ -42,6 +42,7 @@ const styles = {
 
 export default function Museums() {
   const [museums, setMuseums] = useState([]);
+  useEffect(() => { document.title = "Museums in Philadelphia | This Week in Philly"; return () => { document.title = "This Week in Philly"; }; }, []);
   const [loading, setLoading] = useState(true);
   const [neighborhood, setNeighborhood] = useState("All");
 

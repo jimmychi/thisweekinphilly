@@ -39,6 +39,7 @@ const styles = {
 export default function Bars() {
   const navigate = useNavigate();
   const [bars, setBars] = useState([]);
+  useEffect(() => { document.title = "Best Bars in Philadelphia | This Week in Philly"; return () => { document.title = "This Week in Philly"; }; }, []);
   const [loading, setLoading] = useState(true);
   const [neighborhood, setNeighborhood] = useState("All");
   const [happyHours, setHappyHours] = useState([]);
