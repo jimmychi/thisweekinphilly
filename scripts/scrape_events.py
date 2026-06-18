@@ -122,37 +122,32 @@ def scrape_ticketmaster():
 def scrape_do215():
     events = []
     try:
-        today = datetime.now()
-        # Scrape next 14 days
+        today = __import__('datetime').datetime.now()
         for i in range(14):
-            day = today + timedelta(days=i)
+            day = today + __import__('datetime').timedelta(days=i)
             url = f"https://do215.com/events/{day.strftime('%Y/%m/%d')}"
-            res = requests.get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=15)
-            print("Do215 day: " + str(res.status_code) + " len: " + str(len(res.text)))
+            res = __import__('requests').get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=15)
+            print("Do215 " + day.strftime("%Y-%m-%d") + " status: " + str(res.status_code))
             if res.status_code != 200:
                 continue
+            from bs4 import BeautifulSoup
             soup = BeautifulSoup(res.text, "html.parser")
-            # Find event listings
-            event_items = soup.select(".event-list-item, .list-item, article[class*='event'], .event-item")
-            print(f"Selectors found: {len(event_items)} items")
-            print("Items found: " + str(len(event_items)))
-            if not event_items:
-                # Try alternate selectors
-                event_items = soup.select("li.event, div.event, .event-listing")
+            event_items = soup.select("div.ds-listing.event-card")
+            print("Found " + str(len(event_items)) + " events")
             for item in event_items:
-                title_el = item.select_one("a.ds-listing-event-title, .url.summary")
+                title_el = item.select_one("a.ds-listing-event-title")
                 link_el = item.select_one("a.ds-listing-event-title")
-                venue_el = item.select_one(".ds-listing-venue-name, .location")
-                time_el = item.select_one(".ds-event-time, .dtstart")
+                venue_el = item.select_one(".ds-listing-venue-name")
+                time_el = item.select_one(".ds-event-time")
                 img_el = item.select_one("img")
                 if not title_el:
                     continue
                 title = title_el.get_text(strip=True)
                 if not title:
                     continue
-                link = link_el["href"] if link_el else ""
+                link = link_el.get("href", "") if link_el else ""
                 if link and not link.startswith("http"):
-                    link = f"https://do215.com{link}"
+                    link = "https://do215.com" + link
                 events.append({
                     "title": title,
                     "date": day.strftime("%Y-%m-%d"),
@@ -166,7 +161,7 @@ def scrape_do215():
                     "source": "do215",
                     "category": detect_category(title, []),
                 })
-            time.sleep(0.5)  # Be polite
+            __import__('time').sleep(0.5)
         print(f"Do215: {len(events)} events parsed")
     except Exception as e:
         print(f"Do215 error: {e}")
