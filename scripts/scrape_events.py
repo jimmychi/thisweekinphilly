@@ -1,8 +1,8 @@
 import requests
-import json
 import time
 import os
 from datetime import datetime, timedelta
+from bs4 import BeautifulSoup
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 
@@ -119,41 +119,54 @@ def scrape_ticketmaster():
         print(f"Ticketmaster error: {e}")
     return events
 
-def scrape_meetup():
+def scrape_do215():
     events = []
     try:
-        url = "https://api.meetup.com/find/upcoming_events"
-        params = {
-            "lat": 39.9526,
-            "lon": -75.1652,
-            "radius": 10,
-            "page": 50,
-            "fields": "featured_photo",
-        }
-        res = requests.get(url, params=params, timeout=15)
-        print(f"Meetup status: {res.status_code}")
-        if res.status_code != 200:
-            print(f"Meetup error: {res.text[:200]}")
-            return events
-        data = res.json()
-        for e in data.get("events", [])[:30]:
-            venue = e.get("venue", {}) or {}
-            events.append({
-                "title": e.get("name", ""),
-                "date": e.get("local_date", ""),
-                "time": e.get("local_time", ""),
-                "venue": venue.get("name", "Philadelphia, PA"),
-                "address": f"{venue.get('address_1', '')}, {venue.get('city', 'Philadelphia')}, PA",
-                "url": e.get("link", ""),
-                "image": e.get("featured_photo", {}).get("photo_link", "") if e.get("featured_photo") else "",
-                "price": "Free" if e.get("fee") is None else f"${e['fee'].get('amount', '')}",
-                "description": e.get("description", "")[:500] if e.get("description") else "",
-                "source": "meetup",
-                "category": detect_category(e.get("name", ""), []),
-            })
-        print(f"Meetup: {len(events)} events parsed")
+        today = datetime.now()
+        # Scrape next 14 days
+        for i in range(14):
+            day = today + timedelta(days=i)
+            url = f"https://do215.com/events/{day.strftime('%Y/%m/%d')}"
+            res = requests.get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=15)
+            if res.status_code != 200:
+                continue
+            soup = BeautifulSoup(res.text, "html.parser")
+            # Find event listings
+            event_items = soup.select(".event-list-item, .list-item, article[class*='event'], .event-item")
+            if not event_items:
+                # Try alternate selectors
+                event_items = soup.select("li.event, div.event, .event-listing")
+            for item in event_items:
+                title_el = item.select_one("h2, h3, h4, .title, .event-title, [class*='title']")
+                link_el = item.select_one("a[href]")
+                venue_el = item.select_one(".venue, [class*='venue']")
+                time_el = item.select_one("time, .time, [class*='time']")
+                img_el = item.select_one("img")
+                if not title_el:
+                    continue
+                title = title_el.get_text(strip=True)
+                if not title:
+                    continue
+                link = link_el["href"] if link_el else ""
+                if link and not link.startswith("http"):
+                    link = f"https://do215.com{link}"
+                events.append({
+                    "title": title,
+                    "date": day.strftime("%Y-%m-%d"),
+                    "time": time_el.get_text(strip=True) if time_el else "",
+                    "venue": venue_el.get_text(strip=True) if venue_el else "Philadelphia, PA",
+                    "address": "Philadelphia, PA",
+                    "url": link,
+                    "image": img_el.get("src", img_el.get("data-src", "")) if img_el else "",
+                    "price": "",
+                    "description": "",
+                    "source": "do215",
+                    "category": detect_category(title, []),
+                })
+            time.sleep(0.5)  # Be polite
+        print(f"Do215: {len(events)} events parsed")
     except Exception as e:
-        print(f"Meetup error: {e}")
+        print(f"Do215 error: {e}")
     return events
 
 def detect_category(title, classifications=None):
@@ -166,13 +179,13 @@ def detect_category(title, classifications=None):
             return "sports"
         if segment in ["arts & theatre", "arts"]:
             return "arts"
-    if any(w in title for w in ["concert", "music", "band", "jazz", "hip hop", "rock", "live music"]):
+    if any(w in title for w in ["concert", "music", "band", "jazz", "hip hop", "rock", "live music", "tour"]):
         return "concerts"
     if any(w in title for w in ["game", "eagles", "phillies", "sixers", "flyers", "sport", "race", "marathon"]):
         return "sports"
-    if any(w in title for w in ["art", "gallery", "exhibit", "museum", "theater", "theatre", "ballet", "opera"]):
+    if any(w in title for w in ["art", "gallery", "exhibit", "museum", "theater", "theatre", "ballet", "opera", "comedy"]):
         return "arts"
-    if any(w in title for w in ["bar", "nightclub", "dj", "club", "nightlife", "party", "rave"]):
+    if any(w in title for w in ["bar", "nightclub", "dj", "club", "nightlife", "party", "rave", "drag", "brunch"]):
         return "nightlife"
     return "community"
 
@@ -208,7 +221,7 @@ def main():
     all_events = []
     source_counts = {}
 
-    for source, scraper in [("ticketmaster", scrape_ticketmaster), ("meetup", scrape_meetup)]:
+    for source, scraper in [("ticketmaster", scrape_ticketmaster), ("do215", scrape_do215)]:
         events = scraper()
         new_events = [e for e in events if e.get("url") and e["url"] not in existing_urls]
         source_counts[source] = len(new_events)
