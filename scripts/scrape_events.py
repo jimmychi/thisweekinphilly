@@ -58,7 +58,7 @@ def upload_to_airtable(events):
                 "Price": e.get("price", ""),
                 "Description": e.get("description", ""),
                 "Source": e.get("source", ""),
-                "Approved": False,
+                "Approved": True,
             }})
         res = requests.post(
             f"https://api.airtable.com/v0/{AIRTABLE_BASE_ID}/{requests.utils.quote(TABLE_NAME)}",
