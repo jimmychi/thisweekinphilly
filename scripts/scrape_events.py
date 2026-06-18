@@ -135,11 +135,11 @@ def scrape_do215():
             event_items = soup.select("div.ds-listing.event-card")
             print("Found " + str(len(event_items)) + " events")
             for item in event_items:
-                title_el = item.select_one("a.ds-listing-event-title")
+                title_el = item.select_one("span.ds-listing-event-title-text")
                 link_el = item.select_one("a.ds-listing-event-title")
-                venue_el = item.select_one(".ds-listing-venue-name")
+                venue_el = item.select_one("div.ds-venue-name span[itemprop='name']")
                 time_el = item.select_one(".ds-event-time")
-                img_el = item.select_one("img")
+                cover_el = item.select_one("div.ds-cover-image")
                 if not title_el:
                     continue
                 title = title_el.get_text(strip=True)
@@ -148,6 +148,17 @@ def scrape_do215():
                 link = link_el.get("href", "") if link_el else ""
                 if link and not link.startswith("http"):
                     link = "https://do215.com" + link
+                # Extract image from background-image CSS
+                image = ""
+                if cover_el:
+                    style = cover_el.get("style", "")
+                    import re
+                    match = re.search(r"url\(['\"]?([^\'"]+)['\"]?\)", style)
+                    if match:
+                        image = match.group(1)
+                # Extract category from card class
+                card_classes = " ".join(item.get("class", []))
+                cat = detect_category_do215(title, card_classes)
                 events.append({
                     "title": title,
                     "date": day.strftime("%Y-%m-%d"),
@@ -155,17 +166,34 @@ def scrape_do215():
                     "venue": venue_el.get_text(strip=True) if venue_el else "Philadelphia, PA",
                     "address": "Philadelphia, PA",
                     "url": link,
-                    "image": img_el.get("src", img_el.get("data-src", "")) if img_el else "",
+                    "image": image,
                     "price": "",
                     "description": "",
                     "source": "do215",
-                    "category": detect_category(title, []),
+                    "category": cat,
                 })
             __import__('time').sleep(0.5)
         print(f"Do215: {len(events)} events parsed")
     except Exception as e:
         print(f"Do215 error: {e}")
     return events
+
+def detect_category_do215(title, classes):
+    classes = classes.lower()
+    title = title.lower()
+    if "music" in classes or "concert" in classes:
+        return "concerts"
+    if "comedy" in classes:
+        return "arts"
+    if "dj-parties" in classes or "lgbtq" in classes or "karaoke" in classes:
+        return "nightlife"
+    if "arts" in classes or "theater" in classes or "film" in classes:
+        return "arts"
+    if "sports" in classes or "fitness" in classes:
+        return "sports"
+    if "food" in classes or "drink" in classes:
+        return "nightlife"
+    return detect_category(title, [])
 
 def detect_category(title, classifications=None):
     title = title.lower()
