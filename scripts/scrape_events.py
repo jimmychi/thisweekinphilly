@@ -153,7 +153,7 @@ def scrape_do215():
                 if cover_el:
                     style = cover_el.get("style", "")
                     import re
-                    match = re.search(r"url\((.+?)\)", style)
+                    match = re.search(r"url\([\'\"]?(.+?)[\'\"]?\)", style)
                     if match:
                         image = match.group(1)
                 # Extract category from card class
