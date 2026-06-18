@@ -3,14 +3,13 @@ import json
 import time
 import os
 from datetime import datetime, timedelta
-from bs4 import BeautifulSoup
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 
 AIRTABLE_BASE_ID = os.environ.get("AIRTABLE_BASE_ID")
 AIRTABLE_API_KEY = os.environ.get("AIRTABLE_API_KEY")
 SENDGRID_API_KEY = os.environ.get("SENDGRID_API_KEY")
-EVENTBRITE_API_KEY = os.environ.get("EVENTBRITE_API_KEY")
+TICKETMASTER_API_KEY = os.environ.get("TICKETMASTER_API_KEY")
 NOTIFY_EMAIL = "jimmychi213@gmail.com"
 FROM_EMAIL = "info@thisweekinphilly.com"
 
@@ -72,54 +71,101 @@ def upload_to_airtable(events):
         time.sleep(0.25)
     return uploaded
 
-def scrape_eventbrite():
+def scrape_ticketmaster():
     events = []
-    if not EVENTBRITE_API_KEY:
-        print("No Eventbrite API key, skipping")
+    if not TICKETMASTER_API_KEY:
+        print("No Ticketmaster API key, skipping")
         return events
     try:
-        # Search for Philadelphia events
-        url = "https://www.eventbriteapi.com/v3/events/search/"
+        url = "https://app.ticketmaster.com/discovery/v2/events.json"
         params = {
-            "location.address": "Philadelphia, PA",
-            "location.within": "10mi",
-            "expand": "venue,ticket_availability",
-            "sort_by": "date",
-            "start_date.range_start": datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ"),
-            "start_date.range_end": (datetime.now() + timedelta(days=14)).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "apikey": TICKETMASTER_API_KEY,
+            "city": "Philadelphia",
+            "stateCode": "PA",
+            "countryCode": "US",
+            "size": 50,
+            "sort": "date,asc",
+            "startDateTime": datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "endDateTime": (datetime.now() + timedelta(days=14)).strftime("%Y-%m-%dT%H:%M:%SZ"),
         }
-        headers = {"Authorization": f"Bearer {EVENTBRITE_API_KEY}"}
-        res = requests.get(url, params=params, headers=headers, timeout=15)
-        print(f"Eventbrite status: {res.status_code}")
-        if res.status_code != 200:
-            print(f"Eventbrite error: {res.text[:200]}")
-            return events
+        res = requests.get(url, params=params, timeout=15)
+        print(f"Ticketmaster status: {res.status_code}")
         data = res.json()
-        print(f"Eventbrite total events found: {data.get('pagination', {}).get('object_count', 0)}")
-        for e in data.get("events", [])[:30]:
-            venue = e.get("venue", {}) or {}
-            address = venue.get("address", {}) or {}
-            is_free = e.get("is_free", False)
+        tm_events = data.get("_embedded", {}).get("events", [])
+        print(f"Ticketmaster found: {len(tm_events)} events")
+        for e in tm_events:
+            venue = e.get("_embedded", {}).get("venues", [{}])[0]
+            image = next((img["url"] for img in e.get("images", []) if img.get("ratio") == "16_9"), "")
+            start = e.get("dates", {}).get("start", {})
+            date = start.get("localDate", "")
+            time_str = start.get("localTime", "")[:5] if start.get("localTime") else ""
+            price_ranges = e.get("priceRanges", [])
+            price = f"${price_ranges[0]['min']:.0f}+" if price_ranges else ""
             events.append({
-                "title": e.get("name", {}).get("text", ""),
-                "date": e.get("start", {}).get("local", "")[:10],
-                "time": e.get("start", {}).get("local", "")[11:16],
+                "title": e.get("name", ""),
+                "date": date,
+                "time": time_str,
                 "venue": venue.get("name", "Philadelphia, PA"),
-                "address": address.get("localized_address_display", ""),
+                "address": f"{venue.get('address', {}).get('line1', '')}, {venue.get('city', {}).get('name', 'Philadelphia')}, PA",
                 "url": e.get("url", ""),
-                "image": e.get("logo", {}).get("url", "") if e.get("logo") else "",
-                "price": "Free" if is_free else "",
-                "description": e.get("description", {}).get("text", "")[:500] if e.get("description") else "",
-                "source": "eventbrite",
-                "category": detect_category(e.get("name", {}).get("text", "")),
+                "image": image,
+                "price": price,
+                "description": "",
+                "source": "ticketmaster",
+                "category": detect_category(e.get("name", ""), e.get("classifications", [])),
             })
-        print(f"Eventbrite: {len(events)} events parsed")
+        print(f"Ticketmaster: {len(events)} events parsed")
     except Exception as e:
-        print(f"Eventbrite error: {e}")
+        print(f"Ticketmaster error: {e}")
     return events
 
-def detect_category(title):
+def scrape_meetup():
+    events = []
+    try:
+        url = "https://api.meetup.com/find/upcoming_events"
+        params = {
+            "lat": 39.9526,
+            "lon": -75.1652,
+            "radius": 10,
+            "page": 50,
+            "fields": "featured_photo",
+        }
+        res = requests.get(url, params=params, timeout=15)
+        print(f"Meetup status: {res.status_code}")
+        if res.status_code != 200:
+            print(f"Meetup error: {res.text[:200]}")
+            return events
+        data = res.json()
+        for e in data.get("events", [])[:30]:
+            venue = e.get("venue", {}) or {}
+            events.append({
+                "title": e.get("name", ""),
+                "date": e.get("local_date", ""),
+                "time": e.get("local_time", ""),
+                "venue": venue.get("name", "Philadelphia, PA"),
+                "address": f"{venue.get('address_1', '')}, {venue.get('city', 'Philadelphia')}, PA",
+                "url": e.get("link", ""),
+                "image": e.get("featured_photo", {}).get("photo_link", "") if e.get("featured_photo") else "",
+                "price": "Free" if e.get("fee") is None else f"${e['fee'].get('amount', '')}",
+                "description": e.get("description", "")[:500] if e.get("description") else "",
+                "source": "meetup",
+                "category": detect_category(e.get("name", ""), []),
+            })
+        print(f"Meetup: {len(events)} events parsed")
+    except Exception as e:
+        print(f"Meetup error: {e}")
+    return events
+
+def detect_category(title, classifications=None):
     title = title.lower()
+    if classifications:
+        segment = classifications[0].get("segment", {}).get("name", "").lower() if classifications else ""
+        if segment == "music":
+            return "concerts"
+        if segment == "sports":
+            return "sports"
+        if segment in ["arts & theatre", "arts"]:
+            return "arts"
     if any(w in title for w in ["concert", "music", "band", "jazz", "hip hop", "rock", "live music"]):
         return "concerts"
     if any(w in title for w in ["game", "eagles", "phillies", "sixers", "flyers", "sport", "race", "marathon"]):
@@ -162,12 +208,12 @@ def main():
     all_events = []
     source_counts = {}
 
-    # Eventbrite
-    events = scrape_eventbrite()
-    new_events = [e for e in events if e.get("url") and e["url"] not in existing_urls]
-    source_counts["eventbrite"] = len(new_events)
-    all_events.extend(new_events)
-    print(f"Eventbrite: {len(new_events)} new events after dedup")
+    for source, scraper in [("ticketmaster", scrape_ticketmaster), ("meetup", scrape_meetup)]:
+        events = scraper()
+        new_events = [e for e in events if e.get("url") and e["url"] not in existing_urls]
+        source_counts[source] = len(new_events)
+        all_events.extend(new_events)
+        print(f"{source}: {len(new_events)} new events after dedup")
 
     print(f"Total new events to upload: {len(all_events)}")
     uploaded = upload_to_airtable(all_events)
