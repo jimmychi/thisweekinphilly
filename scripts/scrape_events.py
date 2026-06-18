@@ -128,8 +128,7 @@ def scrape_do215():
             day = today + timedelta(days=i)
             url = f"https://do215.com/events/{day.strftime('%Y/%m/%d')}"
             res = requests.get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=15)
-            print(f"Do215 {day.strftime("%Y/%m/%d")}: status {res.status_code}, length {len(res.text)}")
-            print("Do215 day status: " + str(res.status_code) + " len: " + str(len(res.text)))
+            print("Do215 day: " + str(res.status_code) + " len: " + str(len(res.text)))
             if res.status_code != 200:
                 continue
             soup = BeautifulSoup(res.text, "html.parser")
