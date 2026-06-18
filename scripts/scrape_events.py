@@ -2,7 +2,6 @@ import requests
 import json
 import time
 import os
-import re
 from datetime import datetime, timedelta
 from bs4 import BeautifulSoup
 from sendgrid import SendGridAPIClient
@@ -19,7 +18,6 @@ TABLE_NAME = "Table 1"
 HEADERS = {"Authorization": f"Bearer {AIRTABLE_API_KEY}", "Content-Type": "application/json"}
 
 def get_existing_urls():
-    """Get all existing event URLs from Airtable to avoid duplicates."""
     urls = set()
     offset = None
     while True:
@@ -42,7 +40,6 @@ def get_existing_urls():
     return urls
 
 def upload_to_airtable(events):
-    """Upload events to Airtable in batches of 10."""
     if not events:
         return 0
     uploaded = 0
@@ -75,130 +72,53 @@ def upload_to_airtable(events):
         time.sleep(0.25)
     return uploaded
 
-def scrape_visit_philly():
-    """Scrape events from Visit Philadelphia."""
-    events = []
-    try:
-        url = "https://www.visitphilly.com/things-to-do/events/"
-        res = requests.get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=15)
-        soup = BeautifulSoup(res.text, "html.parser")
-        cards = soup.select("article.m-listing") or soup.select(".event-card") or soup.select("[class*='event']")
-        for card in cards[:20]:
-            title_el = card.select_one("h2, h3, .title, [class*='title']")
-            date_el = card.select_one("time, [class*='date']")
-            link_el = card.select_one("a[href]")
-            img_el = card.select_one("img")
-            if not title_el:
-                continue
-            events.append({
-                "title": title_el.get_text(strip=True),
-                "date": date_el.get("datetime", date_el.get_text(strip=True))[:10] if date_el else "",
-                "url": link_el["href"] if link_el else "",
-                "image": img_el.get("src", img_el.get("data-src", "")) if img_el else "",
-                "source": "visitphilly",
-                "category": detect_category(title_el.get_text(strip=True)),
-                "venue": "Philadelphia, PA",
-            })
-        print(f"Visit Philly: {len(events)} events")
-    except Exception as e:
-        print(f"Visit Philly scrape error: {e}")
-    return events
-
-def scrape_philly_mag():
-    """Scrape events from Philly Mag."""
-    events = []
-    try:
-        url = "https://www.phillymag.com/things-to-do/"
-        res = requests.get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=15)
-        soup = BeautifulSoup(res.text, "html.parser")
-        cards = soup.select("article") or soup.select(".post")
-        for card in cards[:20]:
-            title_el = card.select_one("h2, h3, .entry-title")
-            link_el = card.select_one("a[href]")
-            img_el = card.select_one("img")
-            if not title_el:
-                continue
-            events.append({
-                "title": title_el.get_text(strip=True),
-                "date": get_next_sunday(),
-                "url": link_el["href"] if link_el else "",
-                "image": img_el.get("src", img_el.get("data-src", "")) if img_el else "",
-                "source": "phillymag",
-                "category": detect_category(title_el.get_text(strip=True)),
-                "venue": "Philadelphia, PA",
-            })
-        print(f"Philly Mag: {len(events)} events")
-    except Exception as e:
-        print(f"Philly Mag scrape error: {e}")
-    return events
-
-def scrape_philly_voice():
-    """Scrape events from Philly Voice."""
-    events = []
-    try:
-        url = "https://www.phillyvoice.com/events/"
-        res = requests.get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=15)
-        soup = BeautifulSoup(res.text, "html.parser")
-        cards = soup.select("article") or soup.select(".event")
-        for card in cards[:20]:
-            title_el = card.select_one("h2, h3, .title")
-            link_el = card.select_one("a[href]")
-            img_el = card.select_one("img")
-            if not title_el:
-                continue
-            events.append({
-                "title": title_el.get_text(strip=True),
-                "date": get_next_sunday(),
-                "url": link_el["href"] if link_el else "",
-                "image": img_el.get("src", img_el.get("data-src", "")) if img_el else "",
-                "source": "phillyvoice",
-                "category": detect_category(title_el.get_text(strip=True)),
-                "venue": "Philadelphia, PA",
-            })
-        print(f"Philly Voice: {len(events)} events")
-    except Exception as e:
-        print(f"Philly Voice scrape error: {e}")
-    return events
-
 def scrape_eventbrite():
-    """Fetch events from Eventbrite API."""
     events = []
     if not EVENTBRITE_API_KEY:
         print("No Eventbrite API key, skipping")
         return events
     try:
+        # Search for Philadelphia events
         url = "https://www.eventbriteapi.com/v3/events/search/"
         params = {
             "location.address": "Philadelphia, PA",
             "location.within": "10mi",
-            "expand": "venue",
+            "expand": "venue,ticket_availability",
             "sort_by": "date",
-            "token": EVENTBRITE_API_KEY,
+            "start_date.range_start": datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "start_date.range_end": (datetime.now() + timedelta(days=14)).strftime("%Y-%m-%dT%H:%M:%SZ"),
         }
-        res = requests.get(url, params=params, timeout=15)
+        headers = {"Authorization": f"Bearer {EVENTBRITE_API_KEY}"}
+        res = requests.get(url, params=params, headers=headers, timeout=15)
+        print(f"Eventbrite status: {res.status_code}")
+        if res.status_code != 200:
+            print(f"Eventbrite error: {res.text[:200]}")
+            return events
         data = res.json()
+        print(f"Eventbrite total events found: {data.get('pagination', {}).get('object_count', 0)}")
         for e in data.get("events", [])[:30]:
-            venue = e.get("venue", {})
+            venue = e.get("venue", {}) or {}
+            address = venue.get("address", {}) or {}
+            is_free = e.get("is_free", False)
             events.append({
                 "title": e.get("name", {}).get("text", ""),
                 "date": e.get("start", {}).get("local", "")[:10],
                 "time": e.get("start", {}).get("local", "")[11:16],
                 "venue": venue.get("name", "Philadelphia, PA"),
-                "address": venue.get("address", {}).get("localized_address_display", ""),
+                "address": address.get("localized_address_display", ""),
                 "url": e.get("url", ""),
                 "image": e.get("logo", {}).get("url", "") if e.get("logo") else "",
-                "price": "Free" if e.get("is_free") else "",
+                "price": "Free" if is_free else "",
                 "description": e.get("description", {}).get("text", "")[:500] if e.get("description") else "",
                 "source": "eventbrite",
                 "category": detect_category(e.get("name", {}).get("text", "")),
             })
-        print(f"Eventbrite: {len(events)} events")
+        print(f"Eventbrite: {len(events)} events parsed")
     except Exception as e:
         print(f"Eventbrite error: {e}")
     return events
 
 def detect_category(title):
-    """Detect event category from title keywords."""
     title = title.lower()
     if any(w in title for w in ["concert", "music", "band", "jazz", "hip hop", "rock", "live music"]):
         return "concerts"
@@ -210,16 +130,7 @@ def detect_category(title):
         return "nightlife"
     return "community"
 
-def get_next_sunday():
-    """Get the date of next Sunday."""
-    today = datetime.now()
-    days_until_sunday = (6 - today.weekday()) % 7
-    if days_until_sunday == 0:
-        days_until_sunday = 7
-    return (today + timedelta(days=days_until_sunday)).strftime("%Y-%m-%d")
-
 def send_notification(new_count, sources):
-    """Send email notification via SendGrid."""
     if not SENDGRID_API_KEY:
         print("No SendGrid key, skipping email")
         return
@@ -239,8 +150,8 @@ def send_notification(new_count, sources):
             """
         )
         sg = SendGridAPIClient(SENDGRID_API_KEY)
-        sg.send(message)
-        print(f"Notification sent to {NOTIFY_EMAIL}")
+        response = sg.send(message)
+        print(f"Email sent, status: {response.status_code}")
     except Exception as e:
         print(f"Email error: {e}")
 
@@ -251,20 +162,12 @@ def main():
     all_events = []
     source_counts = {}
 
-    scrapers = [
-        ("visitphilly", scrape_visit_philly),
-        ("phillymag", scrape_philly_mag),
-        ("phillyvoice", scrape_philly_voice),
-        ("eventbrite", scrape_eventbrite),
-    ]
-
-    for source, scraper in scrapers:
-        events = scraper()
-        # Filter out duplicates
-        new_events = [e for e in events if e.get("url") and e["url"] not in existing_urls]
-        source_counts[source] = len(new_events)
-        all_events.extend(new_events)
-        print(f"{source}: {len(new_events)} new events after dedup")
+    # Eventbrite
+    events = scrape_eventbrite()
+    new_events = [e for e in events if e.get("url") and e["url"] not in existing_urls]
+    source_counts["eventbrite"] = len(new_events)
+    all_events.extend(new_events)
+    print(f"Eventbrite: {len(new_events)} new events after dedup")
 
     print(f"Total new events to upload: {len(all_events)}")
     uploaded = upload_to_airtable(all_events)
