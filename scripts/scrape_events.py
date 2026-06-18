@@ -140,10 +140,10 @@ def scrape_do215():
                 # Try alternate selectors
                 event_items = soup.select("li.event, div.event, .event-listing")
             for item in event_items:
-                title_el = item.select_one("h2, h3, h4, .title, .event-title, [class*='title']")
-                link_el = item.select_one("a[href]")
-                venue_el = item.select_one(".venue, [class*='venue']")
-                time_el = item.select_one("time, .time, [class*='time']")
+                title_el = item.select_one("a.ds-listing-event-title, .url.summary")
+                link_el = item.select_one("a.ds-listing-event-title")
+                venue_el = item.select_one(".ds-listing-venue-name, .location")
+                time_el = item.select_one(".ds-event-time, .dtstart")
                 img_el = item.select_one("img")
                 if not title_el:
                     continue
