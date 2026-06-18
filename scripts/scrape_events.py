@@ -129,12 +129,14 @@ def scrape_do215():
             url = f"https://do215.com/events/{day.strftime('%Y/%m/%d')}"
             res = requests.get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=15)
             print(f"Do215 {day.strftime("%Y/%m/%d")}: status {res.status_code}, length {len(res.text)}")
+            print("Do215 day status: " + str(res.status_code) + " len: " + str(len(res.text)))
             if res.status_code != 200:
                 continue
             soup = BeautifulSoup(res.text, "html.parser")
             # Find event listings
             event_items = soup.select(".event-list-item, .list-item, article[class*='event'], .event-item")
             print(f"Selectors found: {len(event_items)} items")
+            print("Items found: " + str(len(event_items)))
             if not event_items:
                 # Try alternate selectors
                 event_items = soup.select("li.event, div.event, .event-listing")
