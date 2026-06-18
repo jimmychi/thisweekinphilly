@@ -13,7 +13,7 @@ AIRTABLE_API_KEY = os.environ.get("AIRTABLE_API_KEY")
 SENDGRID_API_KEY = os.environ.get("SENDGRID_API_KEY")
 EVENTBRITE_API_KEY = os.environ.get("EVENTBRITE_API_KEY")
 NOTIFY_EMAIL = "jimmychi213@gmail.com"
-FROM_EMAIL = "thisweekinphilly@gmail.com"
+FROM_EMAIL = "info@thisweekinphilly.com"
 
 TABLE_NAME = "Table 1"
 HEADERS = {"Authorization": f"Bearer {AIRTABLE_API_KEY}", "Content-Type": "application/json"}
