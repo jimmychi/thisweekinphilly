@@ -4,18 +4,18 @@ import { groupEventsByDate, getDayLabel } from "../utils/dates.js";
 
 const styles = {
   wrap: {
-    maxWidth: 800,
+    maxWidth: 1400,
     margin: "0 auto",
     padding: "32px 24px 64px",
   },
   section: {
-    marginBottom: 40,
+    marginBottom: 48,
   },
   dayHeader: {
     display: "flex",
     alignItems: "center",
     gap: 16,
-    marginBottom: 12,
+    marginBottom: 16,
   },
   dayLabel: {
     fontFamily: "var(--font-body)",
@@ -79,7 +79,19 @@ function Skeleton() {
   );
 }
 
+function useIsDesktop() {
+  const [isDesktop, setIsDesktop] = React.useState(window.innerWidth >= 768);
+  React.useEffect(() => {
+    const handler = () => setIsDesktop(window.innerWidth >= 768);
+    window.addEventListener("resize", handler);
+    return () => window.removeEventListener("resize", handler);
+  }, []);
+  return isDesktop;
+}
+
 export default function EventGrid({ events, loading, error }) {
+  const isDesktop = useIsDesktop();
+
   if (loading) return <Skeleton />;
 
   if (error) {
@@ -118,15 +130,23 @@ export default function EventGrid({ events, loading, error }) {
             <div style={styles.dayLine} />
             <span style={styles.count}>{groups[date].length} event{groups[date].length !== 1 ? "s" : ""}</span>
           </div>
-          <div style={styles.list}>
-            {groups[date].map((event, i) => (
-              <EventCard
-                key={event.id}
-                event={event}
-                isLast={i === groups[date].length - 1}
-              />
-            ))}
-          </div>
+          {isDesktop ? (
+            <div style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(4, 1fr)",
+              gap: 20,
+            }}>
+              {groups[date].map((event) => (
+                <EventCard key={event.id} event={event} isDesktop={true} />
+              ))}
+            </div>
+          ) : (
+            <div style={styles.list}>
+              {groups[date].map((event, i) => (
+                <EventCard key={event.id} event={event} isLast={i === groups[date].length - 1} />
+              ))}
+            </div>
+          )}
         </section>
       ))}
     </main>

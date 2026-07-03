@@ -18,12 +18,114 @@ const CATEGORY_EMOJI = {
   family: "👨‍👩‍👧", nightlife: "🌙", community: "🤝", other: "📅",
 };
 
-export default function EventCard({ event, isLast }) {
+export default function EventCard({ event, isLast, isDesktop }) {
   const navigate = useNavigate();
   const color = CATEGORY_COLORS[event.category] || "#9e9080";
   const emoji = CATEGORY_EMOJI[event.category] || "📅";
   const [imgErr, setImgErr] = useState(false);
 
+  if (isDesktop) {
+    return (
+      <div
+        onClick={() => navigate(`/event/${event.id}`)}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.transform = "translateY(-4px)";
+          e.currentTarget.style.boxShadow = "0 8px 24px rgba(0,0,0,0.12)";
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.transform = "translateY(0)";
+          e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.06)";
+        }}
+        style={{
+          background: "var(--warm-white)",
+          borderRadius: 12,
+          overflow: "hidden",
+          cursor: "pointer",
+          boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
+          transition: "transform 0.2s ease, box-shadow 0.2s ease",
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        {/* Image */}
+        <div style={{
+          width: "100%",
+          height: 200,
+          background: color,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontSize: "3rem",
+          flexShrink: 0,
+          overflow: "hidden",
+        }}>
+          {event.image && !imgErr ? (
+            <img
+              src={event.image}
+              alt={event.title}
+              onError={() => setImgErr(true)}
+              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+            />
+          ) : (
+            <span>{emoji}</span>
+          )}
+        </div>
+
+        {/* Content */}
+        <div style={{ padding: "16px", flex: 1, display: "flex", flexDirection: "column", gap: 6 }}>
+          <div style={{
+            fontFamily: "var(--font-display)",
+            fontWeight: 700,
+            fontSize: "1.1rem",
+            color: "var(--ink)",
+            lineHeight: 1.3,
+            display: "-webkit-box",
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: "vertical",
+            overflow: "hidden",
+          }}>
+            {event.title}
+          </div>
+          {event.venue && event.venue !== "Philadelphia, PA" && (
+            <div style={{
+              fontSize: "0.85rem",
+              color: "var(--stone)",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}>
+              {event.venue}
+            </div>
+          )}
+          {event.address && event.address !== "Philadelphia, PA" && (
+            <div style={{
+              fontSize: "0.82rem",
+              color: "var(--ink-soft)",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}>
+              {event.address}
+            </div>
+          )}
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "auto", paddingTop: 8 }}>
+            {event.time && (
+              <div style={{ fontSize: "0.88rem", color: "var(--ink)", fontWeight: 600 }}>
+                {formatTime(event.time)}
+              </div>
+            )}
+            {event.price && (
+              <div style={{ fontSize: "0.82rem", color: color, fontWeight: 600 }}>
+                {event.price}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Mobile list layout
   return (
     <div
       onClick={() => navigate(`/event/${event.id}`)}
