@@ -42,15 +42,15 @@ export default function EventCard({ event, isLast }) {
     >
       <div style={{
         flexShrink: 0,
-        width: 56,
-        height: 56,
+        width: 80,
+        height: 80,
         borderRadius: 6,
         overflow: "hidden",
         background: color,
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        fontSize: "1.4rem",
+        fontSize: "1.8rem",
       }}>
         {event.image && !imgErr ? (
           <img
@@ -68,7 +68,7 @@ export default function EventCard({ event, isLast }) {
         <div style={{
           fontFamily: "var(--font-display)",
           fontWeight: 700,
-          fontSize: "0.95rem",
+          fontSize: "1.1rem",
           color: "var(--ink)",
           whiteSpace: "nowrap",
           overflow: "hidden",
@@ -78,7 +78,7 @@ export default function EventCard({ event, isLast }) {
         </div>
         {event.venue && event.venue !== "Philadelphia, PA" && (
           <div style={{
-            fontSize: "0.78rem",
+            fontSize: "0.88rem",
             color: "var(--stone)",
             whiteSpace: "nowrap",
             overflow: "hidden",
@@ -90,7 +90,7 @@ export default function EventCard({ event, isLast }) {
         )}
         {event.address && event.address !== "Philadelphia, PA" && (
           <div style={{
-            fontSize: "0.78rem",
+            fontSize: "0.88rem",
             color: "var(--ink-soft)",
             whiteSpace: "nowrap",
             overflow: "hidden",
@@ -104,12 +104,12 @@ export default function EventCard({ event, isLast }) {
 
       <div style={{ flexShrink: 0, textAlign: "right" }}>
         {event.time && (
-          <div style={{ fontSize: "0.82rem", color: "var(--ink)", fontWeight: 600 }}>
+          <div style={{ fontSize: "0.92rem", color: "var(--ink)", fontWeight: 600 }}>
             {formatTime(event.time)}
           </div>
         )}
         {event.price && (
-          <div style={{ fontSize: "0.75rem", color: color, fontWeight: 600, marginTop: 2 }}>
+          <div style={{ fontSize: "0.85rem", color: color, fontWeight: 600, marginTop: 2 }}>
             {event.price}
           </div>
         )}
