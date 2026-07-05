@@ -44,14 +44,7 @@ export default function MuseumDetail() {
         </button>
       </div>
 
-      {/* Hero Image */}
-      <div style={{ maxWidth: 800, margin: "0 auto", padding: "24px 24px 0" }}>
-        {museum.image ? (
-          <img src={museum.image} alt={museum.name} style={{ width: "100%", height: 320, objectFit: "cover", borderRadius: 8, display: "block" }} />
-        ) : (
-          <div style={{ width: "100%", height: 320, background: "var(--ink)", borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "5rem" }}>🏛️</div>
-        )}
-      </div>
+
 
       {/* Content */}
       <div style={{ maxWidth: 800, margin: "0 auto", padding: "40px 24px 80px" }}>
