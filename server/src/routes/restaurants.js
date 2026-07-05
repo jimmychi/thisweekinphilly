@@ -359,44 +359,6 @@ router.get("/syncnightclubs", async (req, res) => {
   }
 });
 
-router.get("/:id", async (req, res) => {
-  const id = req.params.id;
-  const cacheKey = `restaurant-detail-${id}`;
-  const cached = cache.get(cacheKey);
-  if (cached) return res.json({ restaurant: cached, cached: true });
-  try {
-    let restaurant = null;
-    if (id.startsWith("at-rest-") || id.startsWith("at-bar-")) {
-      const { getAirtableRestaurants, getAirtableBars } = require("../services/airtable");
-      const isBar = id.startsWith("at-bar-");
-      const all = isBar ? await getAirtableBars(null) : await getAirtableRestaurants(null);
-      const atRest = all.find(r => r.id === id);
-      if (!atRest) return res.status(404).json({ error: "Restaurant not found" });
-      if (atRest.placeId && !atRest.image) {
-        const googleData = await getRestaurantDetails(atRest.placeId);
-        restaurant = { ...googleData, ...atRest, name: atRest.name || googleData?.name, description: atRest.description || googleData?.description || null, address: atRest.address !== "Philadelphia, PA" ? atRest.address : googleData?.address || atRest.address, photos: googleData?.photos || [], reviews: googleData?.reviews || [], hours: googleData?.hours || null };
-      } else {
-        let googleDesc = null;
-        if (atRest.placeId && !atRest.description) {
-          try {
-            const descRes = await axios.get("https://maps.googleapis.com/maps/api/place/details/json", { params: { place_id: atRest.placeId, fields: "editorial_summary", key: process.env.GOOGLE_PLACES_API_KEY }, ...getProxyConfig() });
-            googleDesc = descRes.data.result?.editorial_summary?.overview || null;
-          } catch (e) {}
-        }
-        restaurant = { ...atRest, description: atRest.description || googleDesc, photos: atRest.images && atRest.images.length > 0 ? atRest.images : atRest.image ? [atRest.image] : [] };
-      }
-    } else {
-      restaurant = await getRestaurantDetails(id);
-    }
-    if (!restaurant) return res.status(404).json({ error: "Restaurant not found" });
-    cache.set(cacheKey, restaurant);
-    res.json({ restaurant });
-  } catch (err) {
-    res.status(500).json({ error: "Failed to fetch restaurant details" });
-  }
-});
-
-
 // GET /api/restaurants/syncbardescriptions?limit=10
 router.get("/syncbardescriptions", async (req, res) => {
   if (isSyncing) return res.status(429).json({ error: "Sync already running, please wait" });
@@ -435,6 +397,44 @@ router.get("/syncbardescriptions", async (req, res) => {
     isSyncing = false;
   }
 });
+
+router.get("/:id", async (req, res) => {
+  const id = req.params.id;
+  const cacheKey = `restaurant-detail-${id}`;
+  const cached = cache.get(cacheKey);
+  if (cached) return res.json({ restaurant: cached, cached: true });
+  try {
+    let restaurant = null;
+    if (id.startsWith("at-rest-") || id.startsWith("at-bar-")) {
+      const { getAirtableRestaurants, getAirtableBars } = require("../services/airtable");
+      const isBar = id.startsWith("at-bar-");
+      const all = isBar ? await getAirtableBars(null) : await getAirtableRestaurants(null);
+      const atRest = all.find(r => r.id === id);
+      if (!atRest) return res.status(404).json({ error: "Restaurant not found" });
+      if (atRest.placeId && !atRest.image) {
+        const googleData = await getRestaurantDetails(atRest.placeId);
+        restaurant = { ...googleData, ...atRest, name: atRest.name || googleData?.name, description: atRest.description || googleData?.description || null, address: atRest.address !== "Philadelphia, PA" ? atRest.address : googleData?.address || atRest.address, photos: googleData?.photos || [], reviews: googleData?.reviews || [], hours: googleData?.hours || null };
+      } else {
+        let googleDesc = null;
+        if (atRest.placeId && !atRest.description) {
+          try {
+            const descRes = await axios.get("https://maps.googleapis.com/maps/api/place/details/json", { params: { place_id: atRest.placeId, fields: "editorial_summary", key: process.env.GOOGLE_PLACES_API_KEY }, ...getProxyConfig() });
+            googleDesc = descRes.data.result?.editorial_summary?.overview || null;
+          } catch (e) {}
+        }
+        restaurant = { ...atRest, description: atRest.description || googleDesc, photos: atRest.images && atRest.images.length > 0 ? atRest.images : atRest.image ? [atRest.image] : [] };
+      }
+    } else {
+      restaurant = await getRestaurantDetails(id);
+    }
+    if (!restaurant) return res.status(404).json({ error: "Restaurant not found" });
+    cache.set(cacheKey, restaurant);
+    res.json({ restaurant });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch restaurant details" });
+  }
+});
+
 
 module.exports = router;
 
