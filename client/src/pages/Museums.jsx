@@ -73,7 +73,7 @@ export default function Museums() {
           <div style={styles.grid}>
           {filtered.map(m => (
             <div key={m.id} style={styles.card} onClick={() => navigate(`/museums/${encodeURIComponent(m.id)}`)}>
-              {m.image ? <img src={m.image} alt={m.name} style={styles.cardImg} /> : <div style={styles.cardImgPlaceholder}>🏛️</div>}
+              
               <div style={styles.cardBody}>
                 <div style={styles.cardName}>{m.name} {m.kidFriendly && <span style={{ fontSize: "0.75rem", background: "#e8f5e9", color: "#2e7d32", borderRadius: 20, padding: "2px 8px", fontWeight: 600, marginLeft: 6 }}>👶 Kid Friendly</span>}</div>
                 {m.address && <div style={styles.meta}>{m.address}</div>}
