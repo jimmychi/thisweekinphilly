@@ -398,6 +398,51 @@ router.get("/syncbardescriptions", async (req, res) => {
   }
 });
 
+
+// GET /api/restaurants/syncmuseums
+router.get("/syncmuseums", async (req, res) => {
+  if (isSyncing) return res.status(429).json({ error: "Sync already running, please wait" });
+  isSyncing = true;
+  try {
+    const { getMuseums } = require("../services/airtable");
+    const museums = await getMuseums();
+    const force = req.query.force === "true";
+    let updated = 0;
+    for (const m of museums) {
+      if (!m.placeId) continue;
+      if (m.image && !m.image.includes("dvw6yky0c") && !force) continue;
+      try {
+        const detailRes = await axios.get("https://maps.googleapis.com/maps/api/place/details/json", {
+          params: { place_id: m.placeId, fields: "photos", key: process.env.GOOGLE_PLACES_API_KEY },
+          ...getProxyConfig()
+        });
+        const photos = detailRes.data.result?.photos || [];
+        if (!photos.length) continue;
+        const photoRef = photos[0].photo_reference;
+        const gUrl = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photoreference=${photoRef}&key=${process.env.GOOGLE_PLACES_API_KEY}`;
+        const cUrl = await uploadToCloudinary(gUrl, "thisweekinphilly");
+        if (!cUrl) continue;
+        const airtableId = m.id.replace("museum-rec", "rec");
+        await axios.patch(
+          `https://api.airtable.com/v0/${process.env.AIRTABLE_BASE_ID}/Museums/${airtableId}`,
+          { fields: { "Image": cUrl } },
+          { headers: { Authorization: `Bearer ${process.env.AIRTABLE_API_KEY}`, "Content-Type": "application/json" } }
+        );
+        updated++;
+        console.log("Updated museum image for:", m.name);
+        await new Promise(r => setTimeout(r, 300));
+      } catch (e) {
+        console.error("Museum sync error for", m.name, e.message);
+      }
+    }
+    res.json({ message: `Updated images for ${updated} museums` });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  } finally {
+    isSyncing = false;
+  }
+});
+
 router.get("/:id", async (req, res) => {
   const id = req.params.id;
   const cacheKey = `restaurant-detail-${id}`;
