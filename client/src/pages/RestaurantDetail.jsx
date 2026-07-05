@@ -213,6 +213,7 @@ export default function RestaurantDetail() {
       .then(data => {
         const rest = data.restaurant || null;
         setRestaurant(rest);
+        if (rest) document.title = `${rest.name} - Philadelphia Bar & Restaurant | This Week in Philly`;
         setLoading(false);
         if (rest) {
           fetch(`${API_BASE}/restaurants/specials`)
