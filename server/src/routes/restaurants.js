@@ -409,15 +409,28 @@ router.get("/syncmuseums", async (req, res) => {
     const force = req.query.force === "true";
     let updated = 0;
     for (const m of museums) {
-      if (!m.placeId) continue;
       if (m.image && !m.image.includes("dvw6yky0c") && !force) continue;
       try {
+        // Search by name + Philadelphia
+        const searchRes = await axios.get("https://maps.googleapis.com/maps/api/place/findplacefromtext/json", {
+          params: {
+            input: `${m.name} Philadelphia`,
+            inputtype: "textquery",
+            fields: "place_id",
+            key: process.env.GOOGLE_PLACES_API_KEY
+          },
+          ...getProxyConfig()
+        });
+        const placeId = searchRes.data.candidates?.[0]?.place_id;
+        if (!placeId) { console.log("No place found for:", m.name); continue; }
+
+        // Get photos using place ID
         const detailRes = await axios.get("https://maps.googleapis.com/maps/api/place/details/json", {
-          params: { place_id: m.placeId, fields: "photos", key: process.env.GOOGLE_PLACES_API_KEY },
+          params: { place_id: placeId, fields: "photos", key: process.env.GOOGLE_PLACES_API_KEY },
           ...getProxyConfig()
         });
         const photos = detailRes.data.result?.photos || [];
-        if (!photos.length) continue;
+        if (!photos.length) { console.log("No photos for:", m.name); continue; }
         const photoRef = photos[0].photo_reference;
         const gUrl = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photoreference=${photoRef}&key=${process.env.GOOGLE_PLACES_API_KEY}`;
         const cUrl = await uploadToCloudinary(gUrl, "thisweekinphilly");
@@ -430,7 +443,7 @@ router.get("/syncmuseums", async (req, res) => {
         );
         updated++;
         console.log("Updated museum image for:", m.name);
-        await new Promise(r => setTimeout(r, 300));
+        await new Promise(r => setTimeout(r, 500));
       } catch (e) {
         console.error("Museum sync error for", m.name, e.message);
       }
