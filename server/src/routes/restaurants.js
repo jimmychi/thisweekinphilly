@@ -396,5 +396,45 @@ router.get("/:id", async (req, res) => {
   }
 });
 
+
+// GET /api/restaurants/syncbardescriptions?limit=10
+router.get("/syncbardescriptions", async (req, res) => {
+  if (isSyncing) return res.status(429).json({ error: "Sync already running, please wait" });
+  isSyncing = true;
+  try {
+    const { generateBarDescription } = require("../services/claude");
+    const { getAirtableBars } = require("../services/airtable");
+    const limit = parseInt(req.query.limit) || 10;
+    
+    const bars = await getAirtableBars(null);
+    const needsDesc = bars.filter(b => !b.description).slice(0, limit);
+    console.log(`Bars needing descriptions: ${bars.filter(b => !b.description).length}, processing: ${needsDesc.length}`);
+    
+    let updated = 0;
+    for (const bar of needsDesc) {
+      try {
+        const desc = await generateBarDescription(bar.name, bar.neighborhood, bar.specials, bar.rating);
+        if (!desc) continue;
+        const airtableId = bar.id.replace("at-bar-rec", "rec");
+        await axios.patch(
+          `https://api.airtable.com/v0/${process.env.AIRTABLE_BASE_ID}/Bars/${airtableId}`,
+          { fields: { "Description": desc } },
+          { headers: { Authorization: `Bearer ${process.env.AIRTABLE_API_KEY}`, "Content-Type": "application/json" } }
+        );
+        updated++;
+        console.log(`Updated description for: ${bar.name}`);
+        await new Promise(r => setTimeout(r, 300));
+      } catch (e) {
+        console.error(`Description error for ${bar.name}:`, e.message);
+      }
+    }
+    res.json({ message: `Updated descriptions for ${updated} bars`, remaining: bars.filter(b => !b.description).length - updated });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  } finally {
+    isSyncing = false;
+  }
+});
+
 module.exports = router;
 

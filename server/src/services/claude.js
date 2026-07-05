@@ -33,4 +33,29 @@ Write only the description, nothing else.`;
   }
 }
 
-module.exports = { generateEventDescription };
+
+async function generateBarDescription(name, neighborhood, specials, rating) {
+  if (!process.env.ANTHROPIC_API_KEY) return null;
+  try {
+    const prompt = `Write a 1-2 sentence description for this Philadelphia bar. Be specific and engaging. Do not make up details.
+
+Bar: ${name}
+Neighborhood: ${neighborhood || "Philadelphia"}
+Rating: ${rating || "N/A"} out of 5
+Specials: ${specials || "N/A"}
+
+Write only the description, nothing else.`;
+
+    const message = await client.messages.create({
+      model: "claude-haiku-4-5-20251001",
+      max_tokens: 100,
+      messages: [{ role: "user", content: prompt }],
+    });
+    return message.content[0].text.trim() || null;
+  } catch (err) {
+    console.error("Claude bar description error:", err.message);
+    return null;
+  }
+}
+
+module.exports = { generateEventDescription, generateBarDescription };
