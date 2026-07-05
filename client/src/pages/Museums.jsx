@@ -20,18 +20,12 @@ const styles = {
   sub: { fontFamily: "var(--font-body)", fontStyle: "italic", fontSize: "1rem", color: "var(--stone-light)" },
   filters: { background: "var(--parchment)", borderBottom: "1px solid var(--stone)", padding: "12px 16px", display: "flex", gap: 6, flexWrap: "nowrap", overflowX: "auto", WebkitOverflowScrolling: "touch", justifyContent: "center" },
   pill: (active) => ({ padding: "5px 12px", borderRadius: 999, border: active ? "none" : "1px solid var(--stone)", background: active ? "var(--brick)" : "transparent", color: active ? "#fff" : "var(--ink)", fontFamily: "var(--font-body)", fontSize: "0.75rem", fontWeight: active ? 700 : 400, cursor: "pointer", whiteSpace: "nowrap" }),
-  list: { maxWidth: 900, margin: "0 auto", padding: "32px 24px", flex: 1 },
-  card: {
-    background: "#fff",
-    borderRadius: 12,
-    padding: "20px 24px",
-    marginBottom: 12,
-    boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "flex-start",
-    gap: 16,
-  },
+  list: { maxWidth: 1200, margin: "0 auto", padding: "32px 24px", flex: 1 },
+  grid: { display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: 24 },
+  card: { background: "#fff", borderRadius: 12, overflow: "hidden", boxShadow: "0 2px 8px rgba(0,0,0,0.08)", cursor: "pointer", display: "block", color: "inherit" },
+  cardImg: { width: "100%", height: 180, objectFit: "cover", background: "var(--stone)" },
+  cardImgPlaceholder: { width: "100%", height: 180, background: "var(--parchment)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "2rem" },
+  cardBody: { padding: "16px" },
   left: { flex: 1 },
   cardName: { fontFamily: "var(--font-display)", fontSize: "1.1rem", fontWeight: 700, color: "var(--ink)", marginBottom: 4 },
   special: { fontFamily: "var(--font-body)", fontSize: "1.05rem", color: "var(--brick)", fontWeight: 700, marginBottom: 6 },
@@ -76,9 +70,11 @@ export default function Museums() {
         <div style={styles.loading}>Loading museums...</div>
       ) : (
         <div style={styles.list}>
+          <div style={styles.grid}>
           {filtered.map(m => (
-            <div key={m.id} style={{...styles.card, cursor: "pointer"}} onClick={() => navigate(`/museums/${encodeURIComponent(m.id)}`)}>
-              <div style={styles.left}>
+            <div key={m.id} style={styles.card} onClick={() => navigate(`/museums/${encodeURIComponent(m.id)}`)}>
+              {m.image ? <img src={m.image} alt={m.name} style={styles.cardImg} /> : <div style={styles.cardImgPlaceholder}>🏛️</div>}
+              <div style={styles.cardBody}>
                 <div style={styles.cardName}>{m.name} {m.kidFriendly && <span style={{ fontSize: "0.75rem", background: "#e8f5e9", color: "#2e7d32", borderRadius: 20, padding: "2px 8px", fontWeight: 600, marginLeft: 6 }}>👶 Kid Friendly</span>}</div>
                 {m.address && <div style={styles.meta}>{m.address}</div>}
                 {m.phone && <a href={`tel:${m.phone}`} style={{ fontSize: "0.82rem", color: "var(--ink)", fontFamily: "var(--font-body)", textDecoration: "none", display: "block", marginBottom: 2 }}>{m.phone}</a>}
@@ -93,6 +89,7 @@ export default function Museums() {
               </div>
             </div>
           ))}
+          </div>
         </div>
       )}
       <Footer />
