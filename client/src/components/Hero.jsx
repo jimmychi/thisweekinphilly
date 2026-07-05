@@ -43,7 +43,6 @@ export default function Hero() {
           <span style={styles.accent}>This Week</span>
         </h1>
         <p style={styles.sub}>
-          Philly concerts, food, arts, sports & community events.
         </p>
       </div>
     </div>
