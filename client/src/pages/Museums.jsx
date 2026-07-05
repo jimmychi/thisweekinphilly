@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Header from "../components/Header.jsx";
 import Footer from "../components/Footer.jsx";
 
@@ -41,6 +42,7 @@ const styles = {
 };
 
 export default function Museums() {
+  const navigate = useNavigate();
   const [museums, setMuseums] = useState([]);
   useEffect(() => { document.title = "Museums in Philadelphia | This Week in Philly"; return () => { document.title = "This Week in Philly"; }; }, []);
   const [loading, setLoading] = useState(true);
@@ -75,7 +77,7 @@ export default function Museums() {
       ) : (
         <div style={styles.list}>
           {filtered.map(m => (
-            <div key={m.id} style={styles.card}>
+            <div key={m.id} style={{...styles.card, cursor: "pointer"}} onClick={() => navigate(`/museums/${encodeURIComponent(m.id)}`)}>
               <div style={styles.left}>
                 <div style={styles.cardName}>{m.name} {m.kidFriendly && <span style={{ fontSize: "0.75rem", background: "#e8f5e9", color: "#2e7d32", borderRadius: 20, padding: "2px 8px", fontWeight: 600, marginLeft: 6 }}>👶 Kid Friendly</span>}</div>
                 {m.address && <div style={styles.meta}>{m.address}</div>}
